@@ -3,8 +3,7 @@
 //
 
 #pragma once
-#include "PNGButton.h"
-
+#include "Mediator.h"
 // CRegisterDlg ¶Ô»°¿ò
 class CRegisterDlg : public CDialogEx
 {
@@ -38,12 +37,10 @@ public:
 	int mHeight;
 	bool is_in_drag;
 private:
-	PNGButton  bt_min,bt_close;
 	std::vector<CButton *> vt_vec; 
 	CWinThread * thread;
 	CMFCButton *buttonUncom;
-	void InitControl();
-	void SwichControl(bool flag);
+	Mediator mMediator;
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);

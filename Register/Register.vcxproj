@@ -43,7 +43,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>../button;$(IncludePath)</IncludePath>
+    <IncludePath>./Button;./Mediator;./PictureFrame;./;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -103,7 +103,10 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\button\PNGButton.h" />
+    <ClInclude Include="BaseControl.h" />
+    <ClInclude Include="Button\PNGButton.h" />
+    <ClInclude Include="Mediator\Mediator.h" />
+    <ClInclude Include="PictureFrame.h" />
     <ClInclude Include="Register.h" />
     <ClInclude Include="RegisterDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -112,7 +115,10 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\button\PNGButton.cpp" />
+    <ClCompile Include="BaseControl.cpp" />
+    <ClCompile Include="Button\PNGButton.cpp" />
+    <ClCompile Include="Mediator\Mediator.cpp" />
+    <ClCompile Include="PictureFrame.cpp" />
     <ClCompile Include="Register.cpp" />
     <ClCompile Include="RegisterDlg.cpp" />
     <ClCompile Include="stdafx.cpp">

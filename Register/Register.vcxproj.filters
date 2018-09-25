@@ -19,6 +19,15 @@
     <Filter Include="Resourse">
       <UniqueIdentifier>{f396d58a-bd23-4ff8-b5cf-8b5d7bce7aee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Mediator">
+      <UniqueIdentifier>{a8f1d289-3645-4c39-b342-e8844ca447dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="PictureFrame">
+      <UniqueIdentifier>{2f59ad1f-1b99-4ff4-9271-c1c305aa4f56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="BaseControl">
+      <UniqueIdentifier>{591f32f6-be26-4b60-ade4-fa88e314c04c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -39,11 +48,20 @@
     <ClInclude Include="Resource.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\button\PNGButton.h">
-      <Filter>Button</Filter>
-    </ClInclude>
     <ClInclude Include="Sys.h">
       <Filter>Resourse</Filter>
+    </ClInclude>
+    <ClInclude Include="Button\PNGButton.h">
+      <Filter>Button</Filter>
+    </ClInclude>
+    <ClInclude Include="Mediator\Mediator.h">
+      <Filter>Mediator</Filter>
+    </ClInclude>
+    <ClInclude Include="PictureFrame.h">
+      <Filter>PictureFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="BaseControl.h">
+      <Filter>BaseControl</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -56,11 +74,20 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="..\button\PNGButton.cpp">
-      <Filter>Button</Filter>
-    </ClCompile>
     <ClCompile Include="Sys.cpp">
       <Filter>Resourse</Filter>
+    </ClCompile>
+    <ClCompile Include="Button\PNGButton.cpp">
+      <Filter>Button</Filter>
+    </ClCompile>
+    <ClCompile Include="Mediator\Mediator.cpp">
+      <Filter>Mediator</Filter>
+    </ClCompile>
+    <ClCompile Include="PictureFrame.cpp">
+      <Filter>PictureFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseControl.cpp">
+      <Filter>BaseControl</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

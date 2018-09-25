@@ -16,6 +16,8 @@ Global::Global()
 	LODE(back,"res\\bk.bmp");
 	LODE(mask,"res\\mask.png");
 	LODE(bt_min,"res\\BT_MIN.png");
+	LODE(cirno,"res\\9.png");
+	LODE(head_bk,"res\\head_bk.png");
 	vec_bt_min=GetImageGroup(L"res\\BT_MIN.png",1,4);
 	vec_bt_close=GetImageGroup(L"res\\BT_CLOSE.png",1,4);
 }
@@ -77,4 +79,15 @@ pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height)
 	bmPhoto->GetWidth();
 	bmPhoto->GetHeight();
 	return bmPhoto;
+}
+
+CRect RectTransform(Rect rect)
+{
+	return CRect(rect.GetLeft(),rect.GetTop(),rect.GetLeft()+rect.Width,rect.GetTop()+rect.Height);
+}
+
+void ResizeRect(Rect& rec,int val)
+{
+	rec.X-=val;rec.Y-=val;
+	rec.Height+=val;rec.Width+=val;
 }

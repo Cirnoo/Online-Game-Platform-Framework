@@ -86,7 +86,7 @@ BOOL CRegisterDlg::OnInitDialog()
 
 	// IDM_ABOUTBOX 必须在系统命令范围内。
 
-	InitControl();
+	mMediator.InitControl(this);
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
@@ -108,12 +108,7 @@ BOOL CRegisterDlg::OnInitDialog()
 	//  执行此操作
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-	buttonUncom = new CMFCButton;
-	buttonUncom->Create(_T("Uncomplete"),
-		  WS_VISIBLE,
-		  CRect(5, 5, 300, 300),
-		  this,
-		  2000);
+	
 	return TRUE;
 }
 
@@ -143,8 +138,7 @@ void CRegisterDlg::OnPaint()
 	}
 	else
 	{
-		//CDialogEx::OnPaint();
-
+		
 		HDC hdc = ::GetDC(this->m_hWnd);
 		Graphics graphics(hdc);
 		Bitmap bmp(this->mWidth,this->mHeight);
@@ -152,10 +146,10 @@ void CRegisterDlg::OnPaint()
 		
 		gBuf->DrawImage(sys.back,0,0);
 		gBuf->DrawImage(sys.mask,0,0);
-		bt_min.Show(bmp,gBuf);
-		bt_close.Show(bmp,gBuf);
+		mMediator.ShowControl(gBuf);
 		graphics.DrawImage(&bmp,0,0);
 		::ReleaseDC(m_hWnd,hdc);
+		//CDialogEx::OnPaint();
 	}
 	
 }
@@ -185,44 +179,16 @@ void CRegisterDlg::OnSize(UINT nType, int cx, int cy)
 	CRect rc;
 	GetWindowRect(&rc); //获得窗口矩形
 	rc -= rc.TopLeft();
-	rgn.CreateRoundRectRgn(rc.left, rc.top, rc.right, rc.bottom, 15, 15); //根据窗口矩形创建一个圆角矩形最后两个是形成圆角的大小
+	rgn.CreateRoundRectRgn(rc.left, rc.top, rc.right, rc.bottom, 20, 20); //根据窗口矩形创建一个圆角矩形最后两个是形成圆角的大小
 	SetWindowRgn(rgn, TRUE);
 	// TODO: 在此处添加消息处理程序代码
 }
 
 
 
-void CRegisterDlg::InitControl()
-{
-	//min_control
-	auto & min_ctrl=sys.vec_bt_min[0];
-	CRect window_rect;
-	
-	int  c_width=min_ctrl->GetWidth();
-	int  c_height=min_ctrl->GetHeight();
-
-
-	//min_control
-	auto  rec=Rect(mWidth-38-28,0,c_width,c_height);
-	bt_min.Create(rec,this,IDC_MIN,sys.vec_bt_min[0],sys.vec_bt_min[1],CMD_MINSIZE);
-
-	rec=Rect(mWidth-38,0,c_width+10,c_height);
-	bt_close.Create(rec,this,IDC_CLOSE,sys.vec_bt_close[0],sys.vec_bt_close[1],CMD_CLOSE);
-
-	auto temp=new CButton();
-	temp->Create(_T("Start"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,	CRect(mWidth-76,mHeight-29,69,22), this, 10100);
-	temp->ShowWindow(true);
-}
 
 
 
-
-
-void CRegisterDlg::SwichControl(bool flag)
-{
-	bt_close.task_flag=flag;
-	bt_min.task_flag=flag;
-}
 
 
 
@@ -232,7 +198,7 @@ void CRegisterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		PostMessage(WM_NCLBUTTONDOWN,
 		HTCAPTION,
 		MAKELPARAM(point.x, point.y));
-		SwichControl(false);
+		mMediator.SwichControl(false);
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
@@ -248,7 +214,7 @@ void CRegisterDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	is_in_drag=false;
-	SwichControl(true);
+	mMediator.SwichControl(true);
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
 
@@ -258,7 +224,7 @@ void CRegisterDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CRegisterDlg::OnMove(int x, int y)
 {
 	CDialogEx::OnMove(x, y);
-	SwichControl(true);
+	mMediator.SwichControl(true);
 	// TODO: 在此处添加消息处理程序代码
 }
 
