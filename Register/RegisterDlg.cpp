@@ -147,6 +147,9 @@ void CRegisterDlg::OnPaint()
 		gBuf->DrawImage(sys.back,0,0);
 		gBuf->DrawImage(sys.mask,0,0);
 		mMediator.ShowControl(gBuf);
+		
+		RectF layoutRect(0.0f, 0.0f, 200.0f, 50.0f);
+		gBuf->DrawString(L"Sample Text",-1,sys.font,layoutRect,&sys.format,sys.blackBrush);
 		graphics.DrawImage(&bmp,0,0);
 		::ReleaseDC(m_hWnd,hdc);
 		//CDialogEx::OnPaint();

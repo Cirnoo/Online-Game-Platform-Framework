@@ -20,6 +20,11 @@ Global::Global()
 	LODE(head_bk,"res\\head_bk.png");
 	vec_bt_min=GetImageGroup(L"res\\BT_MIN.png",1,4);
 	vec_bt_close=GetImageGroup(L"res\\BT_CLOSE.png",1,4);
+
+	fontfamily=new Gdiplus::FontFamily(L"ËÎÌו");
+	font=new Gdiplus::Font(fontfamily,20,FontStyleRegular,UnitPixel);
+	format.SetAlignment(StringAlignmentCenter);
+	blackBrush=new SolidBrush((Color(255, 0, 0, 0)));
 }
 
 Global::~Global()
@@ -84,6 +89,11 @@ pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height)
 CRect RectTransform(Rect rect)
 {
 	return CRect(rect.GetLeft(),rect.GetTop(),rect.GetLeft()+rect.Width,rect.GetTop()+rect.Height);
+}
+
+RectF RectFTransform(Rect rect)
+{
+	return RectF(rect.GetLeft(),rect.GetTop(),rect.Width,rect.Height);
 }
 
 void ResizeRect(Rect& rec,int val)

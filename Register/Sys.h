@@ -21,6 +21,10 @@ public:
 	~Global();
 	pImage back,mask,bt_min,cirno,head_bk;
 	std::vector<pImage> vec_bt_min,vec_bt_close;
+	Gdiplus::FontFamily * fontfamily;
+	Gdiplus::Font *font;
+	StringFormat format;
+	SolidBrush * blackBrush;
 	unsigned long  gdiplusToken;
 };
 
@@ -33,5 +37,6 @@ std::vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col);
 pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height);
 
 CRect RectTransform(Rect rect);
+RectF RectFTransform(Rect rect);
 void ResizeRect(Rect& rec,int val);
 extern Global sys;

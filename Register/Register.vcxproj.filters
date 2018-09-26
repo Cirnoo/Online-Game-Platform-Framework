@@ -60,8 +60,11 @@
     <ClInclude Include="PictureFrame.h">
       <Filter>PictureFrame</Filter>
     </ClInclude>
-    <ClInclude Include="BaseControl.h">
+    <ClInclude Include="BaseControl\BaseControl.h">
       <Filter>BaseControl</Filter>
+    </ClInclude>
+    <ClInclude Include="TextButton.h">
+      <Filter>Button</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,8 +89,11 @@
     <ClCompile Include="PictureFrame.cpp">
       <Filter>PictureFrame</Filter>
     </ClCompile>
-    <ClCompile Include="BaseControl.cpp">
+    <ClCompile Include="BaseControl\BaseControl.cpp">
       <Filter>BaseControl</Filter>
+    </ClCompile>
+    <ClCompile Include="TextButton.cpp">
+      <Filter>Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

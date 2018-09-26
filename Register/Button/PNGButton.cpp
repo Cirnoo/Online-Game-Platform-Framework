@@ -13,30 +13,35 @@ CPNGButton::CPNGButton(void) {
 	m_is_tracked	=	false; 
 	mCmd=0;
 	task_flag=true;
+	button_down_flag=false;
+	bg=nullptr;
+	hover_bg=nullptr;
+	click_bg=nullptr;
 } 
 CPNGButton::~CPNGButton(void) { }
 IMPLEMENT_DYNCREATE(CPNGButton, CWnd)  
 	BEGIN_MESSAGE_MAP(CPNGButton, CWnd)  
-		
-		ON_WM_MOUSEHOVER()
+		//ON_WM_MOUSEHOVER()
 		ON_WM_MOUSELEAVE()
 		ON_WM_LBUTTONUP()
 		ON_WM_MOUSEMOVE()
+		ON_WM_LBUTTONDOWN()
+//		ON_WM_MOUSEHOVER()
 	END_MESSAGE_MAP()  
 
 
-BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, Gdiplus::Image* BG,Gdiplus::Image* _hoverBg, int cmd)
+BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, Gdiplus::Image* BG,Gdiplus::Image* _hoverBg,Gdiplus::Image* _click_bg,int cmd)
 {
 	LPCTSTR lpszClassName=AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW ,  AfxGetApp()->LoadStandardCursor(IDC_ARROW), (HBRUSH)GetStockObject(TRANSPARENT), NULL) ;   
 	bg=BG;
 	SetRect(rect);
-	hoverBg=_hoverBg;
+	hover_bg=_hoverBg;
+	click_bg=_click_bg;
 	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(rect),pParentWnd, nID, NULL);
 	ModifyStyleEx(0, WS_EX_TRANSPARENT); 
 	mCmd=cmd;
 	return OK;
 }
-
 
 void CPNGButton::SwichControl(bool flag)
 {
@@ -50,12 +55,14 @@ void CPNGButton::SetRect(Rect rect)
 
 void CPNGButton::Show(Graphics* & g)
 {
-	
-	if(mouse_in_flag||m_is_tracked)
+	if (button_down_flag)
 	{
-
-		g->DrawImage(hoverBg,mRect); 
-	} 
+		g->DrawImage(click_bg,mRect);
+	}
+	else if(m_is_tracked)
+	{
+		g->DrawImage(hover_bg,mRect); 
+	}
 	else
 	{
 		g->DrawImage(this->bg,mRect); 
@@ -64,18 +71,6 @@ void CPNGButton::Show(Graphics* & g)
 
 
 
-void CPNGButton::OnMouseHover(UINT nFlags, CPoint point)
-{    
-	if (!task_flag)
-	{
-		return;
-	}
-	mouse_in_flag=true;
-	PaintParent();
-	GetParent()->UpdateWindow();
-	//TRACE(L"OnMouseHover\r\n");
-	//CWnd::OnMouseHover(nFlags, point);
-}
 
 
 void CPNGButton::OnMouseLeave()
@@ -84,6 +79,10 @@ void CPNGButton::OnMouseLeave()
 	{
 		return;
 	}
+	if (button_down_flag)
+	{
+		button_down_flag=false;
+	}
 	m_is_tracked	=   false;  
 	mouse_in_flag=false;
 	PaintParent();
@@ -91,6 +90,9 @@ void CPNGButton::OnMouseLeave()
 	//TRACE(L"OnMouseLeave\r\n");
 	CWnd::OnMouseLeave();
 }
+
+
+
 
 
 void CPNGButton::Check(bool check)
@@ -111,7 +113,11 @@ void CPNGButton::Check(bool check)
 void CPNGButton::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	
+	if (!button_down_flag)
+	{
+		return;
+	}
+	button_down_flag=false;
 	TRACE(L"Click!\n");
 	switch (mCmd)
 	{
@@ -122,7 +128,6 @@ void CPNGButton::OnLButtonUp(UINT nFlags, CPoint point)
 	default:
 		break;
 	}
-	GetParent()->SendMessage(WM_COMMAND,GetDlgCtrlID()|0,(LONG)GetSafeHwnd());
 	CWnd::OnLButtonUp(nFlags, point);
 }
 
@@ -131,6 +136,10 @@ void CPNGButton::OnLButtonUp(UINT nFlags, CPoint point)
 void CPNGButton::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (!task_flag)
+	{
+		return;
+	}
 	if(!m_is_tracked) 
 	{ 
 		TRACKMOUSEEVENT   tme; 
@@ -139,16 +148,28 @@ void CPNGButton::OnMouseMove(UINT nFlags, CPoint point)
 		tme.hwndTrack   =   GetSafeHwnd(); 
 		tme.dwHoverTime	=   80; 
 		_TrackMouseEvent(&tme);  
-		m_is_tracked   =   true;    
+		m_is_tracked   =   true;
+		mouse_in_flag=true;
 		//OnMouseHover(nFlags,point);
-	}  
+	}
 	CWnd::OnMouseMove(nFlags, point);
 }
 
-void CPNGButton::PaintParent()
-{  
-	CRect   rect;
-	GetWindowRect(&rect); 
-	GetParent()-> ScreenToClient(&rect); 
-	GetParent()-> InvalidateRect(&rect);
+
+
+void CPNGButton::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	button_down_flag=true;
+	PaintParent();
+	GetParent()->UpdateWindow(); 
+	CBaseControl::OnLButtonDown(nFlags, point);
 }
+
+
+//void CPNGButton::OnMouseHover(UINT nFlags, CPoint point)
+//{
+//	// TODO: 在此添加消息处理程序代码和/或调用默认值
+//
+//	CBaseControl::OnMouseHover(nFlags, point);
+//}

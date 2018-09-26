@@ -16,7 +16,6 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	pImage mImg;
-	Rect mRect;
 };
 
 
