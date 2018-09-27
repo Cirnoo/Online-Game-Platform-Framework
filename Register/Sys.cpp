@@ -20,15 +20,14 @@ Global::Global()
 	LODE(head_bk,"res\\head_bk.png");
 	vec_bt_min=GetImageGroup(L"res\\BT_MIN.png",1,4);
 	vec_bt_close=GetImageGroup(L"res\\BT_CLOSE.png",1,4);
-
-	fontfamily=new Gdiplus::FontFamily(L"ËÎÌå");
-	font=new Gdiplus::Font(fontfamily,20,FontStyleRegular,UnitPixel);
-	format.SetAlignment(StringAlignmentCenter);
-	blackBrush=new SolidBrush((Color(255, 0, 0, 0)));
+	vec_bt_default=GetImageGroup(L"res\\BT_DEFAULT.png",1,4);
+	fontfamily=new Gdiplus::FontFamily(L"Î¢ÈíÑÅºÚ");
+	font=new Gdiplus::Font(fontfamily,12,FontStyleRegular,UnitPixel);
 }
 
 Global::~Global()
 {
+
 	GdiplusShutdown(gdiplusToken);
 }
 
@@ -101,3 +100,5 @@ void ResizeRect(Rect& rec,int val)
 	rec.X-=val;rec.Y-=val;
 	rec.Height+=val;rec.Width+=val;
 }
+
+

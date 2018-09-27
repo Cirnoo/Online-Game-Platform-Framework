@@ -3,20 +3,20 @@
 #include "Resource.h"
 #include "Sys.h"
 const UINT TIMER_CONTROL =1; 
-CRect RectTransform(Rect);
 
-
+enum ButtonBg
+{
+	normal_bg,hover_bg,click_bg
+};
 
 CPNGButton::CPNGButton(void) { 
-	this->m_is_checked=false;
+	this->is_checked=false;
 	mouse_in_flag=false;
-	m_is_tracked	=	false; 
-	mCmd=0;
+	is_tracked	=	false; 
 	task_flag=true;
 	button_down_flag=false;
-	bg=nullptr;
-	hover_bg=nullptr;
-	click_bg=nullptr;
+	vec_bg.resize(3);
+	mCmd=nullptr;
 } 
 CPNGButton::~CPNGButton(void) { }
 IMPLEMENT_DYNCREATE(CPNGButton, CWnd)  
@@ -30,22 +30,38 @@ IMPLEMENT_DYNCREATE(CPNGButton, CWnd)
 	END_MESSAGE_MAP()  
 
 
-BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, Gdiplus::Image* BG,Gdiplus::Image* _hoverBg,Gdiplus::Image* _click_bg,int cmd)
+
+BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, Gdiplus::Image* BG,Gdiplus::Image* _hoverBg,Gdiplus::Image* _click_bg)
 {
 	LPCTSTR lpszClassName=AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW ,  AfxGetApp()->LoadStandardCursor(IDC_ARROW), (HBRUSH)GetStockObject(TRANSPARENT), NULL) ;   
-	bg=BG;
 	SetRect(rect);
-	hover_bg=_hoverBg;
-	click_bg=_click_bg;
+	vec_bg[normal_bg]=BG;
+	vec_bg[hover_bg]=_hoverBg;
+	vec_bg[click_bg]=_click_bg;
 	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(rect),pParentWnd, nID, NULL);
 	ModifyStyleEx(0, WS_EX_TRANSPARENT); 
-	mCmd=cmd;
+	return OK;
+}
+
+BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, std::vector<Image*>& _bg)
+{
+	LPCTSTR lpszClassName=AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW ,  AfxGetApp()->LoadStandardCursor(IDC_ARROW), (HBRUSH)GetStockObject(TRANSPARENT), NULL) ;   
+	SetRect(rect);
+	vec_bg=_bg;
+	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(rect),pParentWnd, nID, NULL);
+	ModifyStyleEx(0, WS_EX_TRANSPARENT); 
 	return OK;
 }
 
 void CPNGButton::SwichControl(bool flag)
 {
 	task_flag=flag;
+}
+
+
+void CPNGButton::SetCmd(std::function<void()> cmd)
+{
+	mCmd=std::move(cmd);
 }
 
 void CPNGButton::SetRect(Rect rect)
@@ -57,15 +73,15 @@ void CPNGButton::Show(Graphics* & g)
 {
 	if (button_down_flag)
 	{
-		g->DrawImage(click_bg,mRect);
+		g->DrawImage(vec_bg[click_bg],mRect);
 	}
-	else if(m_is_tracked)
+	else if(is_tracked)
 	{
-		g->DrawImage(hover_bg,mRect); 
+		g->DrawImage(vec_bg[hover_bg],mRect); 
 	}
 	else
 	{
-		g->DrawImage(this->bg,mRect); 
+		g->DrawImage(vec_bg[normal_bg],mRect); 
 	}
 }
 
@@ -83,7 +99,7 @@ void CPNGButton::OnMouseLeave()
 	{
 		button_down_flag=false;
 	}
-	m_is_tracked	=   false;  
+	is_tracked	=   false;  
 	mouse_in_flag=false;
 	PaintParent();
 	GetParent()->UpdateWindow(); 
@@ -97,9 +113,9 @@ void CPNGButton::OnMouseLeave()
 
 void CPNGButton::Check(bool check)
 {
-	if(this->m_is_checked!=check)
+	if(this->is_checked!=check)
 	{
-		this->m_is_checked=check;
+		this->is_checked=check;
 		Invalidate();
 		UpdateWindow();
 		//TRACE(L"DrawSelected\r\n");
@@ -119,14 +135,9 @@ void CPNGButton::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	button_down_flag=false;
 	TRACE(L"Click!\n");
-	switch (mCmd)
+	if (mCmd!=nullptr)
 	{
-	case CMD_CLOSE:
-		GetParent()->SendMessage(WM_CLOSE ,0, 0); 
-	case CMD_MINSIZE:
-		GetParent()->SendMessage(WM_SYSCOMMAND ,SC_MINIMIZE, 0);
-	default:
-		break;
+		mCmd();
 	}
 	CWnd::OnLButtonUp(nFlags, point);
 }
@@ -140,7 +151,7 @@ void CPNGButton::OnMouseMove(UINT nFlags, CPoint point)
 	{
 		return;
 	}
-	if(!m_is_tracked) 
+	if(!is_tracked) 
 	{ 
 		TRACKMOUSEEVENT   tme; 
 		tme.cbSize		=   sizeof(TRACKMOUSEEVENT); 
@@ -148,7 +159,7 @@ void CPNGButton::OnMouseMove(UINT nFlags, CPoint point)
 		tme.hwndTrack   =   GetSafeHwnd(); 
 		tme.dwHoverTime	=   80; 
 		_TrackMouseEvent(&tme);  
-		m_is_tracked   =   true;
+		is_tracked   =   true;
 		mouse_in_flag=true;
 		//OnMouseHover(nFlags,point);
 	}
@@ -166,10 +177,3 @@ void CPNGButton::OnLButtonDown(UINT nFlags, CPoint point)
 	CBaseControl::OnLButtonDown(nFlags, point);
 }
 
-
-//void CPNGButton::OnMouseHover(UINT nFlags, CPoint point)
-//{
-//	// TODO: 在此添加消息处理程序代码和/或调用默认值
-//
-//	CBaseControl::OnMouseHover(nFlags, point);
-//}

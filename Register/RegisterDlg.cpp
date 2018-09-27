@@ -71,6 +71,7 @@ BEGIN_MESSAGE_MAP(CRegisterDlg, CDialogEx)
 	ON_WM_MOUSEMOVE()
 	ON_WM_MOVE()
 	ON_WM_SYSCOMMAND()
+	ON_WM_MOVING()
 END_MESSAGE_MAP()
 
 
@@ -147,9 +148,6 @@ void CRegisterDlg::OnPaint()
 		gBuf->DrawImage(sys.back,0,0);
 		gBuf->DrawImage(sys.mask,0,0);
 		mMediator.ShowControl(gBuf);
-		
-		RectF layoutRect(0.0f, 0.0f, 200.0f, 50.0f);
-		gBuf->DrawString(L"Sample Text",-1,sys.font,layoutRect,&sys.format,sys.blackBrush);
 		graphics.DrawImage(&bmp,0,0);
 		::ReleaseDC(m_hWnd,hdc);
 		//CDialogEx::OnPaint();
@@ -201,7 +199,6 @@ void CRegisterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		PostMessage(WM_NCLBUTTONDOWN,
 		HTCAPTION,
 		MAKELPARAM(point.x, point.y));
-		mMediator.SwichControl(false);
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 
@@ -217,7 +214,6 @@ void CRegisterDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	is_in_drag=false;
-	mMediator.SwichControl(true);
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
 
@@ -231,6 +227,13 @@ void CRegisterDlg::OnMove(int x, int y)
 	// TODO: 在此处添加消息处理程序代码
 }
 
+void CRegisterDlg::OnMoving(UINT fwSide, LPRECT pRect)
+{
+	CDialogEx::OnMoving(fwSide, pRect);
+	mMediator.SwichControl(false);
+	// TODO: 在此处添加消息处理程序代码
+}
+
 
 void CRegisterDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
@@ -238,3 +241,5 @@ void CRegisterDlg::OnSysCommand(UINT nID, LPARAM lParam)
 
 	CDialogEx::OnSysCommand(nID, lParam);
 }
+
+
