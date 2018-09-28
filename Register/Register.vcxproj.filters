@@ -28,6 +28,9 @@
     <Filter Include="BaseControl">
       <UniqueIdentifier>{591f32f6-be26-4b60-ade4-fa88e314c04c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Text">
+      <UniqueIdentifier>{ba92635b-af07-42a0-81fd-c1b5bfa35839}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -57,14 +60,20 @@
     <ClInclude Include="Mediator\Mediator.h">
       <Filter>Mediator</Filter>
     </ClInclude>
-    <ClInclude Include="PictureFrame.h">
-      <Filter>PictureFrame</Filter>
-    </ClInclude>
     <ClInclude Include="BaseControl\BaseControl.h">
       <Filter>BaseControl</Filter>
     </ClInclude>
-    <ClInclude Include="TextButton.h">
+    <ClInclude Include="Text.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="Button\TextButton.h">
       <Filter>Button</Filter>
+    </ClInclude>
+    <ClInclude Include="PictureFrame\PictureFrame.h">
+      <Filter>PictureFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="EditEX.h">
+      <Filter>Text</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -86,14 +95,20 @@
     <ClCompile Include="Mediator\Mediator.cpp">
       <Filter>Mediator</Filter>
     </ClCompile>
-    <ClCompile Include="PictureFrame.cpp">
-      <Filter>PictureFrame</Filter>
-    </ClCompile>
     <ClCompile Include="BaseControl\BaseControl.cpp">
       <Filter>BaseControl</Filter>
     </ClCompile>
-    <ClCompile Include="TextButton.cpp">
+    <ClCompile Include="Text.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="Button\TextButton.cpp">
       <Filter>Button</Filter>
+    </ClCompile>
+    <ClCompile Include="PictureFrame\PictureFrame.cpp">
+      <Filter>PictureFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="EditEX.cpp">
+      <Filter>Text</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

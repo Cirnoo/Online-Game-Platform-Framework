@@ -12,58 +12,36 @@ IMPLEMENT_DYNAMIC(CTextButton, CWnd)
 
 CTextButton::CTextButton()
 {
-	use_button=false;
+	ClickDown(true);
 }
 
 CTextButton::~CTextButton()
 {
-	delete[] mStr;
-}
-
-
-BOOL CTextButton::
-	Create(Rect rect,CStringW str,Gdiplus::Font * font,
-						 Gdiplus::Color color/*=Gdiplus::Color::Black */,
-						 StringAlignment format/*=StringAlignmentCenter*/)
-{
-	mRect=rect;
-	mRectF=RectFTransform(rect);
-	mFont=font;
-	mBuf=str;
-	mStr=mBuf.GetBuffer();
-	mFormat=format;
-	mColor=color;
-	str_rect=RectF(rect.GetLeft(),rect.GetTop()+font->GetSize()/4,rect.Width,rect.Height);
-	return TRUE;
 }
 
 void CTextButton::Show(Graphics* & g)
 {
-	if (use_button)
+	CPNGButton::Show(g);
+	auto t_rect=mText.GetRect();
+	if (button_down_flag)
 	{
-		mButton.Show(g);
+		t_rect.Offset(1,1);
 	}
-	SolidBrush brush(mColor);
-	StringFormat format;
-	format.SetAlignment(mFormat);
-	g->DrawString(mStr,-1,mFont,str_rect,&format,&brush);
+	mText.Show(g,t_rect);
 }
 
-void CTextButton::SetButton(UINT nID,CWnd * pParentWnd,Gdiplus::Image* BG,Gdiplus::Image* _hoverBg,Gdiplus::Image* click_bg)
+void CTextButton::SetText(CStringW str,Gdiplus::Font * font, Gdiplus::Color color/*=Gdiplus::Color::Black */, StringAlignment format/*=StringAlignmentCenter*/)
 {
-	use_button=true;
-	mButton.Create(mRect,GetParent(),nID,BG,_hoverBg,click_bg);
+	Rect rec=Rect(mRect.GetLeft(),mRect.GetTop()+font->GetSize()/4,mRect.Width,mRect.Height);
+	mText.Create(rec,str,font,color,format);
 }
-
-void CTextButton::SetButton(UINT nID,CWnd * pParentWnd,std::vector<Image*>& bg)
-{
-	use_button=true;
-	mButton.Create(mRect,pParentWnd,nID,bg);
-}
-
 
 
 BEGIN_MESSAGE_MAP(CTextButton, CWnd)
+	ON_WM_MOUSELEAVE()
+	ON_WM_LBUTTONUP()
+	ON_WM_MOUSEMOVE()
+	ON_WM_LBUTTONDOWN()
 END_MESSAGE_MAP()
 
 

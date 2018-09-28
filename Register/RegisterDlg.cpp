@@ -7,6 +7,7 @@
 #include "RegisterDlg.h"
 #include "afxdialogex.h"
 #include "Sys.h"
+#include "PictureFrame.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -32,6 +33,9 @@ protected:
 
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
 {
+	auto rec=Rect(16-2,139,87+2,87+2);
+	auto pControlBase = new CPictureFrame;
+	pControlBase->Create(rec,this,ID_HEAD_BK,sys.head_bk);
 }
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
@@ -50,7 +54,6 @@ CRegisterDlg::CRegisterDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CRegisterDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	is_in_drag=false;
 }
 
 void CRegisterDlg::DoDataExchange(CDataExchange* pDX)
@@ -64,14 +67,13 @@ BEGIN_MESSAGE_MAP(CRegisterDlg, CDialogEx)
 	ON_WM_QUERYDRAGICON()
 	ON_WM_CLOSE()
 	ON_WM_SIZE()
-//	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_ERASEBKGND()
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
-	ON_WM_MOVE()
 	ON_WM_SYSCOMMAND()
 	ON_WM_MOVING()
+	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
 
@@ -110,6 +112,9 @@ BOOL CRegisterDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 	
+	temp=new CButton();
+	temp->Create(_T("Start"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,	CRect(0,0,69,22), this, 10100);
+	temp->ShowWindow(true);
 	return TRUE;
 }
 
@@ -150,6 +155,7 @@ void CRegisterDlg::OnPaint()
 		mMediator.ShowControl(gBuf);
 		graphics.DrawImage(&bmp,0,0);
 		::ReleaseDC(m_hWnd,hdc);
+		temp->UpdateWindow();
 		//CDialogEx::OnPaint();
 	}
 	
@@ -213,19 +219,12 @@ BOOL CRegisterDlg::OnEraseBkgnd(CDC* pDC)
 void CRegisterDlg::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	is_in_drag=false;
+	mMediator.SwichControl(true);
 	CDialogEx::OnLButtonUp(nFlags, point);
 }
 
 
 
-
-void CRegisterDlg::OnMove(int x, int y)
-{
-	CDialogEx::OnMove(x, y);
-	mMediator.SwichControl(true);
-	// TODO: 在此处添加消息处理程序代码
-}
 
 void CRegisterDlg::OnMoving(UINT fwSide, LPRECT pRect)
 {
@@ -243,3 +242,15 @@ void CRegisterDlg::OnSysCommand(UINT nID, LPARAM lParam)
 }
 
 
+
+
+void CRegisterDlg::OnMouseMove(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (mMediator.GetTask()==true)
+	{
+		return ;
+	}
+	mMediator.SwichControl(true);
+	CDialogEx::OnMouseMove(nFlags, point);
+}

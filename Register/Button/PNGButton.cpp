@@ -1,13 +1,11 @@
 #include "stdAfx.h"
+#include "afxwin.h"
 #include "PNGButton.h"
 #include "Resource.h"
 #include "Sys.h"
 const UINT TIMER_CONTROL =1; 
 
-enum ButtonBg
-{
-	normal_bg,hover_bg,click_bg
-};
+
 
 CPNGButton::CPNGButton(void) { 
 	this->is_checked=false;
@@ -17,10 +15,13 @@ CPNGButton::CPNGButton(void) {
 	button_down_flag=false;
 	vec_bg.resize(3);
 	mCmd=nullptr;
+	click_move=false;
 } 
 CPNGButton::~CPNGButton(void) { }
+
 IMPLEMENT_DYNCREATE(CPNGButton, CWnd)  
-	BEGIN_MESSAGE_MAP(CPNGButton, CWnd)  
+
+BEGIN_MESSAGE_MAP(CPNGButton, CWnd)  
 		//ON_WM_MOUSEHOVER()
 		ON_WM_MOUSELEAVE()
 		ON_WM_LBUTTONUP()
@@ -39,7 +40,7 @@ BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, Gdiplus::Image* BG
 	vec_bg[hover_bg]=_hoverBg;
 	vec_bg[click_bg]=_click_bg;
 	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(rect),pParentWnd, nID, NULL);
-	ModifyStyleEx(0, WS_EX_TRANSPARENT); 
+	ModifyStyleEx(0, WS_EX_TRANSPARENT);
 	return OK;
 }
 
@@ -59,6 +60,13 @@ void CPNGButton::SwichControl(bool flag)
 }
 
 
+
+
+void CPNGButton::ClickDown(bool flag)
+{
+	click_move=flag;
+}
+
 void CPNGButton::SetCmd(std::function<void()> cmd)
 {
 	mCmd=std::move(cmd);
@@ -73,7 +81,12 @@ void CPNGButton::Show(Graphics* & g)
 {
 	if (button_down_flag)
 	{
-		g->DrawImage(vec_bg[click_bg],mRect);
+		auto t_rec=mRect;
+		if (click_move)
+		{
+			t_rec.Offset(1,1);
+		}
+		g->DrawImage(vec_bg[click_bg],t_rec);
 	}
 	else if(is_tracked)
 	{

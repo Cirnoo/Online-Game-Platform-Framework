@@ -1,10 +1,15 @@
 #pragma once
-#include "afxwin.h"
+
 #include "BaseControl.h"
 #include <vector> 
 #include <functional>
+
 typedef void (*CmdFun)();
 
+enum ButtonBg
+{
+	normal_bg,hover_bg,click_bg
+};
 class CPNGButton : public CBaseControl
 {
 	
@@ -18,8 +23,7 @@ public:
 	BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID,
 		std::vector<Image*> &);
 	virtual void SwichControl(bool);
-
-	
+	void ClickDown(bool flag);
 protected:
 	DECLARE_MESSAGE_MAP()  
 	std::vector<Image *> vec_bg;
@@ -28,6 +32,7 @@ protected:
 	bool is_checked;
 	bool task_flag;
 	bool button_down_flag;
+	bool click_move;
 	std::function<void()> mCmd;
 	
 public:

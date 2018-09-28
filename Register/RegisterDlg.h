@@ -4,6 +4,7 @@
 
 #pragma once
 #include "Mediator.h"
+
 // CRegisterDlg ¶Ô»°¿ò
 class CRegisterDlg : public CDialogEx
 {
@@ -35,7 +36,6 @@ public:
 public:
 	int mWidth;
 	int mHeight;
-	bool is_in_drag;
 private:
 	std::vector<CButton *> vt_vec; 
 	CWinThread * thread;
@@ -45,7 +45,8 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
-	afx_msg void OnMove(int x, int y);
 	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnMoving(UINT fwSide, LPRECT pRect);
+	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
+	CButton * temp;
 };

@@ -24,6 +24,7 @@ public:
 	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default;
 	Gdiplus::FontFamily * fontfamily;
 	Gdiplus::Font *font;
+	CFont * cfont;
 	unsigned long  gdiplusToken;
 };
 
@@ -37,6 +38,8 @@ pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height);
 
 CRect RectTransform(Rect rect);
 RectF RectFTransform(Rect rect);
+
+
 void ResizeRect(Rect& rec,int val);
 
 WCHAR * multiByteToWideChar(const CString pKey);

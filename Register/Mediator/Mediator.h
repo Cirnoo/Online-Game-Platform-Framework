@@ -1,6 +1,7 @@
 #pragma once
-#include "BaseControl.h"
-#include "Sys.h"
+
+class CBaseControl;
+
 class Mediator
 {
 public:
@@ -9,7 +10,9 @@ public:
 	void InitControl(CWnd * pParentWnd);
 	void ShowControl(Graphics* &);
 	void SwichControl(bool flag);
+	bool GetTask();
 private:
+	bool task_flag;
 	std::vector<CBaseControl *> vec_control;
 	
 };
