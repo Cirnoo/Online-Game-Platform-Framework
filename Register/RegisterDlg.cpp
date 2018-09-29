@@ -69,10 +69,7 @@ BEGIN_MESSAGE_MAP(CRegisterDlg, CDialogEx)
 	ON_WM_SIZE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_ERASEBKGND()
-	ON_WM_LBUTTONUP()
-	ON_WM_MOUSEMOVE()
 	ON_WM_SYSCOMMAND()
-	ON_WM_MOVING()
 	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
 
@@ -155,7 +152,6 @@ void CRegisterDlg::OnPaint()
 		mMediator.ShowControl(gBuf);
 		graphics.DrawImage(&bmp,0,0);
 		::ReleaseDC(m_hWnd,hdc);
-		temp->UpdateWindow();
 		//CDialogEx::OnPaint();
 	}
 	
@@ -216,22 +212,6 @@ BOOL CRegisterDlg::OnEraseBkgnd(CDC* pDC)
 }
 
 
-void CRegisterDlg::OnLButtonUp(UINT nFlags, CPoint point)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	mMediator.SwichControl(true);
-	CDialogEx::OnLButtonUp(nFlags, point);
-}
-
-
-
-
-void CRegisterDlg::OnMoving(UINT fwSide, LPRECT pRect)
-{
-	CDialogEx::OnMoving(fwSide, pRect);
-	mMediator.SwichControl(false);
-	// TODO: 在此处添加消息处理程序代码
-}
 
 
 void CRegisterDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -244,13 +224,4 @@ void CRegisterDlg::OnSysCommand(UINT nID, LPARAM lParam)
 
 
 
-void CRegisterDlg::OnMouseMove(UINT nFlags, CPoint point)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (mMediator.GetTask()==true)
-	{
-		return ;
-	}
-	mMediator.SwichControl(true);
-	CDialogEx::OnMouseMove(nFlags, point);
-}
+

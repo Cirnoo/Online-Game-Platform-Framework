@@ -9,7 +9,6 @@ public:
 	~Mediator();
 	void InitControl(CWnd * pParentWnd);
 	void ShowControl(Graphics* &);
-	void SwichControl(bool flag);
 	bool GetTask();
 private:
 	bool task_flag;

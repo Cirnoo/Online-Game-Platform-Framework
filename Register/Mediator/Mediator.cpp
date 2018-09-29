@@ -91,14 +91,6 @@ void Mediator::ShowControl(Graphics* & p)
 	}
 }
 
-void Mediator::SwichControl(bool flag)
-{
-	for (auto i:vec_control)
-	{
-		i->SwichControl(flag);
-	}
-	task_flag=flag;
-}
 
 bool Mediator::GetTask()
 {
