@@ -24,11 +24,11 @@ void CEditEX::Show(Graphics* & g)
 {
 	if(is_tracked)
 	{
-		g->DrawImage(vec_bg[hover_bg],mRect); 
+		g->DrawImage(vec_bg[HOVER],mRect); 
 	}
 	else
 	{
-		g->DrawImage(vec_bg[normal_bg],mRect); 
+		g->DrawImage(vec_bg[NORMAL],mRect); 
 	}
 }
 

@@ -2,6 +2,10 @@
 #define CBASE
 #include <vector> 
 #include <functional>
+enum ButtonState
+{
+	NORMAL,HOVER,CHECK,DISABLE,HOVER_CHECK,DISABLE_CHECK
+};
 class CBaseControl : public CWnd
 {
 	DECLARE_DYNAMIC(CBaseControl)
@@ -13,14 +17,15 @@ public:
 	virtual void Show(Graphics* & g)=0;
 	void SetCmd(std::function<void()> cmd );
 	void SetRect(Rect rect);
+	void SetImg(std::vector<Image*> & _bg);
 protected:
 	void VarInit();
 	Rect mRect;
 	std::vector<Image *> vec_bg;
 	bool is_tracked;
 	bool is_checked;
-	bool button_down_flag;
-	bool click_move;
+	bool is_button_down;
+	bool is_click_move;
 	std::function<void()> mCmd;
 	virtual void PaintParent();
 	DECLARE_MESSAGE_MAP()

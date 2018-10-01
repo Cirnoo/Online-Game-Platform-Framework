@@ -23,7 +23,7 @@ void CTextButton::Show(Graphics* & g)
 {
 	CPNGButton::Show(g);
 	auto t_rect=mText.GetRect();
-	if (button_down_flag)
+	if (is_button_down)
 	{
 		t_rect.Offset(1,1);
 	}

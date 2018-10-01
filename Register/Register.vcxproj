@@ -106,6 +106,7 @@
     <ClInclude Include="BaseControl\BaseControl.h" />
     <ClInclude Include="Button\PNGButton.h" />
     <ClInclude Include="Button\TextButton.h" />
+    <ClInclude Include="CheckBox.h" />
     <ClInclude Include="EditEX.h" />
     <ClInclude Include="Mediator\Mediator.h" />
     <ClInclude Include="PictureFrame\PictureFrame.h" />
@@ -121,6 +122,7 @@
     <ClCompile Include="BaseControl\BaseControl.cpp" />
     <ClCompile Include="Button\PNGButton.cpp" />
     <ClCompile Include="Button\TextButton.cpp" />
+    <ClCompile Include="CheckBox.cpp" />
     <ClCompile Include="EditEX.cpp" />
     <ClCompile Include="Mediator\Mediator.cpp" />
     <ClCompile Include="PictureFrame\PictureFrame.cpp" />

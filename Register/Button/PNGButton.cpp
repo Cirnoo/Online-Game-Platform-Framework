@@ -28,9 +28,9 @@ BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, Gdiplus::Image* BG
 	LPCTSTR lpszClassName=AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW ,  AfxGetApp()->LoadStandardCursor(IDC_ARROW), (HBRUSH)GetStockObject(TRANSPARENT), NULL) ;   
 	SetRect(rect);
 	vec_bg.resize(3);
-	vec_bg[normal_bg]=BG;
-	vec_bg[hover_bg]=_hoverBg;
-	vec_bg[click_bg]=_click_bg;
+	vec_bg[NORMAL]=BG;
+	vec_bg[HOVER]=_hoverBg;
+	vec_bg[CHECK]=_click_bg;
 	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(rect),pParentWnd, nID, NULL);
 	ModifyStyleEx(0, WS_EX_TRANSPARENT);
 	return OK;
@@ -49,29 +49,30 @@ BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, std::vector<Image*
 
 
 
+
 void CPNGButton::ClickDown(bool flag)
 {
-	click_move=flag;
+	is_click_move=flag;
 }
 
 void CPNGButton::Show(Graphics* & g)
 {
-	if (button_down_flag)
+	if (is_button_down)
 	{
 		auto t_rec=mRect;
-		if (click_move)
+		if (is_click_move)
 		{
 			t_rec.Offset(1,1);
 		}
-		g->DrawImage(vec_bg[click_bg],t_rec);
+		g->DrawImage(vec_bg[CHECK],t_rec);
 	}
 	else if(is_tracked)
 	{
-		g->DrawImage(vec_bg[hover_bg],mRect); 
+		g->DrawImage(vec_bg[HOVER],mRect); 
 	}
 	else
 	{
-		g->DrawImage(vec_bg[normal_bg],mRect); 
+		g->DrawImage(vec_bg[NORMAL],mRect); 
 	}
 }
 

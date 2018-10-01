@@ -14,6 +14,7 @@ CBaseControl::CBaseControl()
 {
 	VarInit();
 	mCmd=nullptr;
+	
 }
 
 CBaseControl::~CBaseControl()
@@ -26,12 +27,13 @@ void CBaseControl::VarInit()
 {
 	is_checked=false;
 	is_tracked	=	false; 
-	button_down_flag=false;
-	click_move=false;
+	is_button_down=false;
+	is_click_move=false;
 }
 
 void CBaseControl::PaintParent()
 {
+	return;
 	CRect   rect;
 	GetWindowRect(&rect); 
 	GetParent()-> ScreenToClient(&rect); 
@@ -55,19 +57,25 @@ void CBaseControl::SetRect(Rect rect)
 	mRect=rect;
 }
 
+void CBaseControl::SetImg(std::vector<Image*> & _bg)
+{
+	vec_bg=_bg;
+}
+
+
 // CBaseControl 消息处理程序
 
 
 void CBaseControl::OnMouseLeave()
 {    
 
-	if (button_down_flag)
+	if (is_button_down)
 	{
-		button_down_flag=false;
+		is_button_down=false;
 	}
 	is_tracked	=   false;  
-	PaintParent();
-	GetParent()->UpdateWindow(); 
+	//PaintParent();
+	//GetParent()->UpdateWindow(); 
 	//TRACE(L"OnMouseLeave\r\n");
 	CWnd::OnMouseLeave();
 }
@@ -76,11 +84,11 @@ void CBaseControl::OnMouseLeave()
 void CBaseControl::OnLButtonUp(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (!button_down_flag)
+	if (!is_button_down)
 	{
 		return;
 	}
-	button_down_flag=false;
+	is_button_down=false;
 	TRACE(L"Click!\n");
 	if (mCmd!=nullptr)
 	{
@@ -114,9 +122,8 @@ void CBaseControl::OnMouseMove(UINT nFlags, CPoint point)
 void CBaseControl::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	button_down_flag=true;
-	PaintParent();
-	GetParent()->UpdateWindow(); 
+	is_button_down=true;
+	//PaintParent();
 	CWnd::OnLButtonDown(nFlags, point);
 }
 

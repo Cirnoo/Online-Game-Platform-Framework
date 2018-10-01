@@ -1,6 +1,6 @@
 #pragma once
 #include "PNGButton.h"
-#include <vector>
+#include "Text.h"
 // CEditEX
 
 class CEditEX : public CPNGButton
@@ -15,6 +15,11 @@ public:
 	
 protected:
 	DECLARE_MESSAGE_MAP()
+	void ShowEdit();
+	void HideEdit();
+	bool is_password;
+	CEdit * mEdit;
+	CText mText;
 };
 
 

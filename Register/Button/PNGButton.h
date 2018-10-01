@@ -6,10 +6,7 @@
 
 typedef void (*CmdFun)();
 
-enum ButtonBg
-{
-	normal_bg,hover_bg,click_bg
-};
+
 class CPNGButton : public CBaseControl
 {
 	
@@ -23,6 +20,7 @@ public:
 	BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID,
 		std::vector<Image*> &);
 	void ClickDown(bool flag);
+
 protected:
 	DECLARE_MESSAGE_MAP()  
 public:

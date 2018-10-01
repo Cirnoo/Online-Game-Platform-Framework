@@ -19,9 +19,6 @@
     <Filter Include="Resourse">
       <UniqueIdentifier>{f396d58a-bd23-4ff8-b5cf-8b5d7bce7aee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Mediator">
-      <UniqueIdentifier>{a8f1d289-3645-4c39-b342-e8844ca447dc}</UniqueIdentifier>
-    </Filter>
     <Filter Include="PictureFrame">
       <UniqueIdentifier>{2f59ad1f-1b99-4ff4-9271-c1c305aa4f56}</UniqueIdentifier>
     </Filter>
@@ -30,6 +27,12 @@
     </Filter>
     <Filter Include="Text">
       <UniqueIdentifier>{ba92635b-af07-42a0-81fd-c1b5bfa35839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Mediator">
+      <UniqueIdentifier>{a8f1d289-3645-4c39-b342-e8844ca447dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="CheckBox">
+      <UniqueIdentifier>{b99a2a28-d217-49de-bb3a-52f79aeeb7b3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -75,6 +78,9 @@
     <ClInclude Include="EditEX.h">
       <Filter>Text</Filter>
     </ClInclude>
+    <ClInclude Include="CheckBox.h">
+      <Filter>CheckBox</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Register.cpp">
@@ -109,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="EditEX.cpp">
       <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckBox.cpp">
+      <Filter>CheckBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
