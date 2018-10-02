@@ -254,5 +254,8 @@
     <Image Include="res\game\minus.png">
       <Filter>Gloabal\资源文件</Filter>
     </Image>
+    <Image Include="res\game\PokerCards.png">
+      <Filter>Gloabal\资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

@@ -177,6 +177,7 @@
     <Image Include="res\game\close.png" />
     <Image Include="res\game\game_bg.png" />
     <Image Include="res\game\minus.png" />
+    <Image Include="res\game\PokerCards.png" />
     <Image Include="res\game_bg.png" />
     <Image Include="res\head_bk.png" />
     <Image Include="res\mask.png" />

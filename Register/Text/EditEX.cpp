@@ -104,7 +104,7 @@ void CEditEX::ControlRepaint()
 {
 	//CRect   rect=RectTransform(mRect);
 	//GetWindowRect(&rect);
-	CRect   rect=RectTransform(mRect);
+	CRect   rect=Rect2CRect(mRect);
 	GetWindowRect(&rect); 
 	GetParent()-> ScreenToClient(&rect); 
 	GetParent()-> InvalidateRect(&rect);

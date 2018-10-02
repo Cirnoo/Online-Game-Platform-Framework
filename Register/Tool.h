@@ -14,6 +14,7 @@ public:
 private:
 	CTool(void);
 	CMySocket mysocket;
+	void GetRoomInfo(const DATA_PACKAGE & pack);
 private:
 	static CTool* tool;//Singleton pattern
 };

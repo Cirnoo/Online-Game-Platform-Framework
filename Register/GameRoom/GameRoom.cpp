@@ -103,6 +103,10 @@ void CGameRoom::OnNMDblclkRoomList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	auto room_master=m_room_list.GetItemText(pNMItemActivate->iItem,1);
-	//this->PostMessage(WM_CLOSE);
-	exit(0);
+	theApp.sys.room.name=room_master;  //房主名字
+	theApp.sys.room.mate_arr[0]=theApp.sys.user.name.GetStr(); //用户名字
+	DATA_PACKAGE pack;
+	pack.ms_type=MS_TYPE::ENTER_ROOM;
+	theApp.tools.DealData(pack);
+	EndDialog(WM_ENTER_ROOM);
 }

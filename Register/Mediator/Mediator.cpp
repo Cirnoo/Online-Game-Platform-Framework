@@ -71,7 +71,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	pPNGButton->SetCmd
 		([=]()
 	{
-		pParentWnd->SendMessage(WM_CLOSE ,0, 0);
+		pParentWnd->PostMessageW(WM_CLOSE ,0, 0);
 	});
 	AddTheControl
 

@@ -13,7 +13,8 @@
 // CRegisterApp:
 // 有关此类的实现，请参阅 Register.cpp
 //
-
+class Global;
+class CTool;
 class CRegisterApp : public CWinApp
 {
 public:
@@ -24,7 +25,8 @@ public:
 	virtual BOOL InitInstance();
 // 实现
 protected:
-	
+	int CreatGameRoom(CWnd* m_pMainWnd);
+	int CreatGameDlg(CWnd* m_pMainWnd);
 public:
 	CTool & tools;
 	Global & sys;

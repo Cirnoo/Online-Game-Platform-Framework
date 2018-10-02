@@ -110,7 +110,7 @@ std::vector<pImage> GetImageGroup(pImage img,int row,int col) //ÐÐÁÐÇÐ¸î
 	{
 		for (int j=0;j<col;j++)
 		{
-			vec.push_back(ResizeImg(CutImage(img,Width*j,Height*i,Width,Height)));
+			vec.push_back(CutImage(img,Width*j,Height*i,Width,Height));
 		}
 	}
 	return vec;
@@ -149,12 +149,12 @@ pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height)
 	return bmPhoto;
 }
 
-CRect RectTransform(Rect rect)
+CRect Rect2CRect(Rect rect)
 {
 	return CRect(rect.GetLeft(),rect.GetTop(),rect.GetLeft()+rect.Width,rect.GetTop()+rect.Height);
 }
 
-RectF RectFTransform(Rect rect)
+RectF Rect2RectF(Rect rect)
 {
 	return RectF(rect.GetLeft(),rect.GetTop(),rect.Width,rect.Height);
 }

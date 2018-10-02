@@ -29,8 +29,10 @@ void CLoginDlg::DoDataExchange(CDataExchange* pDX)
 
 afx_msg LRESULT CLoginDlg::OnLogin(WPARAM wParam, LPARAM lParam)
 {
+	/********************µÇÂ½³É¹¦***********************************/
+	
 	theApp.sys.user=mMediator.GetUserInfo();
-	PostMessage(WM_CLOSE);
+	EndDialog(WM_LOGIN);
 	return 0;
 }
 BEGIN_MESSAGE_MAP(CLoginDlg, CDialogEx)

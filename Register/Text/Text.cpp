@@ -13,7 +13,7 @@ CText::~CText(void)
 
 BOOL CText::Create(Rect rect,CStringW str,Gdiplus::Font * font, Gdiplus::Color color/*=Gdiplus::Color::Black */, StringAlignment format/*=StringAlignmentCenter*/)
 {
-	str_rect=RectFTransform(rect);
+	str_rect=Rect2RectF(rect);
 	mFont=font;
 	SetText(str);
 	mFormat=format;

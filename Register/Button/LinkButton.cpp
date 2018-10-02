@@ -32,7 +32,7 @@ void CLinkButton::SetText(CStringW str,Gdiplus::Font * font, Gdiplus::Color colo
 BOOL CLinkButton::Create(Rect rect,CWnd * pParentWnd,UINT nID)
 {
 	SetRect(rect);
-	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE|WS_CLIPCHILDREN,RectTransform(rect),pParentWnd, nID, NULL);
+	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE|WS_CLIPCHILDREN,Rect2CRect(rect),pParentWnd, nID, NULL);
 	ModifyStyleEx(0, WS_EX_TRANSPARENT);
 
 	return OK;

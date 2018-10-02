@@ -42,6 +42,16 @@ CTool::CTool(void)
 }
 
 
+void CTool::GetRoomInfo(const DATA_PACKAGE & pack)
+{
+/////////////////////////获取另外两个玩家名字//////////////////////////////////////////////
+	typedef USER_BUF Name[2];
+	auto & mate=theApp.sys.room.mate_arr;
+	Name * name=(Name *)&pack.buf;
+	mate[1]=name[0]->GetStr();
+	mate[2]=name[1]->GetStr();
+}
+
 CTool::~CTool(void)
 {
 }
@@ -59,6 +69,7 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 	case MS_TYPE::LOGIN_RQ:
 	case MS_TYPE::GET_ROOM_LIST:
 	case MS_TYPE::CREATE_ROOM:
+	case MS_TYPE::ENTER_ROOM:
 		if(mysocket.SendMS(pack)<0)
 		{
 			return false;
@@ -81,6 +92,8 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 		break;
 	case MS_TYPE::UPDATE_ROOM:
 		AfxGetMainWnd()->SendMessageW(WM_UPDATE_ROOM);
+	case MS_TYPE::ENTER_ROOM_RE:
+
 	default:
 		SetEvent(mysocket.mHeartBeat);
 		break;

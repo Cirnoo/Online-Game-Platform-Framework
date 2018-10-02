@@ -29,6 +29,7 @@ enum class MS_TYPE :unsigned char
 	GET_ROOM_LIST,
 	CREATE_ROOM,
 	ENTER_ROOM,
+	ENTER_ROOM_RE,
 	LEAVE_ROOM,
 	UPDATE_ROOM,
 	ADD_PLAYER,
@@ -46,17 +47,25 @@ enum class CardType : unsigned char
 };
 enum class PokerPoints : unsigned char
 {
-	Three=3,Four,Five,Six,Seven,Eight,Nine,Ten,jack,Queen,King,Ace,Two,Black_Joker,Red_Joker 
+	Three=0,Four,Five,Six,Seven,Eight,Nine,Ten,jack,Queen,King,Ace,Two,Black_Joker,Red_Joker 
 };
 struct Poker
 {
 	CardType c_type;
 	PokerPoints point;
+	bool hide;
+	bool check;
 	Poker(){}
 	Poker(CardType t,PokerPoints p)
 	{
 		c_type=t;
 		point=p;
+		hide=false;
+		check=false;
+	}
+	char toNum()
+	{
+		return c_type==CardType::Joker?52-13+(char)point:13*(char)c_type+(char)point;
 	}
 };
 struct Cards
@@ -93,7 +102,7 @@ struct USER_BUF
 	{
 		str.copy(buf, str.size(), 0);
 	}
-	wstring GetStr()
+	wstring GetStr() const
 	{
 		wstring str=wstring(buf);
 		return str;
@@ -124,10 +133,54 @@ struct USER_INFO
 		name=n;password=p;
 	}
 };
+struct CLIENT_INFO
+{
+	wstring username;
+	string ip;
+	unsigned short port;
+};
+
 struct ROOM_LIST_INFO
 {
 	USER_BUF master,name;
 	unsigned char num;
+};
+
+class QTcpSocket;
+struct ROOM_INFO
+{
+	wstring mate_arr[3],name;
+	unsigned char num;
+	QTcpSocket * socket_arr[3];
+	ROOM_INFO()
+	{
+		for(int i=0;i<3;i++)
+		{
+			socket_arr[i]=nullptr;
+		}
+	}
+	bool AddPlayer( QTcpSocket * _socket,const ROOM_LIST_INFO & info)
+	{
+		for(int i=0;i<3;i++)
+		{
+			if(socket_arr[i]==nullptr)
+			{
+				if(i==0)
+				{
+					name=info.name.GetStr();
+					num=1;
+				}
+				else
+				{
+					num++;
+				}
+				mate_arr[i]=info.master.GetStr();
+				socket_arr[i]=_socket;
+				return true;
+			}
+		}
+		return false;
+	}
 };
 const int MAX_BUF_SIZE=sizeof(ROOM_LIST_INFO);
 struct DATA_BUF
