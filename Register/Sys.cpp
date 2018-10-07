@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Sys.h"
 
-#define LODE(a,b) a=ReSizeImg(Gdiplus::Image::FromFile(_T(b))) 
+#define LODE(a,b) a=ResizeImg(Gdiplus::Image::FromFile(_T(b))); res.push_back(a); 
 #define INIT_RES(x) pImage x=NULL; 
 
 //全局对象
@@ -44,7 +44,13 @@ Global::Global()
 
 Global::~Global()
 {
-
+	for (auto i:res)
+	{
+		delete i;
+	}
+	delete cfont;
+	delete font;
+	delete fontfamily;
 	GdiplusShutdown(gdiplusToken);
 }
 
@@ -57,7 +63,7 @@ void DrawImage(CDC dc,pImage img,int x,int y)
 	return ;
 }
 
-pImage ReSizeImg(pImage img) //缩放
+pImage ResizeImg(pImage img) //缩放
 {
 	pImage newImg=img->GetThumbnailImage(img->GetWidth()*RESOLUTION,img->GetHeight()*RESOLUTION);
 	delete img;

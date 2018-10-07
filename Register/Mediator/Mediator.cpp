@@ -13,6 +13,10 @@ Mediator::Mediator()
 
 Mediator::~Mediator()
 {
+	for (auto i:vec_control)
+	{
+		delete i;
+	}
 }
 
 void Mediator::InitControl(CWnd * pParentWnd)
@@ -82,7 +86,12 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	
 	rec=Rect(112,142,191,28);
 	GetControl(CEditEX)
-	pEditEx->Create(rec,pParentWnd,12334,sys.vec_edit);
+	pEditEx->Create(rec,pParentWnd,IDC_EDIT_USER,sys.vec_edit);
+	AddTheControl
+
+	rec=Rect(112,142+34,191,28);
+	GetControl(CEditEX)
+	pEditEx->Create(rec,pParentWnd,IDC_EDIT_KEY,sys.vec_edit);
 	AddTheControl
 }
 

@@ -109,9 +109,6 @@ BOOL CRegisterDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 	
-	temp=new CButton();
-	temp->Create(_T("Start"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,	CRect(0,0,69,22), this, 10100);
-	temp->ShowWindow(true);
 	return TRUE;
 }
 

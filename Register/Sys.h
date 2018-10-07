@@ -8,11 +8,14 @@ const double RESOLUTION = 1;
 const int CMD_MINSIZE = 1;
 const int CMD_CLOSE   = 2;
 
-const int IDC_MIN		=	 10001;
-const int IDC_CLOSE		=	 10002;
-const int IDC_PIC		=	 10003;
-const int ID_HEAD_BK		=	 10004;
-const int IDC_REGISTER  =	 10005;
+const int ID_BASE		 =	  10000;
+const int IDC_MIN		 =	  ID_BASE+1;
+const int IDC_CLOSE		 =	  ID_BASE+2;
+const int IDC_PIC		 =	  ID_BASE+3;
+const int ID_HEAD_BK		 =	  ID_BASE+4;
+const int IDC_REGISTER   =	  ID_BASE+5;
+const int IDC_EDIT_USER  =	  ID_BASE+6;
+const int IDC_EDIT_KEY   =	  ID_BASE+7;
 typedef  Image* pImage;
 
 class Global
@@ -20,18 +23,21 @@ class Global
 public:
 	Global();
 	~Global();
+	
 	pImage back,mask,bt_min,cirno,head_bk;
 	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default,vec_edit;
 	Gdiplus::FontFamily * fontfamily;
 	Gdiplus::Font *font;
 	CFont * cfont;
 	unsigned long  gdiplusToken;
+private:
+	std::vector<pImage> res;
 };
 
 
 
 void DrawImage(CDC ,pImage ,int,int);
-pImage ReSizeImg(pImage img);
+pImage ResizeImg(pImage img);
 std::vector<pImage> GetImageGroup(pImage img,int row,int col);
 std::vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col);
 pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height);

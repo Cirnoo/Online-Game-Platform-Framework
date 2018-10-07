@@ -27,8 +27,10 @@ protected:
 	bool is_button_down;
 	bool is_click_move;
 	std::function<void()> mCmd;
+	virtual void ClickCmd();
 	DECLARE_MESSAGE_MAP()
 	virtual void OnTrack();
+	void PaintParent();
 	afx_msg void OnMouseLeave();
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
