@@ -42,3 +42,8 @@ RectF CText::GetRect()
 {
 	return str_rect;
 }
+
+CStringW CText::GetStr()
+{
+	return mBuf;
+}

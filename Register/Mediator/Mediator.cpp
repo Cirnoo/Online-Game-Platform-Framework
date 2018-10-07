@@ -2,13 +2,13 @@
 #include "Sys.h"
 #include "Mediator.h"
 #include "PictureFrame.h"
-#include "PNGButton.h"
 #include "TextButton.h"
-
-using namespace Gdiplus;
+#include "EditEX.h"
+#include "PNGButton.h"
 Mediator::Mediator()
 {
 	task_flag=true;
+	auto t=Rect(0,0,0,0);
 }
 
 Mediator::~Mediator()
@@ -35,7 +35,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	#define  pPNGButton	    (  (CPNGButton*)      pControlBase  )  
 	#define  pPictureFrame  (  (CPictureFrame*)   pControlBase 	)  
 	#define  pTextButton    (  (CTextButton*)     pControlBase  )  
-		   
+	#define  pEditEx			(  (CEditEX*)     pControlBase  )
 	//min_control
 	c_width=sys.vec_bt_min[0]->GetWidth();
 	c_height=sys.vec_bt_min[0]->GetHeight();
@@ -79,8 +79,11 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	pTextButton->Create(rec,pParentWnd,IDC_REGISTER,sys.vec_bt_default);
 	pTextButton->SetText(L"µÇÂ¼",sys.font);
 	AddTheControl
-
 	
+	rec=Rect(112,142,191,28);
+	GetControl(CEditEX)
+	pEditEx->Create(rec,pParentWnd,12334,sys.vec_edit);
+	AddTheControl
 }
 
 void Mediator::ShowControl(Graphics* & p)

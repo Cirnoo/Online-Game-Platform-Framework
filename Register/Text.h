@@ -10,6 +10,7 @@ public:
 	virtual void Show(Graphics* & g);
 	virtual void Show(Graphics* & g,RectF rec);
 	RectF GetRect();
+	CStringW GetStr();
 protected:
 	RectF str_rect;
 	Gdiplus::Font * mFont;

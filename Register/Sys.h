@@ -21,7 +21,7 @@ public:
 	Global();
 	~Global();
 	pImage back,mask,bt_min,cirno,head_bk;
-	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default;
+	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default,vec_edit;
 	Gdiplus::FontFamily * fontfamily;
 	Gdiplus::Font *font;
 	CFont * cfont;

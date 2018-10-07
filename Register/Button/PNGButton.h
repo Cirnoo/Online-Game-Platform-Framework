@@ -2,10 +2,6 @@
 
 #include "BaseControl.h"
 #include <vector> 
-#include <functional>
-
-typedef void (*CmdFun)();
-
 
 class CPNGButton : public CBaseControl
 {
@@ -13,18 +9,17 @@ class CPNGButton : public CBaseControl
 public:
 	CPNGButton(void);
 	DECLARE_DYNCREATE(CPNGButton)   
-	~CPNGButton(void);
-	
+	virtual ~CPNGButton(void);
+public:	
 	BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID,
 		Gdiplus::Image* BG,Gdiplus::Image* _hoverBg,Gdiplus::Image* _click_bg);
-	BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID,
+	virtual BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID,
 		std::vector<Image*> &);
 	void ClickDown(bool flag);
-
+	virtual void Show(Graphics* & g);
 protected:
 	DECLARE_MESSAGE_MAP()  
 public:
-	void Show(Graphics* & g);
 	void Check(bool check);
 };
 

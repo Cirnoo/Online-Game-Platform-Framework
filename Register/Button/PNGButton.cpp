@@ -33,6 +33,7 @@ BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, Gdiplus::Image* BG
 	vec_bg[CHECK]=_click_bg;
 	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(rect),pParentWnd, nID, NULL);
 	ModifyStyleEx(0, WS_EX_TRANSPARENT);
+	
 	return OK;
 }
 

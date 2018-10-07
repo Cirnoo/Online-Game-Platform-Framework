@@ -31,14 +31,13 @@ void CBaseControl::VarInit()
 	is_click_move=false;
 }
 
-void CBaseControl::PaintParent()
-{
-	return;
-	CRect   rect;
-	GetWindowRect(&rect); 
-	GetParent()-> ScreenToClient(&rect); 
-	GetParent()-> InvalidateRect(&rect);
-}
+//void CBaseControl::PaintParent()
+//{
+//	CRect   rect;
+//	GetWindowRect(&rect); 
+//	GetParent()-> ScreenToClient(&rect); 
+//	GetParent()-> InvalidateRect(&rect);
+//}
 
 BEGIN_MESSAGE_MAP(CBaseControl, CWnd)
 	ON_WM_MOUSELEAVE()
@@ -62,6 +61,11 @@ void CBaseControl::SetImg(std::vector<Image*> & _bg)
 	vec_bg=_bg;
 }
 
+
+void CBaseControl::OnTrack()
+{
+	return;
+}
 
 // CBaseControl 消息处理程序
 
@@ -112,6 +116,7 @@ void CBaseControl::OnMouseMove(UINT nFlags, CPoint point)
 		_TrackMouseEvent(&tme);  
 		VarInit();
 		is_tracked   =   true;
+		OnTrack();
 		//OnMouseHover(nFlags,point);
 	}
 	CWnd::OnMouseMove(nFlags, point);

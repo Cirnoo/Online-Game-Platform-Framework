@@ -12,7 +12,8 @@ public:
 	virtual ~CEditEX();
 public:
 	void Show(Graphics* & g);
-	
+	virtual BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID,
+		std::vector<Image*> &);
 protected:
 	DECLARE_MESSAGE_MAP()
 	void ShowEdit();

@@ -6,9 +6,8 @@
 
 //全局对象
 Global sys;
-using namespace std;
 
-
+using std::vector;
 Global::Global()
 {
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
@@ -18,11 +17,29 @@ Global::Global()
 	LODE(bt_min,"res\\BT_MIN.png");
 	LODE(cirno,"res\\9.png");
 	LODE(head_bk,"res\\head_bk.png");
+	
 	vec_bt_min=GetImageGroup(L"res\\BT_MIN.png",1,4);
 	vec_bt_close=GetImageGroup(L"res\\BT_CLOSE.png",1,4);
 	vec_bt_default=GetImageGroup(L"res\\BT_DEFAULT.png",1,4);
+	vec_edit=GetImageGroup(L"res\\EDIT.png",1,2);
 	fontfamily=new Gdiplus::FontFamily(L"微软雅黑");
 	font=new Gdiplus::Font(fontfamily,12,FontStyleRegular,UnitPixel);
+	cfont=new CFont;
+	cfont->CreateFont(
+		16,							// 字体的高度  
+		0,							// 字体的宽度  
+		0,							// 字体显示的角度
+		0,							// 字体的角度
+		FW_DONTCARE,				// 字体的磅数
+		FALSE,						// 斜体字体
+		FALSE,						// 带下划线的字体
+		0,							// 带删除线的字体
+		GB2312_CHARSET,				// 所需的字符集
+		OUT_DEFAULT_PRECIS,			// 输出的精度
+		CLIP_DEFAULT_PRECIS,		// 裁减的精度
+		DEFAULT_QUALITY,			// 逻辑字体与输出设备的实际
+		DEFAULT_PITCH | FF_SWISS,	// 字体间距和字体集
+		L"宋体");					// 字体名称
 }
 
 Global::~Global()
