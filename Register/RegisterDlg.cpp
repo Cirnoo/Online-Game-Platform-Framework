@@ -68,7 +68,7 @@ BEGIN_MESSAGE_MAP(CRegisterDlg, CDialogEx)
 	ON_WM_CLOSE()
 	ON_WM_SIZE()
 	ON_WM_LBUTTONDOWN()
-	ON_WM_ERASEBKGND()
+	//ON_WM_ERASEBKGND()
 	ON_WM_SYSCOMMAND()
 	ON_WM_MOUSEMOVE()
 END_MESSAGE_MAP()
@@ -78,15 +78,14 @@ END_MESSAGE_MAP()
 
 BOOL CRegisterDlg::OnInitDialog()
 {
+	
 	ModifyStyleEx(WS_EX_CLIENTEDGE, NULL, SWP_DRAWFRAME);
 	mWidth=380*RESOLUTION;
 	mHeight=280*RESOLUTION;
 	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOPMOST, 0, 0,mWidth,mHeight , SWP_SHOWWINDOW | SWP_NOMOVE);
 	CenterWindow();
-
 	// IDM_ABOUTBOX 必须在系统命令范围内。
-
-	mMediator.InitControl(this);
+	mMediator.Create(Rect(0,0,mWidth,mHeight),this,ID_BASE);
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
 
@@ -139,17 +138,8 @@ void CRegisterDlg::OnPaint()
 	else
 	{
 		
-		HDC hdc = ::GetDC(this->m_hWnd);
-		Graphics graphics(hdc);
-		Bitmap bmp(this->mWidth,this->mHeight);
-		Graphics* gBuf=Graphics::FromImage(&bmp);
 		
-		gBuf->DrawImage(sys.back,0,0);
-		gBuf->DrawImage(sys.mask,0,0);
-		mMediator.ShowControl(gBuf);
-		graphics.DrawImage(&bmp,0,0);
-		::ReleaseDC(m_hWnd,hdc);
-		//CDialogEx::OnPaint();
+		CDialogEx::OnPaint();
 	}
 	
 }
@@ -205,7 +195,7 @@ void CRegisterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 BOOL CRegisterDlg::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	return FALSE;
+	return TRUE;
 }
 
 

@@ -5,10 +5,19 @@
 #include "TextButton.h"
 #include "EditEX.h"
 #include "PNGButton.h"
+
+IMPLEMENT_DYNAMIC(Mediator, CWnd)
+	BEGIN_MESSAGE_MAP(Mediator, CWnd)
+		ON_WM_MOUSELEAVE()
+		ON_WM_LBUTTONUP()
+		ON_WM_MOUSEMOVE()
+		ON_WM_LBUTTONDOWN()
+		ON_WM_PAINT()
+	END_MESSAGE_MAP()
+
 Mediator::Mediator()
 {
 	task_flag=true;
-	auto t=Rect(0,0,0,0);
 }
 
 Mediator::~Mediator()
@@ -51,7 +60,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	pPNGButton->SetCmd
 	([=]()
 	{
-		pParentWnd->SendMessage(WM_SYSCOMMAND ,SC_MINIMIZE, 0);
+		AfxGetMainWnd()->SendMessage(WM_SYSCOMMAND ,SC_MINIMIZE, 0);
 	});
 	AddTheControl
 	
@@ -61,7 +70,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	pPNGButton->SetCmd
 		([=]()
 	{
-		pParentWnd->SendMessage(WM_CLOSE ,0, 0);
+		AfxGetMainWnd()->SendMessage(WM_CLOSE ,0, 0);
 	});
 	AddTheControl
 
@@ -109,3 +118,25 @@ bool Mediator::GetTask()
 	return task_flag;
 }
 
+
+
+BOOL Mediator::Create(Rect rect,CWnd * pParentWnd,UINT nID)
+{
+	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(rect),pParentWnd, nID, NULL);
+	ModifyStyleEx(0, WS_EX_TRANSPARENT);
+	InitControl(this);
+	return OK;
+}
+
+void Mediator::OnPaint()
+{
+	HDC hdc = ::GetDC(this->m_hWnd);
+	Graphics graphics(hdc);
+	Bitmap bmp(380,280);
+	Graphics* gBuf=Graphics::FromImage(&bmp);
+	gBuf->DrawImage(sys.back,0,0);
+	gBuf->DrawImage(sys.mask,0,0);
+	ShowControl(gBuf);
+	graphics.DrawImage(&bmp,0,0);
+	::ReleaseDC(m_hWnd,hdc);
+}
