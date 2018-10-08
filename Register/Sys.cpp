@@ -118,6 +118,9 @@ RectF RectFTransform(Rect rect)
 	return RectF(rect.GetLeft(),rect.GetTop(),rect.Width,rect.Height);
 }
 
+
+
+
 void ResizeRect(Rect& rec,int val)
 {
 	rec.X-=val;rec.Y-=val;

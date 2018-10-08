@@ -13,7 +13,7 @@ public:
 public:	
 	BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID,
 		Gdiplus::Image* BG,Gdiplus::Image* _hoverBg,Gdiplus::Image* _click_bg);
-	virtual BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID,
+	virtual BOOL Createx(Rect rect,CWnd * pParentWnd,UINT nID,
 		std::vector<Image*> &);
 	void ClickDown(bool flag);
 	virtual void Show(Graphics* & g);

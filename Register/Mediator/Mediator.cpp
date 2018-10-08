@@ -47,7 +47,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 /**************************************************************************/
 	GetControl(CPNGButton)
 	rec=Rect(mWidth-38-28,0,c_width,c_height);
-	pPNGButton->Create(rec,pParentWnd,IDC_MIN,sys.vec_bt_min);
+	pPNGButton->Createx(rec,pParentWnd,IDC_MIN,sys.vec_bt_min);
 	pPNGButton->SetCmd
 	([=]()
 	{
@@ -57,7 +57,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	
 	rec=Rect(mWidth-38,0,c_width+10,c_height);
 	GetControl(CPNGButton)
-	pPNGButton->Create(rec,pParentWnd,IDC_CLOSE,sys.vec_bt_close);
+	pPNGButton->Createx(rec,pParentWnd,IDC_CLOSE,sys.vec_bt_close);
 	pPNGButton->SetCmd
 		([=]()
 	{
@@ -80,19 +80,22 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	c_height=sys.vec_bt_default[0]->GetHeight();
 	rec=Rect(mWidth-76,mHeight-27,c_width,c_height);
 	GetControl(CTextButton)
-	pTextButton->Create(rec,pParentWnd,IDC_REGISTER,sys.vec_bt_default);
+	pTextButton->Createx(rec,pParentWnd,IDC_REGISTER,sys.vec_bt_default);
 	pTextButton->SetText(L"µÇÂ¼",sys.font);
 	AddTheControl
 	
-	rec=Rect(112,142,191,28);
-	GetControl(CEditEX)
-	pEditEx->Create(rec,pParentWnd,IDC_EDIT_USER,sys.vec_edit);
-	AddTheControl
+		/*rec=Rect(112,142,191,28);
+		GetControl(CEditEX)
+		pEditEx->Createx(rec,pParentWnd,IDC_EDIT_USER,sys.vec_edit);
+		AddTheControl
 
+		rec=Rect(112,142+34,191,28);
+		GetControl(CEditEX)
+		pEditEx->Createx(rec,pParentWnd,IDC_EDIT_KEY,sys.vec_edit);
+		AddTheControl*/
 	rec=Rect(112,142+34,191,28);
-	GetControl(CEditEX)
-	pEditEx->Create(rec,pParentWnd,IDC_EDIT_KEY,sys.vec_edit);
-	AddTheControl
+	my_edit=new CEditEX;
+	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_KEY,sys.vec_edit);
 }
 
 void Mediator::ShowControl(Graphics* & p)
@@ -101,6 +104,7 @@ void Mediator::ShowControl(Graphics* & p)
 	{
 		i->Show(p);
 	}
+	my_edit->Show(p);
 }
 
 

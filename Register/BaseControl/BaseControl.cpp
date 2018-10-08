@@ -34,13 +34,13 @@ void CBaseControl::VarInit()
 	is_click_move=false;
 }
 
-void CBaseControl::PaintParent()
+void CBaseControl::ControlRepaint()
 {
 	CRect   rect;
 	GetWindowRect(&rect); 
 	GetParent()-> ScreenToClient(&rect); 
 	GetParent()-> InvalidateRect(&rect);
-	GetParent()->UpdateWindow(); 
+	//GetParent()->UpdateWindow(); 
 }
 
 BEGIN_MESSAGE_MAP(CBaseControl, CWnd)
@@ -48,6 +48,7 @@ BEGIN_MESSAGE_MAP(CBaseControl, CWnd)
 	ON_WM_LBUTTONUP()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 void CBaseControl::SetCmd(std::function<void()> cmd)
@@ -85,7 +86,7 @@ void CBaseControl::OnMouseLeave()
 
 	VarInit();
 	is_tracked	=   false;  
-	PaintParent();
+	ControlRepaint();
 	//TRACE(L"OnMouseLeave\r\n");
 	CWnd::OnMouseLeave();
 }
@@ -99,7 +100,7 @@ void CBaseControl::OnLButtonUp(UINT nFlags, CPoint point)
 		return;
 	}
 	is_button_down=false;
-	PaintParent();
+	ControlRepaint();
 	TRACE(L"Click!\n");
 	if (mCmd!=nullptr)
 	{
@@ -124,8 +125,7 @@ void CBaseControl::OnMouseMove(UINT nFlags, CPoint point)
 		VarInit();
 		is_tracked   =   true;
 		OnTrack();
-		PaintParent();
-		TRACE("1111");
+		ControlRepaint();
 		//OnMouseHover(nFlags,point);
 	}
 	CWnd::OnMouseMove(nFlags, point);
@@ -137,7 +137,13 @@ void CBaseControl::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	is_button_down=true;
-	PaintParent();
+	ControlRepaint();
 	CWnd::OnLButtonDown(nFlags, point);
 }
 
+
+
+void CBaseControl::OnPaint()
+{
+	CWnd::OnPaint();
+}

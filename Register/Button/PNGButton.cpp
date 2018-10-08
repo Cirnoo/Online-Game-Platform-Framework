@@ -31,18 +31,18 @@ BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, Gdiplus::Image* BG
 	vec_bg[NORMAL]=BG;
 	vec_bg[HOVER]=_hoverBg;
 	vec_bg[CHECK]=_click_bg;
-	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(rect),pParentWnd, nID, NULL);
+	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE|WS_CLIPCHILDREN,RectTransform(rect),pParentWnd, nID, NULL);
 	ModifyStyleEx(0, WS_EX_TRANSPARENT);
 	
 	return OK;
 }
 
-BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, std::vector<Image*>& _bg)
+BOOL CPNGButton::Createx(Rect rect,CWnd * pParentWnd,UINT nID, std::vector<Image*>& _bg)
 {
 	LPCTSTR lpszClassName=AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW ,  AfxGetApp()->LoadStandardCursor(IDC_ARROW), (HBRUSH)GetStockObject(TRANSPARENT), NULL) ;   
 	SetRect(rect);
 	vec_bg=_bg;
-	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(rect),pParentWnd, nID, NULL);
+	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE|WS_CLIPCHILDREN,RectTransform(rect),pParentWnd, nID, NULL);
 	ModifyStyleEx(0, WS_EX_TRANSPARENT); 
 	return OK;
 }

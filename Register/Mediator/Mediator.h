@@ -1,7 +1,7 @@
 #pragma once
 
 class CBaseControl;
-
+class CEditEX;
 class Mediator
 {
 public:
@@ -13,6 +13,6 @@ public:
 private:
 	bool task_flag;
 	std::vector<CBaseControl *> vec_control;
-	
+	CEditEX * my_edit;
 };
 

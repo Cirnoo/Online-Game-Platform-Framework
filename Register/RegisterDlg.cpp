@@ -34,8 +34,6 @@ protected:
 CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
 {
 	auto rec=Rect(16-2,139,87+2,87+2);
-	auto pControlBase = new CPictureFrame;
-	pControlBase->Create(rec,this,ID_HEAD_BK,sys.head_bk);
 }
 
 void CAboutDlg::DoDataExchange(CDataExchange* pDX)
@@ -83,9 +81,9 @@ BOOL CRegisterDlg::OnInitDialog()
 	mHeight=280*RESOLUTION;
 	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOPMOST, 0, 0,mWidth,mHeight , SWP_SHOWWINDOW | SWP_NOMOVE);
 	CenterWindow();
-
+	ModifyStyle(0,WS_CLIPCHILDREN);
 	// IDM_ABOUTBOX 必须在系统命令范围内。
-
+	
 	mMediator.InitControl(this);
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
@@ -149,7 +147,7 @@ void CRegisterDlg::OnPaint()
 		mMediator.ShowControl(gBuf);
 		graphics.DrawImage(&bmp,0,0);
 		::ReleaseDC(m_hWnd,hdc);
-		//CDialogEx::OnPaint();
+		CDialogEx::OnPaint();
 	}
 	
 }

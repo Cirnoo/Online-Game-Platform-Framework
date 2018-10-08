@@ -27,6 +27,7 @@ BOOL CPictureFrame::Create(Rect rc,CWnd * pParentWnd,UINT ControlID,pImage _img)
 	mRect=rc;
 	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE,RectTransform(mRect),pParentWnd, ControlID, NULL);
 	ModifyStyleEx(0, WS_EX_TRANSPARENT); 
+	
 	return OK;
 }
 

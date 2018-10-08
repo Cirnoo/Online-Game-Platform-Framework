@@ -45,7 +45,6 @@ pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height);
 CRect RectTransform(Rect rect);
 RectF RectFTransform(Rect rect);
 
-
 void ResizeRect(Rect& rec,int val);
 
 WCHAR * multiByteToWideChar(const CString pKey);
