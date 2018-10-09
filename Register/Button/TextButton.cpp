@@ -21,6 +21,7 @@ CTextButton::~CTextButton()
 
 void CTextButton::Show(Graphics* & g)
 {
+
 	CPNGButton::Show(g);
 	auto t_rect=mText.GetRect();
 	if (is_button_down)

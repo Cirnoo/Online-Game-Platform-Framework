@@ -66,20 +66,23 @@
     <ClInclude Include="BaseControl\BaseControl.h">
       <Filter>BaseControl</Filter>
     </ClInclude>
-    <ClInclude Include="Text.h">
-      <Filter>Text</Filter>
-    </ClInclude>
     <ClInclude Include="Button\TextButton.h">
       <Filter>Button</Filter>
     </ClInclude>
     <ClInclude Include="PictureFrame\PictureFrame.h">
       <Filter>PictureFrame</Filter>
     </ClInclude>
-    <ClInclude Include="EditEX.h">
+    <ClInclude Include="Text\EditEX.h">
       <Filter>Text</Filter>
     </ClInclude>
-    <ClInclude Include="CheckBox.h">
+    <ClInclude Include="Text\Text.h">
+      <Filter>Text</Filter>
+    </ClInclude>
+    <ClInclude Include="CheckBox\CheckBox.h">
       <Filter>CheckBox</Filter>
+    </ClInclude>
+    <ClInclude Include="Button\LinkButton.h">
+      <Filter>Button</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -104,20 +107,23 @@
     <ClCompile Include="BaseControl\BaseControl.cpp">
       <Filter>BaseControl</Filter>
     </ClCompile>
-    <ClCompile Include="Text.cpp">
-      <Filter>Text</Filter>
-    </ClCompile>
     <ClCompile Include="Button\TextButton.cpp">
       <Filter>Button</Filter>
     </ClCompile>
     <ClCompile Include="PictureFrame\PictureFrame.cpp">
       <Filter>PictureFrame</Filter>
     </ClCompile>
-    <ClCompile Include="EditEX.cpp">
+    <ClCompile Include="Text\EditEX.cpp">
       <Filter>Text</Filter>
     </ClCompile>
-    <ClCompile Include="CheckBox.cpp">
+    <ClCompile Include="Text\Text.cpp">
+      <Filter>Text</Filter>
+    </ClCompile>
+    <ClCompile Include="CheckBox\CheckBox.cpp">
       <Filter>CheckBox</Filter>
+    </ClCompile>
+    <ClCompile Include="Button\LinkButton.cpp">
+      <Filter>Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

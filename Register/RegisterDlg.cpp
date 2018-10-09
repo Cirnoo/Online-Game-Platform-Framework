@@ -12,39 +12,6 @@
 #define new DEBUG_NEW
 #endif
 
-
-// 用于应用程序“关于”菜单项的 CAboutDlg 对话框
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// 对话框数据
-	enum { IDD = IDD_ABOUTBOX };
-
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-
-// 实现
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialogEx(CAboutDlg::IDD)
-{
-	auto rec=Rect(16-2,139,87+2,87+2);
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
-
 // CRegisterDlg 对话框
 
 
@@ -83,11 +50,9 @@ BOOL CRegisterDlg::OnInitDialog()
 	CenterWindow();
 	ModifyStyle(0,WS_CLIPCHILDREN);
 	// IDM_ABOUTBOX 必须在系统命令范围内。
-	
 	mMediator.InitControl(this);
 	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
 	ASSERT(IDM_ABOUTBOX < 0xF000);
-
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
 	if (pSysMenu != NULL)
 	{
@@ -196,6 +161,7 @@ void CRegisterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 		PostMessage(WM_NCLBUTTONDOWN,
 		HTCAPTION,
 		MAKELPARAM(point.x, point.y));
+	SetFocus();
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
 

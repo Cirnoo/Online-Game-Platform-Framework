@@ -43,7 +43,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;$(IncludePath)</IncludePath>
+    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -104,10 +104,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BaseControl\BaseControl.h" />
+    <ClInclude Include="Button\LinkButton.h" />
     <ClInclude Include="Button\PNGButton.h" />
     <ClInclude Include="Button\TextButton.h" />
-    <ClInclude Include="CheckBox.h" />
-    <ClInclude Include="EditEX.h" />
+    <ClInclude Include="CheckBox\CheckBox.h" />
     <ClInclude Include="Mediator\Mediator.h" />
     <ClInclude Include="PictureFrame\PictureFrame.h" />
     <ClInclude Include="Register.h" />
@@ -116,14 +116,15 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Sys.h" />
     <ClInclude Include="targetver.h" />
-    <ClInclude Include="Text.h" />
+    <ClInclude Include="Text\EditEX.h" />
+    <ClInclude Include="Text\Text.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseControl\BaseControl.cpp" />
+    <ClCompile Include="Button\LinkButton.cpp" />
     <ClCompile Include="Button\PNGButton.cpp" />
     <ClCompile Include="Button\TextButton.cpp" />
-    <ClCompile Include="CheckBox.cpp" />
-    <ClCompile Include="EditEX.cpp" />
+    <ClCompile Include="CheckBox\CheckBox.cpp" />
     <ClCompile Include="Mediator\Mediator.cpp" />
     <ClCompile Include="PictureFrame\PictureFrame.cpp" />
     <ClCompile Include="Register.cpp" />
@@ -133,7 +134,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Sys.cpp" />
-    <ClCompile Include="Text.cpp" />
+    <ClCompile Include="Text\EditEX.cpp" />
+    <ClCompile Include="Text\Text.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Register.rc" />

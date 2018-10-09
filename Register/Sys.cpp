@@ -22,6 +22,7 @@ Global::Global()
 	vec_bt_close=GetImageGroup(L"res\\BT_CLOSE.png",1,4);
 	vec_bt_default=GetImageGroup(L"res\\BT_DEFAULT.png",1,4);
 	vec_edit=GetImageGroup(L"res\\EDIT.png",1,2);
+	vec_checkbox=GetImageGroup(L"res\\CHECK_BOX.png",1,6);
 	fontfamily=new Gdiplus::FontFamily(L"Î¢ÈíÑÅºÚ");
 	font=new Gdiplus::Font(fontfamily,12,FontStyleRegular,UnitPixel);
 	cfont=new CFont;

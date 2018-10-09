@@ -16,6 +16,9 @@ const int ID_HEAD_BK		 =	  ID_BASE+4;
 const int IDC_REGISTER   =	  ID_BASE+5;
 const int IDC_EDIT_USER  =	  ID_BASE+6;
 const int IDC_EDIT_KEY   =	  ID_BASE+7;
+const int IDC_CHECK_1    =    ID_BASE+8;
+const int IDC_NET		 =    ID_BASE+9;
+const int IDC_LINK_1     =    ID_BASE+10;
 typedef  Image* pImage;
 
 class Global
@@ -25,7 +28,7 @@ public:
 	~Global();
 	
 	pImage back,mask,bt_min,cirno,head_bk;
-	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default,vec_edit;
+	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default,vec_edit,vec_checkbox;
 	Gdiplus::FontFamily * fontfamily;
 	Gdiplus::Font *font;
 	CFont * cfont;

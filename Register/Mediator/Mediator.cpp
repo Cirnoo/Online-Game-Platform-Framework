@@ -5,6 +5,8 @@
 #include "TextButton.h"
 #include "EditEX.h"
 #include "PNGButton.h"
+#include "CheckBox.h"
+#include "LinkButton.h"
 Mediator::Mediator()
 {
 	task_flag=true;
@@ -38,8 +40,9 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	#define  AddTheControl   vec_control.push_back(pControlBase);
 	#define  pPNGButton	    (  (CPNGButton*)      pControlBase  )  
 	#define  pPictureFrame  (  (CPictureFrame*)   pControlBase 	)  
-	#define  pTextButton    (  (CTextButton*)     pControlBase  )  
-	#define  pEditEx			(  (CEditEX*)     pControlBase  )
+	#define  pTextButton    (  (CTextButton*)     pControlBase  ) 
+	#define  pCheckBox		(  (CCheckBox*)       pControlBase  )
+	#define  pLinkButton		(  (CLinkButton*)     pControlBase  )
 	//min_control
 	c_width=sys.vec_bt_min[0]->GetWidth();
 	c_height=sys.vec_bt_min[0]->GetHeight();
@@ -47,7 +50,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 /**************************************************************************/
 	GetControl(CPNGButton)
 	rec=Rect(mWidth-38-28,0,c_width,c_height);
-	pPNGButton->Createx(rec,pParentWnd,IDC_MIN,sys.vec_bt_min);
+	pPNGButton->Create(rec,pParentWnd,IDC_MIN,sys.vec_bt_min);
 	pPNGButton->SetCmd
 	([=]()
 	{
@@ -57,7 +60,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	
 	rec=Rect(mWidth-38,0,c_width+10,c_height);
 	GetControl(CPNGButton)
-	pPNGButton->Createx(rec,pParentWnd,IDC_CLOSE,sys.vec_bt_close);
+	pPNGButton->Create(rec,pParentWnd,IDC_CLOSE,sys.vec_bt_close);
 	pPNGButton->SetCmd
 		([=]()
 	{
@@ -80,22 +83,44 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	c_height=sys.vec_bt_default[0]->GetHeight();
 	rec=Rect(mWidth-76,mHeight-27,c_width,c_height);
 	GetControl(CTextButton)
-	pTextButton->Createx(rec,pParentWnd,IDC_REGISTER,sys.vec_bt_default);
+	pTextButton->Create(rec,pParentWnd,IDC_REGISTER,sys.vec_bt_default);
 	pTextButton->SetText(L"µÇÂ¼",sys.font);
 	AddTheControl
-	
-		/*rec=Rect(112,142,191,28);
-		GetControl(CEditEX)
-		pEditEx->Createx(rec,pParentWnd,IDC_EDIT_USER,sys.vec_edit);
-		AddTheControl
 
-		rec=Rect(112,142+34,191,28);
-		GetControl(CEditEX)
-		pEditEx->Createx(rec,pParentWnd,IDC_EDIT_KEY,sys.vec_edit);
-		AddTheControl*/
+	rec=Rect(16,mHeight-27,c_width,c_height);
+	GetControl(CTextButton)
+	pTextButton->Create(rec,pParentWnd,IDC_NET,sys.vec_bt_default);
+	pTextButton->SetText(L"ÉèÖÃ",sys.font);
+	AddTheControl	
+
+	rec=Rect(112,213,sys.vec_checkbox[0]->GetWidth(),sys.vec_checkbox[0]->GetHeight());
+	GetControl(CCheckBox)
+	pCheckBox->Create(rec,pParentWnd,IDC_CHECK_1,sys.vec_checkbox);
+	pCheckBox->SetText(L"¼Ç×¡ÎÒ",sys.font);
+	AddTheControl
+	
+	CStringW str=L"×¢²áÕËºÅ";
+	rec=Rect(310,145,str.GetLength()*16,30);
+	GetControl(CLinkButton)
+	pLinkButton->Create(rec,pParentWnd,IDC_LINK_1);
+	pLinkButton->SetText(str,sys.font);
+	AddTheControl
+
+/************************************************************************/
+/*                          Edit                                        */
+/************************************************************************/
+
+	CEditEX * my_edit;
+	rec=Rect(112,142,191,28);
+	my_edit=new CEditEX;
+	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_USER,sys.vec_edit);
+	vec_edit.push_back(my_edit);
+
 	rec=Rect(112,142+34,191,28);
 	my_edit=new CEditEX;
 	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_KEY,sys.vec_edit);
+	vec_edit.push_back(my_edit);
+
 }
 
 void Mediator::ShowControl(Graphics* & p)
@@ -104,7 +129,10 @@ void Mediator::ShowControl(Graphics* & p)
 	{
 		i->Show(p);
 	}
-	my_edit->Show(p);
+	for (auto i:vec_edit)
+	{
+		i->Show(p);
+	}
 }
 
 

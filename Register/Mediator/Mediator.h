@@ -13,6 +13,6 @@ public:
 private:
 	bool task_flag;
 	std::vector<CBaseControl *> vec_control;
-	CEditEX * my_edit;
+	std::vector<CEditEX *> vec_edit;
 };
 

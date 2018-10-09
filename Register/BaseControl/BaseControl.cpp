@@ -74,6 +74,12 @@ void CBaseControl::ClickCmd()
 
 void CBaseControl::OnTrack()
 {
+	TRACKMOUSEEVENT   tme; 
+	tme.cbSize		=   sizeof(TRACKMOUSEEVENT); 
+	tme.dwFlags		=   TME_LEAVE; //
+	tme.hwndTrack   =   GetSafeHwnd(); 
+	_TrackMouseEvent(&tme);
+	is_tracked   =   true;
 	return;
 }
 
@@ -116,14 +122,7 @@ void CBaseControl::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if(!is_tracked) 
 	{ 
-		TRACKMOUSEEVENT   tme; 
-		tme.cbSize		=   sizeof(TRACKMOUSEEVENT); 
-		tme.dwFlags		=   TME_LEAVE|TME_HOVER; //
-		tme.hwndTrack   =   GetSafeHwnd(); 
-		tme.dwHoverTime	=   80; 
-		_TrackMouseEvent(&tme);  
 		VarInit();
-		is_tracked   =   true;
 		OnTrack();
 		ControlRepaint();
 		//OnMouseHover(nFlags,point);
