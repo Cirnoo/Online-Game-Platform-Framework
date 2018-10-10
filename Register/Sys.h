@@ -3,7 +3,7 @@
 #include <vector>
 
 //全局常量
-const double RESOLUTION = 1;
+const double RESOLUTION = 1.1;
 
 const int CMD_MINSIZE = 1;
 const int CMD_CLOSE   = 2;
@@ -19,6 +19,8 @@ const int IDC_EDIT_KEY   =	  ID_BASE+7;
 const int IDC_CHECK_1    =    ID_BASE+8;
 const int IDC_NET		 =    ID_BASE+9;
 const int IDC_LINK_1     =    ID_BASE+10;
+const int IDC_LINK_2		 =	  ID_BASE+11;
+const int IDC_LINK_3		 =	  ID_BASE+13;
 typedef  Image* pImage;
 
 class Global

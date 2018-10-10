@@ -23,12 +23,12 @@ Global::Global()
 	vec_bt_default=GetImageGroup(L"res\\BT_DEFAULT.png",1,4);
 	vec_edit=GetImageGroup(L"res\\EDIT.png",1,2);
 	vec_checkbox=GetImageGroup(L"res\\CHECK_BOX.png",1,6);
-	fontfamily=new Gdiplus::FontFamily(L"微软雅黑");
-	font=new Gdiplus::Font(fontfamily,12,FontStyleRegular,UnitPixel);
+	fontfamily=new Gdiplus::FontFamily(L"宋体");
+	font=new Gdiplus::Font(fontfamily,14,FontStyleRegular,UnitPixel);
 	cfont=new CFont;
 	cfont->CreateFont(
 		16,							// 字体的高度  
-		0,							// 字体的宽度  
+		8,							// 字体的宽度  
 		0,							// 字体显示的角度
 		0,							// 字体的角度
 		FW_DONTCARE,				// 字体的磅数
@@ -80,7 +80,7 @@ std::vector<pImage> GetImageGroup(pImage img,int row,int col) //行列切割
 	{
 		for (int j=0;j<col;j++)
 		{
-			vec.push_back(CutImage(img,Width*j,Height*i,Width,Height));
+			vec.push_back(ResizeImg(CutImage(img,Width*j,Height*i,Width,Height)));
 		}
 	}
 	return vec;

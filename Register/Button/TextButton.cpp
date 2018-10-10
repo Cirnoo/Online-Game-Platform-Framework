@@ -33,7 +33,7 @@ void CTextButton::Show(Graphics* & g)
 
 void CTextButton::SetText(CStringW str,Gdiplus::Font * font, Gdiplus::Color color/*=Gdiplus::Color::Black */, StringAlignment format/*=StringAlignmentCenter*/)
 {
-	Rect rec=Rect(mRect.GetLeft(),mRect.GetTop()+font->GetSize()/4,mRect.Width,mRect.Height);
+	Rect rec=Rect(mRect.GetLeft(),mRect.GetTop()+font->GetSize()/4+1,mRect.Width,mRect.Height);
 	mText.Create(rec,str,font,color,format);
 }
 

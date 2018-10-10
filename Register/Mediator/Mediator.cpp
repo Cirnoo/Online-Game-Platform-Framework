@@ -19,6 +19,10 @@ Mediator::~Mediator()
 	{
 		delete i;
 	}
+	for (auto i:vec_edit)
+	{
+		delete i;
+	}
 }
 
 void Mediator::InitControl(CWnd * pParentWnd)
@@ -49,7 +53,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	Rect  rec;
 /**************************************************************************/
 	GetControl(CPNGButton)
-	rec=Rect(mWidth-38-28,0,c_width,c_height);
+	rec=Rect(mWidth-(38+28)*RESOLUTION,0,c_width,c_height);
 	pPNGButton->Create(rec,pParentWnd,IDC_MIN,sys.vec_bt_min);
 	pPNGButton->SetCmd
 	([=]()
@@ -58,7 +62,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	});
 	AddTheControl
 	
-	rec=Rect(mWidth-38,0,c_width+10,c_height);
+	rec=Rect(mWidth-38*RESOLUTION,0,c_width+10,c_height);
 	GetControl(CPNGButton)
 	pPNGButton->Create(rec,pParentWnd,IDC_CLOSE,sys.vec_bt_close);
 	pPNGButton->SetCmd
@@ -68,12 +72,12 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	});
 	AddTheControl
 
-	rec=Rect(16,139,87,87);
+	rec=Rect(16*RESOLUTION,139*RESOLUTION,87,87);
 	GetControl(CPictureFrame)
 	pPictureFrame->Create(rec,pParentWnd,IDC_PIC,sys.cirno);
 	AddTheControl
 
-	rec=Rect(16-2,139,87+2,87+2);
+	rec=Rect((16-2)*RESOLUTION,139*RESOLUTION,87+2,87+2);
 	GetControl(CPictureFrame)
 	pPictureFrame->Create(rec,pParentWnd,ID_HEAD_BK,sys.head_bk);
 	AddTheControl
@@ -81,28 +85,42 @@ void Mediator::InitControl(CWnd * pParentWnd)
 
 	c_width=sys.vec_bt_default[0]->GetWidth();
 	c_height=sys.vec_bt_default[0]->GetHeight();
-	rec=Rect(mWidth-76,mHeight-27,c_width,c_height);
+	rec=Rect(mWidth-79*RESOLUTION,mHeight-27*RESOLUTION,c_width,c_height);
 	GetControl(CTextButton)
 	pTextButton->Create(rec,pParentWnd,IDC_REGISTER,sys.vec_bt_default);
 	pTextButton->SetText(L"登录",sys.font);
 	AddTheControl
 
-	rec=Rect(16,mHeight-27,c_width,c_height);
+	rec=Rect(16*RESOLUTION,mHeight-27*RESOLUTION,c_width,c_height);
 	GetControl(CTextButton)
 	pTextButton->Create(rec,pParentWnd,IDC_NET,sys.vec_bt_default);
 	pTextButton->SetText(L"设置",sys.font);
 	AddTheControl	
 
-	rec=Rect(112,213,sys.vec_checkbox[0]->GetWidth(),sys.vec_checkbox[0]->GetHeight());
+	rec=Rect(112*RESOLUTION,213*RESOLUTION,sys.vec_checkbox[0]->GetWidth(),sys.vec_checkbox[0]->GetHeight());
 	GetControl(CCheckBox)
 	pCheckBox->Create(rec,pParentWnd,IDC_CHECK_1,sys.vec_checkbox);
 	pCheckBox->SetText(L"记住我",sys.font);
 	AddTheControl
 	
 	CStringW str=L"注册账号";
-	rec=Rect(310,145,str.GetLength()*16,30);
+	rec=Rect(mWidth-81*RESOLUTION,147*RESOLUTION,str.GetLength()*16*RESOLUTION,20);
 	GetControl(CLinkButton)
 	pLinkButton->Create(rec,pParentWnd,IDC_LINK_1);
+	pLinkButton->SetText(str,sys.font);
+	AddTheControl
+
+	str=L"找回密码";
+	rec=Rect(mWidth-81*RESOLUTION,(147+37)*RESOLUTION,str.GetLength()*16*RESOLUTION,20);
+	GetControl(CLinkButton)
+	pLinkButton->Create(rec,pParentWnd,IDC_LINK_2);
+	pLinkButton->SetText(str,sys.font);
+	AddTheControl
+
+	str=L"游客登陆";
+	rec=Rect((112+100)*RESOLUTION,214*RESOLUTION,str.GetLength()*16*RESOLUTION,20);
+	GetControl(CLinkButton)
+	pLinkButton->Create(rec,pParentWnd,IDC_LINK_3);
 	pLinkButton->SetText(str,sys.font);
 	AddTheControl
 
@@ -111,14 +129,16 @@ void Mediator::InitControl(CWnd * pParentWnd)
 /************************************************************************/
 
 	CEditEX * my_edit;
-	rec=Rect(112,142,191,28);
+	rec=Rect(112*RESOLUTION,142*RESOLUTION,191,28);
 	my_edit=new CEditEX;
 	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_USER,sys.vec_edit);
+	my_edit->SetDefaultText(L"用户名");
 	vec_edit.push_back(my_edit);
 
-	rec=Rect(112,142+34,191,28);
+	rec=Rect(112*RESOLUTION,(142+34)*RESOLUTION,191,28);
 	my_edit=new CEditEX;
-	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_KEY,sys.vec_edit);
+	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_KEY,sys.vec_edit,true);
+	my_edit->SetDefaultText(L"密码");
 	vec_edit.push_back(my_edit);
 
 }

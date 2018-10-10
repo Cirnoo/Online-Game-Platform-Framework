@@ -36,7 +36,7 @@ void CCheckBox::Show(Graphics* & g)
 
 void CCheckBox::SetText(CStringW str,Gdiplus::Font * font, Gdiplus::Color color/*=Gdiplus::Color::Black */, StringAlignment format/*=StringAlignmentCenter*/)
 {
-	Rect rec=Rect(mRect.GetLeft()+vec_bg[0]->GetWidth(),mRect.GetTop(),str.GetLength()*mRect.Width,mRect.Height);
+	Rect rec=Rect(mRect.GetLeft()+vec_bg[0]->GetWidth(),mRect.GetTop()+1,str.GetLength()*mRect.Width,mRect.Height);
 	mText.Create(rec,str,font,color,format);
 }
 

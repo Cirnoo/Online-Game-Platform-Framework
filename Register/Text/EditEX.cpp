@@ -13,6 +13,8 @@ CEditEX::CEditEX()
 {
 	is_password=false;
 	is_tracked	=	false; 
+	is_empty=true;
+	m_brush.CreateSolidBrush(GetSysColor(COLOR_WINDOW));
 }
 
 CEditEX::~CEditEX()
@@ -34,20 +36,24 @@ void CEditEX::Show(Graphics* & g)
 
 
 
-BOOL CEditEX::CreateEditEx(Rect rc,CWnd * pParentWnd,UINT nID, std::vector<Image*> & vec_img)
+
+BOOL CEditEX::CreateEditEx(Rect rc,CWnd * pParentWnd,UINT nID, std::vector<Image*> & vec_img,bool password/*=false*/)
 {
-	
 	vec_cut.push_back(GetImageGroup(vec_img[NORMAL],1,3));
 	vec_cut.push_back(GetImageGroup(vec_img[HOVER],1,3));
 	mRect=rc;
 	this->Create(WS_CHILD|WS_VISIBLE, 
-		CRect(rc.GetLeft()+5,rc.GetTop()+5,rc.GetRight()-3,rc.GetBottom()-5),pParentWnd,100+nID);
+		CRect(rc.GetLeft()+7,rc.GetTop()+6,rc.GetRight()-3,rc.GetBottom()-4),pParentWnd,100+nID);
 	this->SetFont(sys.cfont);
-	//this->SetSel(0, -1);
-	//this->SetFocus();
+	is_password=password;
 	return TRUE;
 }
 
+void CEditEX::SetDefaultText(CStringW str)
+{
+	default_str=str;
+	this->SetWindowTextW(str);
+}
 
 void CEditEX::DrawEdit(Graphics* & g,std::vector<Image*> img)
 {
@@ -70,6 +76,9 @@ void CEditEX::DrawEdit(Graphics* & g,std::vector<Image*> img)
 BEGIN_MESSAGE_MAP(CEditEX, CWnd)
 	ON_WM_MOUSELEAVE()
 	ON_WM_MOUSEMOVE()
+	ON_WM_CTLCOLOR_REFLECT()
+	ON_WM_LBUTTONDOWN()
+	ON_WM_KILLFOCUS()
 END_MESSAGE_MAP()
 
 
@@ -107,3 +116,51 @@ void CEditEX::OnMouseLeave()
 	CEdit::OnMouseLeave();
 }
 
+
+
+
+HBRUSH CEditEX::CtlColor(CDC* pDC, UINT /*nCtlColor*/)
+{
+	// TODO:  在此更改 DC 的任何特性
+	pDC-> SetTextColor(is_empty?RGB(128,128,128):RGB(0,0,0));
+	return   HBRUSH(m_brush);    
+}
+
+
+void CEditEX::OnLButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (is_empty)
+	{
+		SetSel(0,-1);
+		Clear();
+	}
+	is_empty=false;
+	if (is_password)
+	{
+		SetPasswordChar('*');
+	}
+	CEdit::OnLButtonDown(nFlags, point);
+}
+
+
+void CEditEX::OnKillFocus(CWnd* pNewWnd)
+{
+	CEdit::OnKillFocus(pNewWnd);
+
+	if (GetWindowTextLengthW()==0)
+	{
+		is_empty=true;
+		SetPasswordChar(NULL);
+		SetWindowTextW(default_str);
+	}
+	else
+	{
+		is_empty=false;
+		if (is_password)
+		{
+			SetPasswordChar('*');
+		}
+	}
+	// TODO: 在此处添加消息处理程序代码
+}
