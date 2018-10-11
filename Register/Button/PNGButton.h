@@ -17,9 +17,9 @@ public:
 		std::vector<Image*> &);
 	void ClickDown(bool flag);
 	virtual void Show(Graphics* & g);
+	void Check(bool check);
 protected:
 	DECLARE_MESSAGE_MAP()  
-public:
-	void Check(bool check);
+	
 };
 

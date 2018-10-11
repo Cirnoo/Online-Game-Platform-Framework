@@ -15,7 +15,7 @@ CBaseControl::CBaseControl()
 	VarInit();
 	mCmd=[=]()
 	{
-		this->ClickCmd();
+		this->OnClick();
 	};
 }
 
@@ -67,13 +67,15 @@ void CBaseControl::SetImg(std::vector<Image*> & _bg)
 }
 
 
-void CBaseControl::ClickCmd()
+void CBaseControl::OnClick()
 {
+	//左键点击默认执行此函数
 	return;
 }
 
 void CBaseControl::OnTrack()
 {
+	//鼠标进入控件执行此函数
 	TRACKMOUSEEVENT   tme; 
 	tme.cbSize		=   sizeof(TRACKMOUSEEVENT); 
 	tme.dwFlags		=   TME_LEAVE; //

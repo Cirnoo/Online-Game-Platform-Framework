@@ -21,7 +21,6 @@ protected:
 	CText mText;
 	void OnTrack();
 	Gdiplus::Color m_color_normal,m_color_hover;
-public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnMouseLeave();
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
