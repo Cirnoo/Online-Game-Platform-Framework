@@ -147,7 +147,10 @@ void CEditEX::OnLButtonDown(UINT nFlags, CPoint point)
 void CEditEX::OnKillFocus(CWnd* pNewWnd)
 {
 	CEdit::OnKillFocus(pNewWnd);
-
+	if (is_empty)
+	{
+		return;
+	}
 	if (GetWindowTextLengthW()==0)
 	{
 		is_empty=true;
@@ -156,7 +159,6 @@ void CEditEX::OnKillFocus(CWnd* pNewWnd)
 	}
 	else
 	{
-		is_empty=false;
 		if (is_password)
 		{
 			SetPasswordChar('*');

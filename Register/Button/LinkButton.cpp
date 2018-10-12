@@ -67,17 +67,16 @@ void CLinkButton::OnMouseMove(UINT nFlags, CPoint point)
 {
 	CBaseControl::OnMouseMove(nFlags,point);
 	HCURSOR hCur  =  LoadCursor( NULL  , IDC_HAND ) ;
-	::SetCursor(hCur);
+	SetCursor(hCur);
 }
 
 
 
 void CLinkButton::OnMouseLeave()
 {
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	mText.SetColor(m_color_normal);
 	HCURSOR hCur  =  LoadCursor( NULL  , IDC_ARROW ) ;
-	::SetCursor(hCur);
+	SetCursor(hCur);
 	CBaseControl::OnMouseLeave();
 }
 

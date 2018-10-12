@@ -118,7 +118,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	AddTheControl
 
 	str=L"ÓÎ¿ÍµÇÂ½";
-	rec=Rect((112+100)*RESOLUTION,214*RESOLUTION,str.GetLength()*16*RESOLUTION,20);
+	rec=Rect((112+117)*RESOLUTION,214*RESOLUTION,str.GetLength()*16*RESOLUTION,20);
 	GetControl(CLinkButton)
 	pLinkButton->Create(rec,pParentWnd,IDC_LINK_3);
 	pLinkButton->SetText(str,sys.font);
