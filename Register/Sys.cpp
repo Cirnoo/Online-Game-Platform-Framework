@@ -1,28 +1,30 @@
 #include "stdafx.h"
 #include "Sys.h"
+#include "resource.h"
+#define ResFromResource TRUE
+#if ResFromResource == TRUE
+	#define LODE(a,b) a=ResizeImg(LoadPNGFormResource(b)); res.push_back(a); 
+#else
+	#define LODE(a,b) a=ResizeImg(Gdiplus::Image::FromFile(_T(b))); res.push_back(a);
+#endif
 
-#define LODE(a,b) a=ResizeImg(Gdiplus::Image::FromFile(_T(b))); res.push_back(a); 
 #define INIT_RES(x) pImage x=NULL; 
 
 //全局对象
 Global sys;
-
 using std::vector;
 Global::Global()
 {
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-	LODE(back,"res\\bk.bmp");
-	LODE(mask,"res\\mask.png");
-	LODE(bt_min,"res\\BT_MIN.png");
-	LODE(cirno,"res\\9.png");
-	LODE(head_bk,"res\\head_bk.png");
-	
-	vec_bt_min=GetImageGroup(L"res\\BT_MIN.png",1,4);
-	vec_bt_close=GetImageGroup(L"res\\BT_CLOSE.png",1,4);
-	vec_bt_default=GetImageGroup(L"res\\BT_DEFAULT.png",1,4);
-	vec_edit=GetImageGroup(L"res\\EDIT.png",1,2);
-	vec_checkbox=GetImageGroup(L"res\\CHECK_BOX.png",1,6);
+	if (ResFromResource == TRUE)
+	{
+		LoadImgFromRes();
+	}
+	else
+	{
+		LoadImgFromFile();
+	}
 	fontfamily=new Gdiplus::FontFamily(L"宋体");
 	font=new Gdiplus::Font(fontfamily,14,FontStyleRegular,UnitPixel);
 	cfont=new CFont;
@@ -56,6 +58,35 @@ Global::~Global()
 }
 
 
+
+void Global::LoadImgFromFile()
+{
+#if ResFromResource == FALSE
+	LODE(back,"res\\bk.bmp");
+	LODE(mask,"res\\mask.png");
+	LODE(cirno,"res\\9.png");
+	LODE(head_bk,"res\\head_bk.png");
+	vec_bt_min=GetImageGroup(L"res\\BT_MIN.png",1,4);
+	vec_bt_close=GetImageGroup(L"res\\BT_CLOSE.png",1,4);
+	vec_bt_default=GetImageGroup(L"res\\BT_DEFAULT.png",1,4);
+	vec_edit=GetImageGroup(L"res\\EDIT.png",1,2);
+	vec_checkbox=GetImageGroup(L"res\\CHECK_BOX.png",1,6);
+#endif
+}
+
+
+void Global::LoadImgFromRes()
+{
+	LODE(back,IDB_BK);
+	LODE(mask,IDB_MASK);
+	LODE(cirno,IDB_9);
+	LODE(head_bk,IDB_HEAD_BK);
+	vec_bt_min=GetImageGroup(IDB_BT_MIN,1,4);
+	vec_bt_close=GetImageGroup(IDB_BT_CLOSE,1,4);
+	vec_bt_default=GetImageGroup(IDB_BT_DEFAULT,1,4);
+	vec_edit=GetImageGroup(IDB_EDIT,1,2);
+	vec_checkbox=GetImageGroup(IDB_CHECK_BOX,1,6);
+}
 
 void DrawImage(CDC dc,pImage img,int x,int y)
 {
@@ -95,6 +126,16 @@ std::vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col)
 	return vec;
 }
 
+
+vector<pImage> GetImageGroup(int nID,int row,int col)
+{
+	pImage temp=LoadPNGFormResource(nID);
+	vector<pImage> vec;
+	vec=GetImageGroup(temp,row,col);
+	delete temp;
+	return vec;
+}
+
 pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height)
 {
 	
@@ -126,6 +167,32 @@ void ResizeRect(Rect& rec,int val)
 {
 	rec.X-=val;rec.Y-=val;
 	rec.Height+=val;rec.Width+=val;
+	
 }
 
+pImage LoadPNGFormResource(int nID)
+{
+	HINSTANCE hInst = AfxGetResourceHandle();  
+	HRSRC hRsrc = ::FindResource (hInst,MAKEINTRESOURCE(nID),_T("png")); // type  
+	if (!hRsrc)  
+		return FALSE;  
+	// load resource into memory  
+	DWORD len = SizeofResource(hInst, hRsrc);  
+	BYTE* lpRsrc = (BYTE*)LoadResource(hInst, hRsrc);  
+	if (!lpRsrc)  
+		return FALSE;  
+	// Allocate global memory on which to create stream  
+	HGLOBAL m_hMem = GlobalAlloc(GMEM_FIXED, len);  
+	BYTE* pmem = (BYTE*)GlobalLock(m_hMem);  
+	memcpy(pmem,lpRsrc,len);  
+	IStream* pstm;  
+	CreateStreamOnHGlobal(m_hMem,FALSE,&pstm);  
+	// load from stream  
+	auto pImg=Gdiplus::Image::FromStream(pstm);  
+	// free/release stuff  
+	GlobalUnlock(m_hMem);  
+	pstm->Release();  
+	FreeResource(lpRsrc);  
+	return pImg;  
+}
 

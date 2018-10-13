@@ -143,5 +143,38 @@
     <Image Include="res\favicon.ico">
       <Filter>资源文件</Filter>
     </Image>
+    <Image Include="res\bitmap1.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\9.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bk.bmp">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\BT_CLOSE.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\BT_DEFAULT.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\BT_MIN.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\CHECK_BOX.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\EDIT.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\head_bk.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\mask.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="res\bk.png">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>

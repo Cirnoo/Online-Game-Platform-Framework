@@ -32,3 +32,5 @@
 *.app
 
 /Register/Debug/  
+/Debug/
+/Release/

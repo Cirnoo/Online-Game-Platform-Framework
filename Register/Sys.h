@@ -22,14 +22,14 @@ const int IDC_LINK_1     =    ID_BASE+10;
 const int IDC_LINK_2		 =	  ID_BASE+11;
 const int IDC_LINK_3		 =	  ID_BASE+13;
 typedef  Image* pImage;
-
+using std::vector;
 class Global
 {
 public:
 	Global();
 	~Global();
 	
-	pImage back,mask,bt_min,cirno,head_bk;
+	pImage back,mask,cirno,head_bk;
 	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default,vec_edit,vec_checkbox;
 	Gdiplus::FontFamily * fontfamily;
 	Gdiplus::Font *font;
@@ -37,14 +37,19 @@ public:
 	unsigned long  gdiplusToken;
 private:
 	std::vector<pImage> res;
+	void LoadImgFromFile();
+	void LoadImgFromRes();
 };
 
 
 
 void DrawImage(CDC ,pImage ,int,int);
+pImage LoadPNGFormResource(int nId);
 pImage ResizeImg(pImage img);
-std::vector<pImage> GetImageGroup(pImage img,int row,int col);
-std::vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col);
+vector<pImage> GetImageGroup(pImage img,int row,int col);
+vector<pImage> GetImageGroup(int nID,int row,int col);
+vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col);
+
 pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height);
 
 CRect RectTransform(Rect rect);

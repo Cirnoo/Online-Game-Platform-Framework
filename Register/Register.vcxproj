@@ -27,7 +27,7 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v110</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
     <UseOfMfc>Dynamic</UseOfMfc>
   </PropertyGroup>
@@ -47,6 +47,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;$(IncludePath)</IncludePath>
+    <LibraryPath>gdiplus.lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -81,12 +83,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../Button;./;./BaseControl;./Mediator;./PictureFrame;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>gdiplus.lib</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -144,7 +148,18 @@
     <None Include="res\Register.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\9.png" />
+    <Image Include="res\bitmap1.bmp" />
+    <Image Include="res\bk.bmp" />
+    <Image Include="res\bk.png" />
+    <Image Include="res\BT_CLOSE.png" />
+    <Image Include="res\BT_DEFAULT.png" />
+    <Image Include="res\BT_MIN.png" />
+    <Image Include="res\CHECK_BOX.png" />
+    <Image Include="res\EDIT.png" />
     <Image Include="res\favicon.ico" />
+    <Image Include="res\head_bk.png" />
+    <Image Include="res\mask.png" />
     <Image Include="res\Register.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

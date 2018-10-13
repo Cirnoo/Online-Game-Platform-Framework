@@ -1,0 +1,28 @@
+﻿生成启动时间为 2018/10/13 23:26:08。
+     1>项目“D:\github\mfc_mini_register\Register\Register.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         E:\VS2015\VC\bin\CL.exe /c /I../Button /I./ /I./BaseControl /I./Mediator /I./PictureFrame /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /D WIN32 /D _WINDOWS /D NDEBUG /D _UNICODE /D UNICODE /D _AFXDLL /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Yu"stdafx.h" /Fp"Release\Register.pch" /Fo"Release\\" /Fd"Release\vc110.pdb" /Gd /TP /analyze- /errorReport:prompt Sys.cpp
+         Sys.cpp
+     1>Sys.cpp(98): warning C4244: “参数”: 从“const double”转换到“UINT”，可能丢失数据
+     1>Sys.cpp(158): warning C4244: “参数”: 从“INT”转换到“Gdiplus::REAL”，可能丢失数据
+       Link:
+         E:\VS2015\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\github\mfc_mini_register\Release\Register.exe" /INCREMENTAL:NO /NOLOGO /LIBPATH:gdiplus.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /manifestinput:E:\VS2015\VC\Include\Manifest\dpiaware.manifest /DEBUG /PDB:"D:\github\mfc_mini_register\Release\Register.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /TLBID:1 /ENTRY:"wWinMainCRTStartup" /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\github\mfc_mini_register\Release\Register.lib" /MACHINE:X86 /SAFESEH Release\Register.res
+         Release\BaseControl.obj
+         Release\LinkButton.obj
+         Release\PNGButton.obj
+         Release\TextButton.obj
+         Release\CheckBox.obj
+         Release\Mediator.obj
+         Release\PictureFrame.obj
+         Release\Register.obj
+         Release\RegisterDlg.obj
+         Release\stdafx.obj
+         Release\Sys.obj
+         Release\EditEX.obj
+         Release\Text.obj
+         Register.vcxproj -> D:\github\mfc_mini_register\Release\Register.exe
+     1>已完成生成项目“D:\github\mfc_mini_register\Register\Register.vcxproj”(Build 个目标)的操作。
+
+生成成功。
+
+已用时间 00:00:01.19
