@@ -35,15 +35,15 @@ public:
 	Gdiplus::Font *font;
 	CFont * cfont;
 	unsigned long  gdiplusToken;
+	sockaddr_in  addrClient,addrServer;
 private:
 	std::vector<pImage> res;
-	void LoadImgFromFile();
-	void LoadImgFromRes();
+	void LoadImg();
+	void InitSockAddr();
 };
 
 
 
-void DrawImage(CDC ,pImage ,int,int);
 pImage LoadPNGFormResource(int nId);
 pImage ResizeImg(pImage img);
 vector<pImage> GetImageGroup(pImage img,int row,int col);

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Sys.h"
 #include "resource.h"
+#include "Packdef.h"
+
 #define ResFromResource TRUE
 #if ResFromResource == TRUE
 	#define LODE(a,b) a=ResizeImg(LoadPNGFormResource(b)); res.push_back(a); 
@@ -17,14 +19,7 @@ Global::Global()
 {
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
-	if (ResFromResource == TRUE)
-	{
-		LoadImgFromRes();
-	}
-	else
-	{
-		LoadImgFromFile();
-	}
+	LoadImg();
 	fontfamily=new Gdiplus::FontFamily(L"ËÎÌå");
 	font=new Gdiplus::Font(fontfamily,14,FontStyleRegular,UnitPixel);
 	cfont=new CFont;
@@ -58,10 +53,19 @@ Global::~Global()
 }
 
 
-
-void Global::LoadImgFromFile()
+void Global::LoadImg()
 {
-#if ResFromResource == FALSE
+#if ResFromResource == TRUE
+	LODE(back,IDB_BK);
+	LODE(mask,IDB_MASK);
+	LODE(cirno,IDB_9);
+	LODE(head_bk,IDB_HEAD_BK);
+	vec_bt_min=GetImageGroup(IDB_BT_MIN,1,4);
+	vec_bt_close=GetImageGroup(IDB_BT_CLOSE,1,4);
+	vec_bt_default=GetImageGroup(IDB_BT_DEFAULT,1,4);
+	vec_edit=GetImageGroup(IDB_EDIT,1,2);
+	vec_checkbox=GetImageGroup(IDB_CHECK_BOX,1,6);
+#else
 	LODE(back,"res\\bk.bmp");
 	LODE(mask,"res\\mask.png");
 	LODE(cirno,"res\\9.png");
@@ -75,25 +79,18 @@ void Global::LoadImgFromFile()
 }
 
 
-void Global::LoadImgFromRes()
+void Global::InitSockAddr()
 {
-	LODE(back,IDB_BK);
-	LODE(mask,IDB_MASK);
-	LODE(cirno,IDB_9);
-	LODE(head_bk,IDB_HEAD_BK);
-	vec_bt_min=GetImageGroup(IDB_BT_MIN,1,4);
-	vec_bt_close=GetImageGroup(IDB_BT_CLOSE,1,4);
-	vec_bt_default=GetImageGroup(IDB_BT_DEFAULT,1,4);
-	vec_edit=GetImageGroup(IDB_EDIT,1,2);
-	vec_checkbox=GetImageGroup(IDB_CHECK_BOX,1,6);
+	addrClient.sin_family = AF_INET;
+	addrClient.sin_addr.S_un.S_addr = inet_addr(_SERVER_IP);
+	addrClient.sin_port = htons(0);
+
+	addrServer.sin_family = AF_INET;
+	addrServer.sin_addr.S_un.S_addr = inet_addr(_SERVER_IP);
+	addrServer.sin_port = htons(_DEF_PORT);
 }
 
-void DrawImage(CDC dc,pImage img,int x,int y)
-{
-	Graphics graphics(dc);
-	graphics.DrawImage(img,x,y);
-	return ;
-}
+
 
 pImage ResizeImg(pImage img) //Ëõ·Å
 {
@@ -172,7 +169,7 @@ void ResizeRect(Rect& rec,int val)
 
 pImage LoadPNGFormResource(int nID)
 {
-	HINSTANCE hInst = AfxGetResourceHandle();  
+	HINSTANCE hInst = GetModuleHandle(NULL);  
 	HRSRC hRsrc = ::FindResource (hInst,MAKEINTRESOURCE(nID),_T("png")); // type  
 	if (!hRsrc)  
 		return FALSE;  

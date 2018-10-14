@@ -10,7 +10,6 @@
 Mediator::Mediator()
 {
 	task_flag=true;
-	auto t=Rect(0,0,0,0);
 }
 
 Mediator::~Mediator()

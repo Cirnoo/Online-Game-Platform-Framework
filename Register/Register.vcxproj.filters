@@ -9,30 +9,33 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Button">
-      <UniqueIdentifier>{c5e79486-477a-428f-9e41-07e3d569f7d2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Resourse">
       <UniqueIdentifier>{f396d58a-bd23-4ff8-b5cf-8b5d7bce7aee}</UniqueIdentifier>
     </Filter>
-    <Filter Include="PictureFrame">
-      <UniqueIdentifier>{2f59ad1f-1b99-4ff4-9271-c1c305aa4f56}</UniqueIdentifier>
+    <Filter Include="UI">
+      <UniqueIdentifier>{49a2b416-af9c-45cc-844d-6fa8b4295ca2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="BaseControl">
+    <Filter Include="UI\BaseControl">
       <UniqueIdentifier>{591f32f6-be26-4b60-ade4-fa88e314c04c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Text">
+    <Filter Include="UI\Button">
+      <UniqueIdentifier>{c5e79486-477a-428f-9e41-07e3d569f7d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\CheckBox">
+      <UniqueIdentifier>{b99a2a28-d217-49de-bb3a-52f79aeeb7b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\PictureFrame">
+      <UniqueIdentifier>{2f59ad1f-1b99-4ff4-9271-c1c305aa4f56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI\Text">
       <UniqueIdentifier>{ba92635b-af07-42a0-81fd-c1b5bfa35839}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resourse\资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Mediator">
       <UniqueIdentifier>{a8f1d289-3645-4c39-b342-e8844ca447dc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CheckBox">
-      <UniqueIdentifier>{b99a2a28-d217-49de-bb3a-52f79aeeb7b3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -58,31 +61,31 @@
       <Filter>Resourse</Filter>
     </ClInclude>
     <ClInclude Include="Button\PNGButton.h">
-      <Filter>Button</Filter>
+      <Filter>UI\Button</Filter>
     </ClInclude>
     <ClInclude Include="Mediator\Mediator.h">
       <Filter>Mediator</Filter>
     </ClInclude>
     <ClInclude Include="BaseControl\BaseControl.h">
-      <Filter>BaseControl</Filter>
+      <Filter>UI\BaseControl</Filter>
     </ClInclude>
     <ClInclude Include="Button\TextButton.h">
-      <Filter>Button</Filter>
+      <Filter>UI\Button</Filter>
     </ClInclude>
     <ClInclude Include="PictureFrame\PictureFrame.h">
-      <Filter>PictureFrame</Filter>
+      <Filter>UI\PictureFrame</Filter>
     </ClInclude>
     <ClInclude Include="Text\EditEX.h">
-      <Filter>Text</Filter>
+      <Filter>UI\Text</Filter>
     </ClInclude>
     <ClInclude Include="Text\Text.h">
-      <Filter>Text</Filter>
+      <Filter>UI\Text</Filter>
     </ClInclude>
     <ClInclude Include="CheckBox\CheckBox.h">
-      <Filter>CheckBox</Filter>
+      <Filter>UI\CheckBox</Filter>
     </ClInclude>
     <ClInclude Include="Button\LinkButton.h">
-      <Filter>Button</Filter>
+      <Filter>UI\Button</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,82 +102,82 @@
       <Filter>Resourse</Filter>
     </ClCompile>
     <ClCompile Include="Button\PNGButton.cpp">
-      <Filter>Button</Filter>
+      <Filter>UI\Button</Filter>
     </ClCompile>
     <ClCompile Include="Mediator\Mediator.cpp">
       <Filter>Mediator</Filter>
     </ClCompile>
     <ClCompile Include="BaseControl\BaseControl.cpp">
-      <Filter>BaseControl</Filter>
+      <Filter>UI\BaseControl</Filter>
     </ClCompile>
     <ClCompile Include="Button\TextButton.cpp">
-      <Filter>Button</Filter>
+      <Filter>UI\Button</Filter>
     </ClCompile>
     <ClCompile Include="PictureFrame\PictureFrame.cpp">
-      <Filter>PictureFrame</Filter>
+      <Filter>UI\PictureFrame</Filter>
     </ClCompile>
     <ClCompile Include="Text\EditEX.cpp">
-      <Filter>Text</Filter>
+      <Filter>UI\Text</Filter>
     </ClCompile>
     <ClCompile Include="Text\Text.cpp">
-      <Filter>Text</Filter>
+      <Filter>UI\Text</Filter>
     </ClCompile>
     <ClCompile Include="CheckBox\CheckBox.cpp">
-      <Filter>CheckBox</Filter>
+      <Filter>UI\CheckBox</Filter>
     </ClCompile>
     <ClCompile Include="Button\LinkButton.cpp">
-      <Filter>Button</Filter>
+      <Filter>UI\Button</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Register.rc">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Register.rc2">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Register.ico">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\favicon.ico">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\bitmap1.bmp">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\9.png">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\bk.bmp">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\BT_CLOSE.png">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\BT_DEFAULT.png">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\BT_MIN.png">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\CHECK_BOX.png">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\EDIT.png">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\head_bk.png">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\mask.png">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
     <Image Include="res\bk.png">
-      <Filter>资源文件</Filter>
+      <Filter>Resourse\资源文件</Filter>
     </Image>
   </ItemGroup>
 </Project>
