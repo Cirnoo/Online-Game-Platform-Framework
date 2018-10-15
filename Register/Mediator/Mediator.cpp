@@ -7,9 +7,11 @@
 #include "PNGButton.h"
 #include "CheckBox.h"
 #include "LinkButton.h"
-Mediator::Mediator()
+#include "Packdef.h"
+Mediator::Mediator():data_deal(this->mysocket)
 {
 	task_flag=true;
+	mysocket.Create();
 }
 
 Mediator::~Mediator()
@@ -88,6 +90,10 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	GetControl(CTextButton)
 	pTextButton->Create(rec,pParentWnd,IDC_REGISTER,sys.vec_bt_default);
 	pTextButton->SetText(L"µÇÂ¼",sys.font);
+	pTextButton->SetCmd([=]
+	{
+		OnRegiste();
+	});
 	AddTheControl
 
 	rec=Rect(16*RESOLUTION,mHeight-27*RESOLUTION,c_width,c_height);
@@ -158,5 +164,28 @@ void Mediator::ShowControl(Graphics* & p)
 bool Mediator::GetTask()
 {
 	return task_flag;
+}
+
+
+CEditEX * Mediator::GetEditCtl(int nID)
+{
+	for (auto i:vec_edit)
+	{
+		if (i->GetDlgCtrlID()==nID)
+		{
+			return i;
+		}
+	}
+	return nullptr;
+}
+
+int Mediator::OnRegiste()
+{
+	auto name=((CEditEX *)GetEditCtl(IDC_EDIT_USER))->GetEditText();
+	auto password=((CEditEX *)GetEditCtl(IDC_EDIT_KEY))->GetEditText();
+	DATA_PACKAGE data(MS_TYPE::REGISTE_RQ,wstring(name),wstring(password));
+	mysocket.Connect((SOCKADDR*)&sys.addrServer,sizeof(sys.addrServer));
+	ShowError();
+	mysocket.SendMS(data);
 }
 

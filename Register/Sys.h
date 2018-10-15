@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #include <vector>
-
+#include "Packdef.h"
 //全局常量
 const double RESOLUTION = 1.1;
 
@@ -36,6 +36,7 @@ public:
 	CFont * cfont;
 	unsigned long  gdiplusToken;
 	sockaddr_in  addrClient,addrServer;
+	USER_INFO  user;
 private:
 	std::vector<pImage> res;
 	void LoadImg();
@@ -59,3 +60,5 @@ void ResizeRect(Rect& rec,int val);
 
 WCHAR * multiByteToWideChar(const CString pKey);
 extern Global sys;
+
+void ShowError();

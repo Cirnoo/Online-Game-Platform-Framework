@@ -2,6 +2,7 @@
 
 class CBaseControl;
 class CEditEX;
+#include "MySocket.h"
 class Mediator
 {
 public:
@@ -14,5 +15,8 @@ private:
 	bool task_flag;
 	std::vector<CBaseControl *> vec_control;
 	std::vector<CEditEX *> vec_edit;
+	CMySocket mysocket;
+	CEditEX * GetEditCtl(int nID);
+	int OnRegiste();
 };
 

@@ -43,7 +43,7 @@ BOOL CEditEX::CreateEditEx(Rect rc,CWnd * pParentWnd,UINT nID, std::vector<Image
 	vec_cut.push_back(GetImageGroup(vec_img[HOVER],1,3));
 	mRect=rc;
 	this->Create(WS_CHILD|WS_VISIBLE, 
-		CRect(rc.GetLeft()+7,rc.GetTop()+6,rc.GetRight()-3,rc.GetBottom()-4),pParentWnd,100+nID);
+		CRect(rc.GetLeft()+7,rc.GetTop()+6,rc.GetRight()-3,rc.GetBottom()-4),pParentWnd,nID);
 	this->SetFont(sys.cfont);
 	is_password=password;
 	return TRUE;
@@ -53,6 +53,15 @@ void CEditEX::SetDefaultText(CStringW str)
 {
 	default_str=str;
 	this->SetWindowTextW(str);
+}
+
+
+
+CString CEditEX::GetEditText()
+{
+	CString str;
+	GetWindowText(str);
+	return str;
 }
 
 void CEditEX::DrawEdit(Graphics* & g,std::vector<Image*> img)

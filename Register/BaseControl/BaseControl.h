@@ -9,7 +9,6 @@ enum ButtonState
 class CBaseControl : public CWnd
 {
 	DECLARE_DYNAMIC(CBaseControl)
-
 public:
 	CBaseControl();
 	virtual ~CBaseControl();

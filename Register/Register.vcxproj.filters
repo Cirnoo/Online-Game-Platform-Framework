@@ -34,8 +34,20 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{9d108b24-86ee-4745-8c8d-374d58b90c00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\协议">
+      <UniqueIdentifier>{b23da55a-a1c8-4b3c-b3d8-0f24a19cb005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Net">
+      <UniqueIdentifier>{1dc931f8-172d-4bfb-8d5d-5213607f20a7}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Mediator">
       <UniqueIdentifier>{a8f1d289-3645-4c39-b342-e8844ca447dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据处理">
+      <UniqueIdentifier>{dea4877d-cbeb-4a04-b2e3-9aa1c47d2a1b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -87,6 +99,15 @@
     <ClInclude Include="Button\LinkButton.h">
       <Filter>UI\Button</Filter>
     </ClInclude>
+    <ClInclude Include="Network\Packdef.h">
+      <Filter>Network\协议</Filter>
+    </ClInclude>
+    <ClInclude Include="MySocket.h">
+      <Filter>Network\Net</Filter>
+    </ClInclude>
+    <ClInclude Include="Data.h">
+      <Filter>数据处理</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Register.cpp">
@@ -127,6 +148,12 @@
     </ClCompile>
     <ClCompile Include="Button\LinkButton.cpp">
       <Filter>UI\Button</Filter>
+    </ClCompile>
+    <ClCompile Include="MySocket.cpp">
+      <Filter>Network\Net</Filter>
+    </ClCompile>
+    <ClCompile Include="Data.cpp">
+      <Filter>数据处理</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

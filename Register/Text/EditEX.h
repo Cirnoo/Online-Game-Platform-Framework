@@ -1,6 +1,5 @@
 #pragma once
 #include "PNGButton.h"
-#include "Text.h"
 // CEditEX
 
 class CEditEX : public CEdit
@@ -14,6 +13,8 @@ public:
 	BOOL CreateEditEx(Rect rect,CWnd * pParentWnd,UINT nID,
 		std::vector<Image*> &,bool password=false);
 	void SetDefaultText(CStringW str);
+	CStringW GetEditText();
+
 private:
 	Rect mRect;
 	std::vector<Image *> vec_bg;

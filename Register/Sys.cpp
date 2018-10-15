@@ -20,6 +20,7 @@ Global::Global()
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
 	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
 	LoadImg();
+	InitSockAddr();
 	fontfamily=new Gdiplus::FontFamily(L"ËÎÌו");
 	font=new Gdiplus::Font(fontfamily,14,FontStyleRegular,UnitPixel);
 	cfont=new CFont;
@@ -81,13 +82,15 @@ void Global::LoadImg()
 
 void Global::InitSockAddr()
 {
+	WSAData wsaData;
+	AfxSocketInit(&wsaData);
 	addrClient.sin_family = AF_INET;
 	addrClient.sin_addr.S_un.S_addr = inet_addr(_SERVER_IP);
 	addrClient.sin_port = htons(0);
 
 	addrServer.sin_family = AF_INET;
 	addrServer.sin_addr.S_un.S_addr = inet_addr(_SERVER_IP);
-	addrServer.sin_port = htons(_DEF_PORT);
+	addrServer.sin_port = htons(_DEF_SERVERPORT);
 }
 
 
@@ -193,3 +196,28 @@ pImage LoadPNGFormResource(int nID)
 	return pImg;  
 }
 
+void ShowError()
+{
+	int error=GetLastError();
+	if (!error)
+	{
+		return;
+	}
+	LPVOID lpMsgBuf;
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER
+		|FORMAT_MESSAGE_FROM_SYSTEM|FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		error,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), // Default language
+		(LPTSTR) &lpMsgBuf,
+		0,
+		NULL
+		);
+	// Process any inserts in lpMsgBuf.
+	// ...
+	// Display the string.
+	MessageBox(NULL,(LPCTSTR)lpMsgBuf, _T("Error"), MB_OK | MB_ICONINFORMATION );
+	// Free the buffer.
+	LocalFree( lpMsgBuf );
+}
