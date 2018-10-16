@@ -128,6 +128,7 @@
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Text\EditEX.h" />
     <ClInclude Include="Text\Text.h" />
+    <ClInclude Include="Tool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BaseControl\BaseControl.cpp" />
@@ -148,6 +149,7 @@
     <ClCompile Include="Sys.cpp" />
     <ClCompile Include="Text\EditEX.cpp" />
     <ClCompile Include="Text\Text.cpp" />
+    <ClCompile Include="Tool.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Register.rc" />

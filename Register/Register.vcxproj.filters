@@ -9,9 +9,6 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
-    <Filter Include="Resourse">
-      <UniqueIdentifier>{f396d58a-bd23-4ff8-b5cf-8b5d7bce7aee}</UniqueIdentifier>
-    </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{49a2b416-af9c-45cc-844d-6fa8b4295ca2}</UniqueIdentifier>
     </Filter>
@@ -30,10 +27,6 @@
     <Filter Include="UI\Text">
       <UniqueIdentifier>{ba92635b-af07-42a0-81fd-c1b5bfa35839}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resourse\资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
     <Filter Include="Network">
       <UniqueIdentifier>{9d108b24-86ee-4745-8c8d-374d58b90c00}</UniqueIdentifier>
     </Filter>
@@ -48,6 +41,13 @@
     </Filter>
     <Filter Include="数据处理">
       <UniqueIdentifier>{dea4877d-cbeb-4a04-b2e3-9aa1c47d2a1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gloabal">
+      <UniqueIdentifier>{f396d58a-bd23-4ff8-b5cf-8b5d7bce7aee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gloabal\资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +70,7 @@
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Sys.h">
-      <Filter>Resourse</Filter>
+      <Filter>Gloabal</Filter>
     </ClInclude>
     <ClInclude Include="Button\PNGButton.h">
       <Filter>UI\Button</Filter>
@@ -108,6 +108,9 @@
     <ClInclude Include="Data.h">
       <Filter>数据处理</Filter>
     </ClInclude>
+    <ClInclude Include="Tool.h">
+      <Filter>Gloabal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Register.cpp">
@@ -120,7 +123,7 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Sys.cpp">
-      <Filter>Resourse</Filter>
+      <Filter>Gloabal</Filter>
     </ClCompile>
     <ClCompile Include="Button\PNGButton.cpp">
       <Filter>UI\Button</Filter>
@@ -155,56 +158,59 @@
     <ClCompile Include="Data.cpp">
       <Filter>数据处理</Filter>
     </ClCompile>
+    <ClCompile Include="Tool.cpp">
+      <Filter>Gloabal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Register.rc">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\Register.rc2">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Register.ico">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\favicon.ico">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\bitmap1.bmp">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\9.png">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\bk.bmp">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\BT_CLOSE.png">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\BT_DEFAULT.png">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\BT_MIN.png">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\CHECK_BOX.png">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\EDIT.png">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\head_bk.png">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\mask.png">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\bk.png">
-      <Filter>Resourse\资源文件</Filter>
+      <Filter>Gloabal\资源文件</Filter>
     </Image>
   </ItemGroup>
 </Project>

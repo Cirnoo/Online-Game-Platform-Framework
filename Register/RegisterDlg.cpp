@@ -26,8 +26,13 @@ void CRegisterDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
+
+afx_msg LRESULT CRegisterDlg::OnLogin(WPARAM wParam, LPARAM lParam)
+{
+
+	return 0;
+}
 BEGIN_MESSAGE_MAP(CRegisterDlg, CDialogEx)
-	ON_WM_SYSCOMMAND()
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_CLOSE()
@@ -36,6 +41,7 @@ BEGIN_MESSAGE_MAP(CRegisterDlg, CDialogEx)
 	ON_WM_ERASEBKGND()
 	ON_WM_SYSCOMMAND()
 	ON_WM_MOUSEMOVE()
+	ON_MESSAGE(WM_LOGIN, &CRegisterDlg::OnLogin)
 END_MESSAGE_MAP()
 
 
@@ -46,7 +52,7 @@ BOOL CRegisterDlg::OnInitDialog()
 	ModifyStyleEx(WS_EX_CLIENTEDGE, NULL, SWP_DRAWFRAME);
 	mWidth=380*RESOLUTION;
 	mHeight=280*RESOLUTION;
-	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOPMOST, 0, 0,mWidth,mHeight , SWP_SHOWWINDOW | SWP_NOMOVE);
+	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOPMOST, 0, 0,mWidth,mHeight , SWP_NOMOVE);
 	CenterWindow();
 	ModifyStyle(0,WS_CLIPCHILDREN);
 	// IDM_ABOUTBOX 必须在系统命令范围内。
@@ -149,12 +155,6 @@ void CRegisterDlg::OnSize(UINT nType, int cx, int cy)
 
 
 
-
-
-
-
-
-
 void CRegisterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
@@ -173,14 +173,6 @@ BOOL CRegisterDlg::OnEraseBkgnd(CDC* pDC)
 }
 
 
-
-
-void CRegisterDlg::OnSysCommand(UINT nID, LPARAM lParam)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-
-	CDialogEx::OnSysCommand(nID, lParam);
-}
 
 
 

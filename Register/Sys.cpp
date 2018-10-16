@@ -196,12 +196,12 @@ pImage LoadPNGFormResource(int nID)
 	return pImg;  
 }
 
-void ShowError()
+bool ShowError()
 {
 	int error=GetLastError();
 	if (!error)
 	{
-		return;
+		return false;
 	}
 	LPVOID lpMsgBuf;
 	FormatMessage(
@@ -217,7 +217,32 @@ void ShowError()
 	// Process any inserts in lpMsgBuf.
 	// ...
 	// Display the string.
-	MessageBox(NULL,(LPCTSTR)lpMsgBuf, _T("Error"), MB_OK | MB_ICONINFORMATION );
+	MessageBox(NULL,(LPCTSTR)lpMsgBuf, _T("Error"), MB_OK | MB_ICONWARNING |MB_SYSTEMMODAL );
 	// Free the buffer.
 	LocalFree( lpMsgBuf );
+	return true;
+}
+
+
+
+unsigned char GetBufSize(MS_TYPE type)
+{
+	int size=0;
+	switch (type)
+	{
+	case MS_TYPE::REGISTE_RQ:
+		size=sizeof(USER_INFO);
+		break;
+	case MS_TYPE::REGISTE_RE_T:
+		break;
+	case MS_TYPE::REGISTE_RE_F:
+		break;
+	case MS_TYPE::LOGIN_RQ:
+		break;
+	case MS_TYPE::MAX_VAL:
+		break;
+	default:
+		break;
+	}
+	return size;
 }

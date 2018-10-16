@@ -8,10 +8,10 @@
 #include "CheckBox.h"
 #include "LinkButton.h"
 #include "Packdef.h"
-Mediator::Mediator():data_deal(this->mysocket)
+Mediator::Mediator()
 {
 	task_flag=true;
-	mysocket.Create();
+
 }
 
 Mediator::~Mediator()
@@ -92,7 +92,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	pTextButton->SetText(L"登录",sys.font);
 	pTextButton->SetCmd([=]
 	{
-		OnRegiste();
+		OnLogin();
 	});
 	AddTheControl
 
@@ -167,6 +167,21 @@ bool Mediator::GetTask()
 }
 
 
+USER_INFO Mediator::GetUserInfo()
+{
+	USER_INFO info;
+	auto name_ctl=GetEditCtl(IDC_EDIT_USER);
+	auto pw_ctl=GetEditCtl(IDC_EDIT_KEY);
+	if (name_ctl->IsEmpty()||pw_ctl->IsEmpty())
+	{
+		throw "empty";
+		return info;
+	}
+	info.name=name_ctl->GetEditText();
+	info.password=pw_ctl->GetEditText();
+	return info;
+}
+
 CEditEX * Mediator::GetEditCtl(int nID)
 {
 	for (auto i:vec_edit)
@@ -179,13 +194,19 @@ CEditEX * Mediator::GetEditCtl(int nID)
 	return nullptr;
 }
 
-int Mediator::OnRegiste()
+void Mediator::OnLogin()
 {
-	auto name=((CEditEX *)GetEditCtl(IDC_EDIT_USER))->GetEditText();
-	auto password=((CEditEX *)GetEditCtl(IDC_EDIT_KEY))->GetEditText();
-	DATA_PACKAGE data(MS_TYPE::REGISTE_RQ,wstring(name),wstring(password));
-	mysocket.Connect((SOCKADDR*)&sys.addrServer,sizeof(sys.addrServer));
-	ShowError();
-	mysocket.SendMS(data);
+	try
+	{
+		USER_INFO info=GetUserInfo();
+		sys.tools.ConnectServer();
+		sys.tools.DealData(MS_TYPE::LOGIN_RQ,info);
+	}
+	catch(...) 
+	{
+		ShowWarring("请输入用户名和密码");
+		sys.tools.Disconnect();
+		return;
+	}
 }
 

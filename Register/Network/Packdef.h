@@ -12,15 +12,17 @@
 #define _DEF_ROOMBUFFERSIZE 550*1000
 #define _DEF_NUM 10
 #define _DEF_SQLLEN 100
-#define USER_LENGTH 30
+#define USER_LENGTH 20
 using std::wstring;
 
-enum class MS_TYPE
+enum class MS_TYPE :unsigned char
 {
 	REGISTE_RQ,
-	REGISTE_RE,
+	REGISTE_RE_T,
+	REGISTE_RE_F,
 	LOGIN_RQ,
-	LOGIN_RE,
+	LOGIN_RE_T,
+	LOGIN_RE_F,
 	MAX_VAL,
 };
 using std::string;
@@ -95,3 +97,5 @@ struct DATA_PACKAGE
 		this->DATA_PACKAGE::DATA_PACKAGE(MS_TYPE::MAX_VAL,string(),string());
 	}
 };
+
+

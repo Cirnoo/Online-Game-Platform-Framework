@@ -1,6 +1,6 @@
 #pragma once
-#include <memory>
 #include <vector>
+#include "Tool.h"
 #include "Packdef.h"
 //全局常量
 const double RESOLUTION = 1.1;
@@ -21,6 +21,9 @@ const int IDC_NET		 =    ID_BASE+9;
 const int IDC_LINK_1     =    ID_BASE+10;
 const int IDC_LINK_2		 =	  ID_BASE+11;
 const int IDC_LINK_3		 =	  ID_BASE+13;
+const int WM_LOGIN       =    WM_USER+10;
+
+#define ShowWarring(x) MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL );
 typedef  Image* pImage;
 using std::vector;
 class Global
@@ -37,6 +40,7 @@ public:
 	unsigned long  gdiplusToken;
 	sockaddr_in  addrClient,addrServer;
 	USER_INFO  user;
+	CTool tools;
 private:
 	std::vector<pImage> res;
 	void LoadImg();
@@ -61,4 +65,6 @@ void ResizeRect(Rect& rec,int val);
 WCHAR * multiByteToWideChar(const CString pKey);
 extern Global sys;
 
-void ShowError();
+bool ShowError();
+
+unsigned char GetBufSize(MS_TYPE type);

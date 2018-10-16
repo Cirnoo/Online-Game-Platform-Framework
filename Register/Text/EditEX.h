@@ -13,8 +13,8 @@ public:
 	BOOL CreateEditEx(Rect rect,CWnd * pParentWnd,UINT nID,
 		std::vector<Image*> &,bool password=false);
 	void SetDefaultText(CStringW str);
-	CStringW GetEditText();
-
+	wstring GetEditText();
+	bool IsEmpty();
 private:
 	Rect mRect;
 	std::vector<Image *> vec_bg;

@@ -21,13 +21,11 @@ public:
 
 // 实现
 protected:
-	ULONG_PTR           gdiplusToken;
 	HICON m_hIcon;
 
 	// 生成的消息映射函数
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
-//	afx_msg void OnMouseMove(UINT, CPoint);
 	afx_msg HCURSOR OnQueryDragIcon();
 	DECLARE_MESSAGE_MAP()
 public:
@@ -39,11 +37,10 @@ public:
 private:
 	std::vector<CButton *> vt_vec; 
 	CWinThread * thread;
-	CMFCButton *buttonUncom;
 	Mediator mMediator;
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
-	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
-	CButton * temp;
+	afx_msg LRESULT OnLogin(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnMysocket(WPARAM wParam, LPARAM lParam);
 };

@@ -57,11 +57,16 @@ void CEditEX::SetDefaultText(CStringW str)
 
 
 
-CString CEditEX::GetEditText()
+wstring CEditEX::GetEditText()
 {
 	CString str;
 	GetWindowText(str);
 	return str;
+}
+
+bool CEditEX::IsEmpty()
+{
+	return is_empty;
 }
 
 void CEditEX::DrawEdit(Graphics* & g,std::vector<Image*> img)
