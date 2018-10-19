@@ -1,19 +1,19 @@
 
-// RegisterDlg.h : 头文件
+// LoginDlg.h : 头文件
 //
 
 #pragma once
 #include "Mediator.h"
 
-// CRegisterDlg 对话框
-class CRegisterDlg : public CDialogEx
+// CLoginDlg 对话框
+class CLoginDlg : public CDialogEx
 {
 // 构造
 public:
-	CRegisterDlg(CWnd* pParent = NULL);	// 标准构造函数
+	CLoginDlg(CWnd* pParent = NULL);	// 标准构造函数
 
 // 对话框数据
-	enum { IDD = IDD_QQ_DIALOG };
+	enum { IDD = IDD_SIGN_IN };
 
 	protected:
 	virtual void DoDataExchange(CDataExchange* pDX);	// DDX/DDV 支持
@@ -42,5 +42,5 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg LRESULT OnLogin(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnMysocket(WPARAM wParam, LPARAM lParam);
+	virtual BOOL PreTranslateMessage(MSG* pMsg);
 };

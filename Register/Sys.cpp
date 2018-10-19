@@ -82,8 +82,7 @@ void Global::LoadImg()
 
 void Global::InitSockAddr()
 {
-	WSAData wsaData;
-	AfxSocketInit(&wsaData);
+
 	addrClient.sin_family = AF_INET;
 	addrClient.sin_addr.S_un.S_addr = inet_addr(_SERVER_IP);
 	addrClient.sin_port = htons(0);
@@ -230,17 +229,16 @@ unsigned char GetBufSize(MS_TYPE type)
 	int size=0;
 	switch (type)
 	{
-	case MS_TYPE::REGISTE_RQ:
+	case MS_TYPE::REGISTER_RQ:
 		size=sizeof(USER_INFO);
 		break;
-	case MS_TYPE::REGISTE_RE_T:
+	case MS_TYPE::REGISTER_RE_T:
 		break;
-	case MS_TYPE::REGISTE_RE_F:
+	case MS_TYPE::REGISTER_RE_F:
 		break;
 	case MS_TYPE::LOGIN_RQ:
 		break;
-	case MS_TYPE::MAX_VAL:
-		break;
+	
 	default:
 		break;
 	}

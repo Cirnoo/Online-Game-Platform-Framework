@@ -1,10 +1,10 @@
 
-// RegisterDlg.cpp : 实现文件
+// LoginDlg.cpp : 实现文件
 //
 
 #include "stdafx.h"
 #include "Register.h"
-#include "RegisterDlg.h"
+#include "LoginDlg.h"
 #include "afxdialogex.h"
 #include "Sys.h"
 #include "PictureFrame.h"
@@ -12,27 +12,28 @@
 #define new DEBUG_NEW
 #endif
 
-// CRegisterDlg 对话框
+// CLoginDlg 对话框
 
 
-CRegisterDlg::CRegisterDlg(CWnd* pParent /*=NULL*/)
-	: CDialogEx(CRegisterDlg::IDD, pParent)
+CLoginDlg::CLoginDlg(CWnd* pParent /*=NULL*/)
+	: CDialogEx(CLoginDlg::IDD, pParent)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 }
 
-void CRegisterDlg::DoDataExchange(CDataExchange* pDX)
+void CLoginDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
 }
 
 
-afx_msg LRESULT CRegisterDlg::OnLogin(WPARAM wParam, LPARAM lParam)
+afx_msg LRESULT CLoginDlg::OnLogin(WPARAM wParam, LPARAM lParam)
 {
-
+	sys.user=mMediator.GetUserInfo();
+	PostMessage(WM_CLOSE);
 	return 0;
 }
-BEGIN_MESSAGE_MAP(CRegisterDlg, CDialogEx)
+BEGIN_MESSAGE_MAP(CLoginDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_QUERYDRAGICON()
 	ON_WM_CLOSE()
@@ -41,24 +42,23 @@ BEGIN_MESSAGE_MAP(CRegisterDlg, CDialogEx)
 	ON_WM_ERASEBKGND()
 	ON_WM_SYSCOMMAND()
 	ON_WM_MOUSEMOVE()
-	ON_MESSAGE(WM_LOGIN, &CRegisterDlg::OnLogin)
+	ON_MESSAGE(WM_LOGIN, &CLoginDlg::OnLogin)
 END_MESSAGE_MAP()
 
 
-// CRegisterDlg 消息处理程序
+// CLoginDlg 消息处理程序
 
-BOOL CRegisterDlg::OnInitDialog()
+BOOL CLoginDlg::OnInitDialog()
 {
 	ModifyStyleEx(WS_EX_CLIENTEDGE, NULL, SWP_DRAWFRAME);
+	ModifyStyle(0,WS_CLIPCHILDREN);
 	mWidth=380*RESOLUTION;
 	mHeight=280*RESOLUTION;
 	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOPMOST, 0, 0,mWidth,mHeight , SWP_NOMOVE);
 	CenterWindow();
-	ModifyStyle(0,WS_CLIPCHILDREN);
+	
 	// IDM_ABOUTBOX 必须在系统命令范围内。
 	mMediator.InitControl(this);
-	ASSERT((IDM_ABOUTBOX & 0xFFF0) == IDM_ABOUTBOX);
-	ASSERT(IDM_ABOUTBOX < 0xF000);
 	CMenu* pSysMenu = GetSystemMenu(FALSE);
 	if (pSysMenu != NULL)
 	{
@@ -86,7 +86,7 @@ BOOL CRegisterDlg::OnInitDialog()
 //  来绘制该图标。对于使用文档/视图模型的 MFC 应用程序，
 //  这将由框架自动完成。
 
-void CRegisterDlg::OnPaint()
+void CLoginDlg::OnPaint()
 {
 	if (IsIconic())
 	{
@@ -126,14 +126,14 @@ void CRegisterDlg::OnPaint()
 
 //当用户拖动最小化窗口时系统调用此函数取得光标
 //显示。
-HCURSOR CRegisterDlg::OnQueryDragIcon()
+HCURSOR CLoginDlg::OnQueryDragIcon()
 {
 	return static_cast<HCURSOR>(m_hIcon);
 }
 
 
 
-void CRegisterDlg::OnClose()
+void CLoginDlg::OnClose()
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	
@@ -141,7 +141,7 @@ void CRegisterDlg::OnClose()
 }
 
 
-void CRegisterDlg::OnSize(UINT nType, int cx, int cy)
+void CLoginDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
 	CRgn rgn;
@@ -155,7 +155,7 @@ void CRegisterDlg::OnSize(UINT nType, int cx, int cy)
 
 
 
-void CRegisterDlg::OnLButtonDown(UINT nFlags, CPoint point)
+void CLoginDlg::OnLButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 		PostMessage(WM_NCLBUTTONDOWN,
@@ -166,7 +166,7 @@ void CRegisterDlg::OnLButtonDown(UINT nFlags, CPoint point)
 }
 
 
-BOOL CRegisterDlg::OnEraseBkgnd(CDC* pDC)
+BOOL CLoginDlg::OnEraseBkgnd(CDC* pDC)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	return FALSE;
@@ -178,3 +178,34 @@ BOOL CRegisterDlg::OnEraseBkgnd(CDC* pDC)
 
 
 
+
+
+BOOL CLoginDlg::PreTranslateMessage(MSG* pMsg)
+{
+	// TODO: TAB键切换编辑框光标 响应回车键
+	if((pMsg->message == WM_KEYDOWN) && (VK_TAB == pMsg->wParam ||pMsg->wParam ==VK_RETURN))
+	{
+		CWnd *mwnd =  GetFocus();
+		if( NULL != mwnd )
+		{
+			auto edit_name=GetDlgItem(IDC_EDIT_USER);
+			auto edit_key=GetDlgItem(IDC_EDIT_KEY);
+			if(mwnd == edit_name)
+			{
+				edit_key->SetFocus();
+				return TRUE;
+			}
+			else if(VK_TAB == pMsg->wParam)
+			{
+				edit_name->SetFocus();
+				return TRUE;
+			}
+			else //回车登录
+			{
+				mMediator.OnLogin();
+				return TRUE;
+			}
+		}
+	}
+	return CDialogEx::PreTranslateMessage(pMsg);
+}

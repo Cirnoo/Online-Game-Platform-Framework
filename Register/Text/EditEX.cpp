@@ -61,7 +61,7 @@ wstring CEditEX::GetEditText()
 {
 	CString str;
 	GetWindowText(str);
-	return str;
+	return (wstring)str;
 }
 
 bool CEditEX::IsEmpty()
@@ -91,8 +91,8 @@ BEGIN_MESSAGE_MAP(CEditEX, CWnd)
 	ON_WM_MOUSELEAVE()
 	ON_WM_MOUSEMOVE()
 	ON_WM_CTLCOLOR_REFLECT()
-	ON_WM_LBUTTONDOWN()
 	ON_WM_KILLFOCUS()
+	ON_WM_SETFOCUS()
 END_MESSAGE_MAP()
 
 
@@ -102,7 +102,9 @@ END_MESSAGE_MAP()
 
 void CEditEX::ControlRepaint()
 {
-	CRect   rect;
+	//CRect   rect=RectTransform(mRect);
+	//GetWindowRect(&rect);
+	CRect   rect=RectTransform(mRect);
 	GetWindowRect(&rect); 
 	GetParent()-> ScreenToClient(&rect); 
 	GetParent()-> InvalidateRect(&rect);
@@ -141,23 +143,6 @@ HBRUSH CEditEX::CtlColor(CDC* pDC, UINT /*nCtlColor*/)
 }
 
 
-void CEditEX::OnLButtonDown(UINT nFlags, CPoint point)
-{
-	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (is_empty)
-	{
-		SetSel(0,-1);
-		Clear();
-	}
-	is_empty=false;
-	if (is_password)
-	{
-		SetPasswordChar('*');
-	}
-	CEdit::OnLButtonDown(nFlags, point);
-}
-
-
 void CEditEX::OnKillFocus(CWnd* pNewWnd)
 {
 	CEdit::OnKillFocus(pNewWnd);
@@ -177,6 +162,23 @@ void CEditEX::OnKillFocus(CWnd* pNewWnd)
 		{
 			SetPasswordChar('*');
 		}
+	}
+	// TODO: 在此处添加消息处理程序代码
+}
+
+
+void CEditEX::OnSetFocus(CWnd* pOldWnd)
+{
+	CEdit::OnSetFocus(pOldWnd);
+	if (is_empty)
+	{
+		SetSel(0,-1);
+		Clear();
+	}
+	is_empty=false;
+	if (is_password)
+	{
+		SetPasswordChar('*');
 	}
 	// TODO: 在此处添加消息处理程序代码
 }

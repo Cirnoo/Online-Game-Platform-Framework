@@ -14,18 +14,18 @@
 #define _DEF_SQLLEN 100
 #define USER_LENGTH 20
 using std::wstring;
-
+using std::string;
 enum class MS_TYPE :unsigned char
 {
-	REGISTE_RQ,
-	REGISTE_RE_T,
-	REGISTE_RE_F,
+	REGISTER_RQ,
+	REGISTER_RE_T,
+	REGISTER_RE_F,
 	LOGIN_RQ,
 	LOGIN_RE_T,
 	LOGIN_RE_F,
-	MAX_VAL,
+	HEARTBEAT,//ÐÄÌø°ü
 };
-using std::string;
+
 struct USER_BUF
 {
 	wchar_t buf[USER_LENGTH];
@@ -94,7 +94,7 @@ struct DATA_PACKAGE
 	}
 	DATA_PACKAGE()
 	{
-		this->DATA_PACKAGE::DATA_PACKAGE(MS_TYPE::MAX_VAL,string(),string());
+		this->DATA_PACKAGE::DATA_PACKAGE(MS_TYPE::HEARTBEAT,string(),string());
 	}
 };
 

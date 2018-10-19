@@ -1,13 +1,14 @@
 #include "stdafx.h"
 #include "Tool.h"
 #include "MySocket.h"
-#include "Data.h"
 #include "Sys.h"
 bool CTool::ConnectServer()
 {
-	Disconnect();
-	mysocket.Create();
-	mysocket.Connect((SOCKADDR*)&sys.addrServer,sizeof(sys.addrServer));
+	mysocket.SocketInit();
+	if (!mysocket.TestConnect()&&!mysocket.IsConnet())
+	{
+		mysocket.Connect((SOCKADDR*)&sys.addrServer,sizeof(sys.addrServer));
+	}
 	if(ShowError())
 	{
 		Disconnect();
@@ -26,7 +27,7 @@ void CTool::Disconnect()
 
 CTool::CTool(void)
 {
-	mysocket.Create();
+	
 }
 
 
@@ -37,7 +38,7 @@ CTool::~CTool(void)
 
 void CTool::Registe(USER_BUF name,USER_BUF password)
 {
-	DATA_PACKAGE pack(MS_TYPE::REGISTE_RQ,name,password);
+	DATA_PACKAGE pack(MS_TYPE::REGISTER_RQ,name,password);
 	mysocket.SendMS(pack);
 	ShowError();
 
@@ -48,32 +49,44 @@ void CTool::DealData(MS_TYPE type,USER_INFO data)
 	DATA_PACKAGE pack(type,data.name,data.password);
 	switch (type)
 	{
-	case MS_TYPE::REGISTE_RQ:
+	case MS_TYPE::REGISTER_RQ:
 	case MS_TYPE::LOGIN_RQ:
 		{
 			mysocket.SendMS(pack);
 			break;
 		}
 	case MS_TYPE::LOGIN_RE_T:
-		break;
-	case MS_TYPE::LOGIN_RE_F:
-		{
-			ShowWarring("用户名或密码错误");
-		}
-	case MS_TYPE::REGISTE_RE_T:
 		{
 			AfxGetMainWnd()->PostMessageW(WM_LOGIN);
-		}
-	case MS_TYPE::REGISTE_RE_F:
-		{
-			ShowWarring("用户已存在");
-		}
-		default:
 			break;
+		}
+		
+	case MS_TYPE::LOGIN_RE_F:
+		{
+			Warning("用户名或密码错误");
+			break;
+		}
+	case MS_TYPE::REGISTER_RE_T:
+		{
+			AfxGetMainWnd()->PostMessageW(WM_REGISETR);
+			Warning("注册成功");
+			break;
+		}
+	case MS_TYPE::REGISTER_RE_F:
+		{
+			Warning("用户已存在");
+			break;
+		}
+	default:
+		{
+			SetEvent(mysocket.mHeartBeat);
+			break;
+		}
+			
 	}
 }
 
-void CTool::DealData(DATA_PACKAGE pack)
+void CTool::DealData(const DATA_PACKAGE & pack)
 {
 	DealData(pack.ms_type,pack.user);
 }

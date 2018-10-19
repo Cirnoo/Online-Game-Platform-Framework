@@ -199,12 +199,14 @@ void Mediator::OnLogin()
 	try
 	{
 		USER_INFO info=GetUserInfo();
-		sys.tools.ConnectServer();
-		sys.tools.DealData(MS_TYPE::LOGIN_RQ,info);
+		if(sys.tools.ConnectServer())
+		{
+			sys.tools.DealData(MS_TYPE::LOGIN_RQ,info);
+		}	
 	}
 	catch(...) 
 	{
-		ShowWarring("请输入用户名和密码");
+		Warning("请输入用户名和密码");
 		sys.tools.Disconnect();
 		return;
 	}

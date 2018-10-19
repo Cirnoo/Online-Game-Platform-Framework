@@ -8,22 +8,24 @@ const double RESOLUTION = 1.1;
 const int CMD_MINSIZE = 1;
 const int CMD_CLOSE   = 2;
 
-const int ID_BASE		 =	  10000;
-const int IDC_MIN		 =	  ID_BASE+1;
-const int IDC_CLOSE		 =	  ID_BASE+2;
-const int IDC_PIC		 =	  ID_BASE+3;
-const int ID_HEAD_BK		 =	  ID_BASE+4;
-const int IDC_REGISTER   =	  ID_BASE+5;
-const int IDC_EDIT_USER  =	  ID_BASE+6;
-const int IDC_EDIT_KEY   =	  ID_BASE+7;
-const int IDC_CHECK_1    =    ID_BASE+8;
-const int IDC_NET		 =    ID_BASE+9;
-const int IDC_LINK_1     =    ID_BASE+10;
-const int IDC_LINK_2		 =	  ID_BASE+11;
-const int IDC_LINK_3		 =	  ID_BASE+13;
-const int WM_LOGIN       =    WM_USER+10;
-
-#define ShowWarring(x) MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL );
+const int ID_BASE				 =	  10000;
+const int IDC_MIN				 =	  ID_BASE+1;
+const int IDC_CLOSE				 =	  ID_BASE+2;
+const int IDC_PIC				 =	  ID_BASE+3;
+const int ID_HEAD_BK				 =	  ID_BASE+4;
+const int IDC_REGISTER			 =	  ID_BASE+5;
+const int IDC_EDIT_USER			 =	  ID_BASE+6;
+const int IDC_EDIT_KEY			 =	  ID_BASE+7;
+const int IDC_CHECK_1			 =    ID_BASE+8;
+const int IDC_NET				 =    ID_BASE+9;
+const int IDC_LINK_1				 =	  ID_BASE+10;
+const int IDC_LINK_2				 =	  ID_BASE+11;
+const int IDC_LINK_3				 =	  ID_BASE+13;
+const int IDC_EDIT_LOGIN_USER	 =	  ID_BASE+14;
+const int IDC_EDIT_LOGIN_KEY		 =	  ID_BASE+15;
+const int WM_LOGIN				 =    WM_USER+10;//登录消息
+const int WM_REGISETR		     =    WM_USER+11;//注册消息
+#define Warning(x) ::MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL|MB_ICONEXCLAMATION  );
 typedef  Image* pImage;
 using std::vector;
 class Global

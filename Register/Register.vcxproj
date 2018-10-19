@@ -44,11 +44,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;./Network;$(IncludePath)</IncludePath>
+    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;./Network;$(IncludePath);./Network;./RegisterDlg;./LoginDlg</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;$(IncludePath)</IncludePath>
+    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;$(IncludePath);./Network;./RegisterDlg;./LoginDlg</IncludePath>
     <LibraryPath>gdiplus.lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,13 +115,13 @@
     <ClInclude Include="Button\PNGButton.h" />
     <ClInclude Include="Button\TextButton.h" />
     <ClInclude Include="CheckBox\CheckBox.h" />
-    <ClInclude Include="Data.h" />
+    <ClInclude Include="LoginDlg\LoginDlg.h" />
     <ClInclude Include="Mediator\Mediator.h" />
-    <ClInclude Include="MySocket.h" />
+    <ClInclude Include="Network\MySocket.h" />
     <ClInclude Include="Network\Packdef.h" />
     <ClInclude Include="PictureFrame\PictureFrame.h" />
     <ClInclude Include="Register.h" />
-    <ClInclude Include="RegisterDlg.h" />
+    <ClInclude Include="RegisterDlg\RegisterDlg.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Sys.h" />
@@ -136,12 +136,12 @@
     <ClCompile Include="Button\PNGButton.cpp" />
     <ClCompile Include="Button\TextButton.cpp" />
     <ClCompile Include="CheckBox\CheckBox.cpp" />
-    <ClCompile Include="Data.cpp" />
+    <ClCompile Include="LoginDlg\LoginDlg.cpp" />
     <ClCompile Include="Mediator\Mediator.cpp" />
-    <ClCompile Include="MySocket.cpp" />
+    <ClCompile Include="Network\MySocket.cpp" />
     <ClCompile Include="PictureFrame\PictureFrame.cpp" />
     <ClCompile Include="Register.cpp" />
-    <ClCompile Include="RegisterDlg.cpp" />
+    <ClCompile Include="RegisterDlg\RegisterDlg.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>

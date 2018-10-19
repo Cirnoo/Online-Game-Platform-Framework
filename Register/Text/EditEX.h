@@ -32,8 +32,9 @@ protected:
 	afx_msg void OnMouseLeave();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg HBRUSH CtlColor(CDC* /*pDC*/, UINT /*nCtlColor*/);
-	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnKillFocus(CWnd* pNewWnd);
+public:
+	afx_msg void OnSetFocus(CWnd* pOldWnd);
 };
 
 
