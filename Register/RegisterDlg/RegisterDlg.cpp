@@ -41,7 +41,7 @@ void CRegisterDlg::OnRegister()
 	{
 		return ;
 	}
-	DATA_PACKAGE pack(MS_TYPE::REGISTER_RQ,name,key);
+	DATA_PACKAGE pack(MS_TYPE::REGISTER_RQ,USER_INFO(name,key));
 	sys.tools.DealData(pack);
 }
 

@@ -115,6 +115,7 @@
     <ClInclude Include="Button\PNGButton.h" />
     <ClInclude Include="Button\TextButton.h" />
     <ClInclude Include="CheckBox\CheckBox.h" />
+    <ClInclude Include="GameRoom.h" />
     <ClInclude Include="LoginDlg\LoginDlg.h" />
     <ClInclude Include="Mediator\Mediator.h" />
     <ClInclude Include="Network\MySocket.h" />
@@ -136,6 +137,7 @@
     <ClCompile Include="Button\PNGButton.cpp" />
     <ClCompile Include="Button\TextButton.cpp" />
     <ClCompile Include="CheckBox\CheckBox.cpp" />
+    <ClCompile Include="GameRoom.cpp" />
     <ClCompile Include="LoginDlg\LoginDlg.cpp" />
     <ClCompile Include="Mediator\Mediator.cpp" />
     <ClCompile Include="Network\MySocket.cpp" />

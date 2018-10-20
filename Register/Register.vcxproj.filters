@@ -55,6 +55,9 @@
     <Filter Include="注册器">
       <UniqueIdentifier>{5455689b-0c41-4f33-87fe-e8cd241a3144}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameRoom">
+      <UniqueIdentifier>{7d43170e-7312-47dc-aa19-cd79e6026d00}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -117,6 +120,9 @@
     <ClInclude Include="RegisterDlg\RegisterDlg.h">
       <Filter>注册器</Filter>
     </ClInclude>
+    <ClInclude Include="GameRoom.h">
+      <Filter>GameRoom</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Register.cpp">
@@ -166,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="RegisterDlg\RegisterDlg.cpp">
       <Filter>注册器</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRoom.cpp">
+      <Filter>GameRoom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

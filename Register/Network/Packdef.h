@@ -15,6 +15,7 @@
 #define USER_LENGTH 20
 using std::wstring;
 using std::string;
+
 enum class MS_TYPE :unsigned char
 {
 	REGISTER_RQ,
@@ -23,6 +24,8 @@ enum class MS_TYPE :unsigned char
 	LOGIN_RQ,
 	LOGIN_RE_T,
 	LOGIN_RE_F,
+	ADD_ROOM,
+	GET_ROOM_LIST,
 	HEARTBEAT,//ÐÄÌø°ü
 };
 
@@ -47,14 +50,14 @@ struct USER_BUF
 		wstring t=s2ws(str);
 		this->USER_BUF::USER_BUF(t);
 	}
-	void operator=(const USER_BUF & u )
+	/*void operator=(const USER_BUF & u )
 	{
 		memcpy(buf,u.buf,USER_LENGTH);
 	}
 	void operator=(const wstring & str)
 	{
 		str.copy(buf, str.size(), 0);
-	}
+	}*/
 	wstring GetStr()
 	{
 		wstring str=wstring(buf);
@@ -70,32 +73,67 @@ struct USER_BUF
 		return w_str;
 	}
 };
+
+
 struct USER_INFO
 {
 	USER_BUF name;
 	USER_BUF password;
+	USER_INFO()
+	{
+		name=L"";
+		password=L"";
+	}
+	USER_INFO(USER_BUF n,USER_BUF p)
+	{
+		name=n;password=p;
+	}
 };
-
+struct ROOM_INFO
+{
+	USER_BUF master,name;
+	unsigned char num;
+};
+const int MAX_BUF_SIZE=sizeof(ROOM_INFO);
+struct DATA_BUF
+{
+	char buf[MAX_BUF_SIZE];
+	DATA_BUF()
+	{
+		memset(buf,MAX_BUF_SIZE,0);
+	}
+	template  <class T>
+	DATA_BUF(const T & u)
+	{
+		for(int i=0;i<sizeof(u);i++)
+		{
+			buf[i]=(*((char *)&u+i));
+		}
+	}
+	/*template  <class T>
+	void operator=(const T & u )
+	{
+		for(int i=0;i<sizeof(u);i++)
+		{
+			buf[i]=(*((char *)&u+i));
+		}
+	}*/
+};
 struct DATA_PACKAGE
 {
 	MS_TYPE ms_type;
-	USER_INFO user;
-	DATA_PACKAGE(MS_TYPE type,USER_BUF name, USER_BUF password)
+	DATA_BUF buf;
+	template  <class T>
+	DATA_PACKAGE(MS_TYPE type,T & u)
 	{
 		ms_type=type;
-		user.name=name;
-		user.password=password;
-	}
-	DATA_PACKAGE(MS_TYPE type,string name, string password)
-	{
-		ms_type=type;
-		user.name=name;
-		user.password=password;
+		buf=u;
 	}
 	DATA_PACKAGE()
 	{
-		this->DATA_PACKAGE::DATA_PACKAGE(MS_TYPE::HEARTBEAT,string(),string());
+		this->DATA_PACKAGE::DATA_PACKAGE(MS_TYPE::HEARTBEAT,USER_INFO());
 	}
 };
+
 
 

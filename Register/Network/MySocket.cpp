@@ -83,7 +83,7 @@ void CMySocket::SocketInit()
 	if (!is_init)
 	{
 		WSAData wsaData;
-		if (!AfxSocketInit())
+		if (!AfxSocketInit(&wsaData))
 		{
 			AfxMessageBox(_T("Failed to Initialize Sockets"), MB_OK | MB_ICONSTOP);
 		}
@@ -116,7 +116,7 @@ unsigned _stdcall CMySocket::HeartBeatThreadProc(LPVOID lpParam)
 		{
 			pthis->is_connect=true;
 		}
-		Sleep(2000);
+		Sleep(3000);
 	}
 	return 0;
 }

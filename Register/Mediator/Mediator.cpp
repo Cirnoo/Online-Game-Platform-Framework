@@ -199,9 +199,10 @@ void Mediator::OnLogin()
 	try
 	{
 		USER_INFO info=GetUserInfo();
+		DATA_BUF a(info);
 		if(sys.tools.ConnectServer())
 		{
-			sys.tools.DealData(MS_TYPE::LOGIN_RQ,info);
+			sys.tools.DealData(MS_TYPE::LOGIN_RQ,(DATA_BUF)info);
 		}	
 	}
 	catch(...) 
