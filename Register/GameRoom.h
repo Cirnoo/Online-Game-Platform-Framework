@@ -17,9 +17,11 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV Ö§³Ö
-	void GetRoomList();
+	afx_msg LRESULT OnUpdateRoom(WPARAM wParam, LPARAM lParam);
 	DECLARE_MESSAGE_MAP()
 public:
 	CListCtrl m_room_list;
 	virtual BOOL OnInitDialog();
+	afx_msg LRESULT OnAddRoom(WPARAM wParam, LPARAM lParam);
+	afx_msg void OnBnClickedCreateRoom();
 };

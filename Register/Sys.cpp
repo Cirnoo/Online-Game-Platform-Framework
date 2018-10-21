@@ -39,6 +39,8 @@ Global::Global()
 		DEFAULT_QUALITY,			// 逻辑字体与输出设备的实际
 		DEFAULT_PITCH | FF_SWISS,	// 字体间距和字体集
 		L"宋体");					// 字体名称
+	user.name=L"沙包";
+	user.password=L"";
 }
 
 Global::~Global()
@@ -219,7 +221,7 @@ bool ShowError()
 	MessageBox(NULL,(LPCTSTR)lpMsgBuf, _T("Error"), MB_OK | MB_ICONWARNING |MB_SYSTEMMODAL );
 	// Free the buffer.
 	LocalFree( lpMsgBuf );
-	return true;
+	return error;
 }
 
 

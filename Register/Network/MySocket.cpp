@@ -48,10 +48,6 @@ void CMySocket::OnReceive(int nErrorCode)
 
 bool CMySocket::TestConnect()
 {
-	if (is_connect)
-	{
-		Close();
-	}
 	DATA_PACKAGE test;
 	if(SendMS(test)<0)
 	{
@@ -90,6 +86,7 @@ void CMySocket::SocketInit()
 		Create();
 		is_init=true;
 	}	
+
 }
 
 void CMySocket::KeepAlive()

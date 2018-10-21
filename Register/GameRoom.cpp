@@ -28,32 +28,20 @@ void CGameRoom::DoDataExchange(CDataExchange* pDX)
 }
 
 
-void CGameRoom::GetRoomList()
+LRESULT CGameRoom::OnUpdateRoom(WPARAM wParam, LPARAM lParam)
 {
+	sys.tools.ConnectServer();
 	m_room_list.DeleteAllItems();
 	DATA_PACKAGE pack;
 	pack.ms_type=MS_TYPE::GET_ROOM_LIST;
 	sys.tools.DealData(pack);
-	Sleep(100);
-	int cnt=0;
-	if(sys.tools.RecieveData(&cnt,sizeof(int))<=0)
-	{
-		Warning("房间数据接收失败")
-	}
-	for (int i=0;i<cnt;i++)
-	{
-		ROOM_INFO info;
-		sys.tools.RecieveData(&info,sizeof(info));
-		m_room_list.InsertItem(i,L"");
-		m_room_list.SetItemText(i,1,info.name.GetStr().c_str());
-		m_room_list.SetItemText(i,1,info.master.GetStr().c_str());
-		wchar_t num;
-		_i64tow_s(info.num,&num,1,10);
-		m_room_list.SetItemText(i,1,&num);
-	}
+	return TRUE;
 }
 
 BEGIN_MESSAGE_MAP(CGameRoom, CDialogEx)
+	ON_BN_CLICKED(IDC_CREATE_ROOM, &CGameRoom::OnBnClickedCreateRoom)
+	ON_MESSAGE(WM_ADD_ROOM, &CGameRoom::OnAddRoom)
+	ON_MESSAGE(WM_UPDATE_ROOM, &CGameRoom::OnUpdateRoom)
 END_MESSAGE_MAP()
 
 
@@ -67,5 +55,34 @@ BOOL CGameRoom::OnInitDialog()
 	m_room_list.InsertColumn(1,_T("房主ID"),0,100);
 	m_room_list.InsertColumn(2,_T("房间人数"),0,100);
 	m_room_list.SetExtendedStyle(LVS_EX_FULLROWSELECT);
+	OnUpdateRoom(0,0);
 	return TRUE;
+}
+
+
+
+LRESULT CGameRoom::OnAddRoom(WPARAM wParam, LPARAM lParam)
+{
+	auto * pack=(DATA_PACKAGE *)wParam;
+	ROOM_LIST_INFO * info=(ROOM_LIST_INFO *)&pack->buf;
+	m_room_list.InsertItem(0,L"");
+	m_room_list.SetItemText(0,0,info->name.GetStr().c_str());
+	m_room_list.SetItemText(0,1,info->master.GetStr().c_str());
+	WCHAR num[2];
+	wsprintfW(num, L"%d", info->num);
+	m_room_list.SetItemText(0,2,num);
+	return TRUE;
+}
+
+
+void CGameRoom::OnBnClickedCreateRoom()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	DATA_PACKAGE pack;
+	pack.ms_type=MS_TYPE::CREATE_ROOM;
+	ROOM_LIST_INFO info;
+	info.master=L"123";
+	info.name=L"121";
+	pack.buf=info;
+	sys.tools.DealData(pack);
 }

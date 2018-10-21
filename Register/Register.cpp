@@ -7,6 +7,7 @@
 #include "LoginDlg.h"
 #include "Sys.h"
 #include "RegisterDlg.h"
+#include "GameRoom.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -75,7 +76,8 @@ BOOL CRegisterApp::InitInstance()
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
 	//CLoginDlg dlg;
-	CRegisterDlg dlg;
+	//CRegisterDlg dlg;
+	CGameRoom dlg;
 	m_pMainWnd = &dlg;
 	
 	INT_PTR nResponse = dlg.DoModal();
