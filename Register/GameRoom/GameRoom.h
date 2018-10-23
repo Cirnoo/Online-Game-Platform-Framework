@@ -24,4 +24,5 @@ public:
 	virtual BOOL OnInitDialog();
 	afx_msg LRESULT OnAddRoom(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedCreateRoom();
+	afx_msg void OnNMDblclkRoomList(NMHDR *pNMHDR, LRESULT *pResult);
 };

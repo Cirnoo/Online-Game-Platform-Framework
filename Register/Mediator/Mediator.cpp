@@ -8,6 +8,7 @@
 #include "CheckBox.h"
 #include "LinkButton.h"
 #include "Packdef.h"
+#include "Settingdlg.h"
 Mediator::Mediator()
 {
 	task_flag=true;
@@ -100,6 +101,11 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	GetControl(CTextButton)
 	pTextButton->Create(rec,pParentWnd,IDC_NET,sys.vec_bt_default);
 	pTextButton->SetText(L"ÉèÖÃ",sys.font);
+	pTextButton->SetCmd([=]
+	{
+		CSettingDlg dlg;
+		dlg.DoModal();
+	});
 	AddTheControl	
 
 	rec=Rect(112*RESOLUTION,213*RESOLUTION,sys.vec_checkbox[0]->GetWidth(),sys.vec_checkbox[0]->GetHeight());
@@ -199,10 +205,12 @@ void Mediator::OnLogin()
 	try
 	{
 		USER_INFO info=GetUserInfo();
-		DATA_BUF a(info);
+		DATA_PACKAGE pack;
+		pack.ms_type=MS_TYPE::LOGIN_RQ;
+		pack.buf=info;
 		if(sys.tools.ConnectServer())
 		{
-			sys.tools.DealData(MS_TYPE::LOGIN_RQ,(DATA_BUF)info);
+			sys.tools.DealData(pack);
 		}	
 	}
 	catch(...) 

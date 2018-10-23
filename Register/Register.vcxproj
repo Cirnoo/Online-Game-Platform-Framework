@@ -115,8 +115,10 @@
     <ClInclude Include="Button\PNGButton.h" />
     <ClInclude Include="Button\TextButton.h" />
     <ClInclude Include="CheckBox\CheckBox.h" />
-    <ClInclude Include="GameRoom.h" />
+    <ClInclude Include="GameDlg.h" />
+    <ClInclude Include="GameRoom\GameRoom.h" />
     <ClInclude Include="LoginDlg\LoginDlg.h" />
+    <ClInclude Include="LoginDlg\SettingDlg.h" />
     <ClInclude Include="Mediator\Mediator.h" />
     <ClInclude Include="Network\MySocket.h" />
     <ClInclude Include="Network\Packdef.h" />
@@ -137,8 +139,10 @@
     <ClCompile Include="Button\PNGButton.cpp" />
     <ClCompile Include="Button\TextButton.cpp" />
     <ClCompile Include="CheckBox\CheckBox.cpp" />
-    <ClCompile Include="GameRoom.cpp" />
+    <ClCompile Include="GameDlg.cpp" />
+    <ClCompile Include="GameRoom\GameRoom.cpp" />
     <ClCompile Include="LoginDlg\LoginDlg.cpp" />
+    <ClCompile Include="LoginDlg\SettingDlg.cpp" />
     <ClCompile Include="Mediator\Mediator.cpp" />
     <ClCompile Include="Network\MySocket.cpp" />
     <ClCompile Include="PictureFrame\PictureFrame.cpp" />
@@ -170,6 +174,10 @@
     <Image Include="res\CHECK_BOX.png" />
     <Image Include="res\EDIT.png" />
     <Image Include="res\favicon.ico" />
+    <Image Include="res\game\close.png" />
+    <Image Include="res\game\game_bg.png" />
+    <Image Include="res\game\minus.png" />
+    <Image Include="res\game_bg.png" />
     <Image Include="res\head_bk.png" />
     <Image Include="res\mask.png" />
     <Image Include="res\Register.ico" />

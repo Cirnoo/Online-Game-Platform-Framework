@@ -7,7 +7,8 @@
 #include "LoginDlg.h"
 #include "Sys.h"
 #include "RegisterDlg.h"
-#include "GameRoom.h"
+#include "SettingDlg.h"
+#include "GameDlg.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -77,7 +78,8 @@ BOOL CRegisterApp::InitInstance()
 
 	//CLoginDlg dlg;
 	//CRegisterDlg dlg;
-	CGameRoom dlg;
+	//CGameRoom dlg;
+	CGameDlg dlg(L"123");
 	m_pMainWnd = &dlg;
 	
 	INT_PTR nResponse = dlg.DoModal();

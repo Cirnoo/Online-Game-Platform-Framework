@@ -36,18 +36,19 @@ public:
 	Global();
 	~Global();
 	
-	pImage back,mask,cirno,head_bk;
+	pImage back,mask,cirno,head_bk,game_bg;
 	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default,vec_edit,vec_checkbox;
 	Gdiplus::FontFamily * fontfamily;
 	Gdiplus::Font *font;
 	CFont * cfont;
 	unsigned long  gdiplusToken;
-	sockaddr_in  addrClient,addrServer;
+	sockaddr_in  addrServer;
 	USER_INFO  user;
 	CTool tools;
 private:
 	std::vector<pImage> res;
 	void LoadImg();
+	void LoadImg(pImage & img,int nId,bool resize=true);
 	void InitSockAddr();
 };
 

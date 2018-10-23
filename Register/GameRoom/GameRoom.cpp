@@ -34,7 +34,10 @@ LRESULT CGameRoom::OnUpdateRoom(WPARAM wParam, LPARAM lParam)
 	m_room_list.DeleteAllItems();
 	DATA_PACKAGE pack;
 	pack.ms_type=MS_TYPE::GET_ROOM_LIST;
-	sys.tools.DealData(pack);
+	if(!sys.tools.DealData(pack))
+	{
+		Warning("房间信息获取失败");
+	}
 	return TRUE;
 }
 
@@ -42,6 +45,7 @@ BEGIN_MESSAGE_MAP(CGameRoom, CDialogEx)
 	ON_BN_CLICKED(IDC_CREATE_ROOM, &CGameRoom::OnBnClickedCreateRoom)
 	ON_MESSAGE(WM_ADD_ROOM, &CGameRoom::OnAddRoom)
 	ON_MESSAGE(WM_UPDATE_ROOM, &CGameRoom::OnUpdateRoom)
+	ON_NOTIFY(NM_DBLCLK, IDC_ROOM_LIST, &CGameRoom::OnNMDblclkRoomList)
 END_MESSAGE_MAP()
 
 
@@ -85,4 +89,16 @@ void CGameRoom::OnBnClickedCreateRoom()
 	info.name=L"121";
 	pack.buf=info;
 	sys.tools.DealData(pack);
+}
+
+
+
+
+
+void CGameRoom::OnNMDblclkRoomList(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
+	auto room_master=m_room_list.GetItemText(pNMItemActivate->iItem,1);
+	//this->PostMessage(WM_CLOSE);
+	exit(0);
 }

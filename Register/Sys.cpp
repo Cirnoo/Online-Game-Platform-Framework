@@ -3,12 +3,7 @@
 #include "resource.h"
 #include "Packdef.h"
 
-#define ResFromResource TRUE
-#if ResFromResource == TRUE
-	#define LODE(a,b) a=ResizeImg(LoadPNGFormResource(b)); res.push_back(a); 
-#else
-	#define LODE(a,b) a=ResizeImg(Gdiplus::Image::FromFile(_T(b))); res.push_back(a);
-#endif
+
 
 #define INIT_RES(x) pImage x=NULL; 
 
@@ -58,36 +53,34 @@ Global::~Global()
 
 void Global::LoadImg()
 {
-#if ResFromResource == TRUE
-	LODE(back,IDB_BK);
-	LODE(mask,IDB_MASK);
-	LODE(cirno,IDB_9);
-	LODE(head_bk,IDB_HEAD_BK);
+	LoadImg(back,IDB_BK);
+	LoadImg(mask,IDB_MASK);
+	LoadImg(cirno,IDB_9);
+	LoadImg(head_bk,IDB_HEAD_BK);
+	LoadImg(game_bg,IDB_GAME_BG,false);
 	vec_bt_min=GetImageGroup(IDB_BT_MIN,1,4);
 	vec_bt_close=GetImageGroup(IDB_BT_CLOSE,1,4);
 	vec_bt_default=GetImageGroup(IDB_BT_DEFAULT,1,4);
 	vec_edit=GetImageGroup(IDB_EDIT,1,2);
 	vec_checkbox=GetImageGroup(IDB_CHECK_BOX,1,6);
-#else
-	LODE(back,"res\\bk.bmp");
-	LODE(mask,"res\\mask.png");
-	LODE(cirno,"res\\9.png");
-	LODE(head_bk,"res\\head_bk.png");
-	vec_bt_min=GetImageGroup(L"res\\BT_MIN.png",1,4);
-	vec_bt_close=GetImageGroup(L"res\\BT_CLOSE.png",1,4);
-	vec_bt_default=GetImageGroup(L"res\\BT_DEFAULT.png",1,4);
-	vec_edit=GetImageGroup(L"res\\EDIT.png",1,2);
-	vec_checkbox=GetImageGroup(L"res\\CHECK_BOX.png",1,6);
-#endif
 }
 
 
+void Global::LoadImg(pImage & img,int nId,bool resize/*=true*/)
+{
+	if (resize)
+	{
+		img=ResizeImg(LoadPNGFormResource(nId));
+	}
+	else
+	{
+		img=LoadPNGFormResource(nId);
+	}
+	res.push_back(img);
+}
+
 void Global::InitSockAddr()
 {
-
-	addrClient.sin_family = AF_INET;
-	addrClient.sin_addr.S_un.S_addr = inet_addr(_SERVER_IP);
-	addrClient.sin_port = htons(0);
 
 	addrServer.sin_family = AF_INET;
 	addrServer.sin_addr.S_un.S_addr = inet_addr(_SERVER_IP);
@@ -193,8 +186,8 @@ pImage LoadPNGFormResource(int nID)
 	// free/release stuff  
 	GlobalUnlock(m_hMem);  
 	pstm->Release();  
-	FreeResource(lpRsrc);  
-	return pImg;  
+	FreeResource(lpRsrc); 
+	return pImg;
 }
 
 bool ShowError()

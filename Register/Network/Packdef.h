@@ -33,6 +33,20 @@ enum class MS_TYPE :unsigned char
 	UPDATE_ROOM,
 	HEARTBEAT,//ÐÄÌø°ü
 };
+enum class CardType : unsigned char
+{
+	Heart		,
+	Spade		,
+	Diamond		,
+	Club			,
+	Red_Joker	,
+	Black_Joker ,
+};
+struct Cards
+{
+	CardType c_type;
+	char val;
+};
 
 struct USER_BUF
 {

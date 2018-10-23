@@ -9,6 +9,31 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Network">
+      <UniqueIdentifier>{9d108b24-86ee-4745-8c8d-374d58b90c00}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\协议">
+      <UniqueIdentifier>{b23da55a-a1c8-4b3c-b3d8-0f24a19cb005}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Network\Net">
+      <UniqueIdentifier>{1dc931f8-172d-4bfb-8d5d-5213607f20a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="数据处理">
+      <UniqueIdentifier>{dea4877d-cbeb-4a04-b2e3-9aa1c47d2a1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gloabal">
+      <UniqueIdentifier>{f396d58a-bd23-4ff8-b5cf-8b5d7bce7aee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Gloabal\资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="登录器">
+      <UniqueIdentifier>{f51ae878-3192-4be2-b4d2-828fbd94eb3c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="注册器">
+      <UniqueIdentifier>{5455689b-0c41-4f33-87fe-e8cd241a3144}</UniqueIdentifier>
+    </Filter>
     <Filter Include="UI">
       <UniqueIdentifier>{49a2b416-af9c-45cc-844d-6fa8b4295ca2}</UniqueIdentifier>
     </Filter>
@@ -27,35 +52,13 @@
     <Filter Include="UI\Text">
       <UniqueIdentifier>{ba92635b-af07-42a0-81fd-c1b5bfa35839}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Network">
-      <UniqueIdentifier>{9d108b24-86ee-4745-8c8d-374d58b90c00}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Network\协议">
-      <UniqueIdentifier>{b23da55a-a1c8-4b3c-b3d8-0f24a19cb005}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Network\Net">
-      <UniqueIdentifier>{1dc931f8-172d-4bfb-8d5d-5213607f20a7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Mediator">
+    <Filter Include="UI\Mediator">
       <UniqueIdentifier>{a8f1d289-3645-4c39-b342-e8844ca447dc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="数据处理">
-      <UniqueIdentifier>{dea4877d-cbeb-4a04-b2e3-9aa1c47d2a1b}</UniqueIdentifier>
+    <Filter Include="Game">
+      <UniqueIdentifier>{3ae55afc-9080-4579-a95c-549181507697}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Gloabal">
-      <UniqueIdentifier>{f396d58a-bd23-4ff8-b5cf-8b5d7bce7aee}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Gloabal\资源文件">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="登录器">
-      <UniqueIdentifier>{f51ae878-3192-4be2-b4d2-828fbd94eb3c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="注册器">
-      <UniqueIdentifier>{5455689b-0c41-4f33-87fe-e8cd241a3144}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GameRoom">
+    <Filter Include="Game\GameRoom">
       <UniqueIdentifier>{7d43170e-7312-47dc-aa19-cd79e6026d00}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -79,7 +82,7 @@
       <Filter>UI\Button</Filter>
     </ClInclude>
     <ClInclude Include="Mediator\Mediator.h">
-      <Filter>Mediator</Filter>
+      <Filter>UI\Mediator</Filter>
     </ClInclude>
     <ClInclude Include="BaseControl\BaseControl.h">
       <Filter>UI\BaseControl</Filter>
@@ -120,8 +123,14 @@
     <ClInclude Include="RegisterDlg\RegisterDlg.h">
       <Filter>注册器</Filter>
     </ClInclude>
-    <ClInclude Include="GameRoom.h">
-      <Filter>GameRoom</Filter>
+    <ClInclude Include="LoginDlg\SettingDlg.h">
+      <Filter>登录器</Filter>
+    </ClInclude>
+    <ClInclude Include="GameDlg.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameRoom\GameRoom.h">
+      <Filter>Game\GameRoom</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -138,7 +147,7 @@
       <Filter>UI\Button</Filter>
     </ClCompile>
     <ClCompile Include="Mediator\Mediator.cpp">
-      <Filter>Mediator</Filter>
+      <Filter>UI\Mediator</Filter>
     </ClCompile>
     <ClCompile Include="BaseControl\BaseControl.cpp">
       <Filter>UI\BaseControl</Filter>
@@ -170,11 +179,17 @@
     <ClCompile Include="LoginDlg\LoginDlg.cpp">
       <Filter>登录器</Filter>
     </ClCompile>
+    <ClCompile Include="LoginDlg\SettingDlg.cpp">
+      <Filter>登录器</Filter>
+    </ClCompile>
     <ClCompile Include="RegisterDlg\RegisterDlg.cpp">
       <Filter>注册器</Filter>
     </ClCompile>
-    <ClCompile Include="GameRoom.cpp">
-      <Filter>GameRoom</Filter>
+    <ClCompile Include="GameDlg.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameRoom\GameRoom.cpp">
+      <Filter>Game\GameRoom</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -225,6 +240,18 @@
       <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\bk.png">
+      <Filter>Gloabal\资源文件</Filter>
+    </Image>
+    <Image Include="res\game_bg.png">
+      <Filter>Gloabal\资源文件</Filter>
+    </Image>
+    <Image Include="res\game\close.png">
+      <Filter>Gloabal\资源文件</Filter>
+    </Image>
+    <Image Include="res\game\game_bg.png">
+      <Filter>Gloabal\资源文件</Filter>
+    </Image>
+    <Image Include="res\game\minus.png">
       <Filter>Gloabal\资源文件</Filter>
     </Image>
   </ItemGroup>
