@@ -1,6 +1,6 @@
 // GameDlg.cpp : 实现文件
 //
-
+#include <algorithm>
 #include "stdafx.h"
 #include "Register.h"
 #include "GameDlg.h"
@@ -25,20 +25,7 @@ CGameDlg::CGameDlg(CString master)
 {
 	m_master=master;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-
-	//初始化54张牌
-	for (int i=0;i<3;i++)
-	{
-		for (int j=0;j<13;j++)
-		{
-			Cards card;
-			card.c_type=(CardType)i;
-			card.val=j+1;
-			m_card[i*13+j]=card;
-		}
-	}
-	m_card[52].c_type=CardType::Red_Joker;
-	m_card[53].c_type=CardType::Black_Joker;
+	
 }
 
 CGameDlg::~CGameDlg()
@@ -80,6 +67,22 @@ void CGameDlg::InitCtrl()
 
 }
 
+void CGameDlg::RandomShuffle()
+{
+}
+
+void CGameDlg::SortHand()
+{
+}
+
+void CGameDlg::ShowCtrl(Graphics* & g)
+{
+	for (int i=0;i<3;i++)
+	{
+		m_text->Show(g);
+	}
+}
+
 void CGameDlg::OnPaint()
 {
 	HDC hdc = ::GetDC(this->m_hWnd);
@@ -87,6 +90,7 @@ void CGameDlg::OnPaint()
 	Bitmap bmp(this->m_width,this->m_height);
 	Graphics* gBuf=Graphics::FromImage(&bmp);
 	gBuf->DrawImage(sys.game_bg,0,0,m_width,m_height);
+	ShowCtrl(gBuf);
 	graphics.DrawImage(&bmp,0,0);
 	::ReleaseDC(m_hWnd,hdc);
 	CDialogEx::OnPaint();
@@ -96,12 +100,12 @@ void CGameDlg::OnPaint()
 void CGameDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
-	//CRgn rgn;
-	//CRect rc;
-	//GetWindowRect(&rc); //获得窗口矩形
-	//rc -= rc.TopLeft();
-	//rgn.CreateRoundRectRgn(rc.left, rc.top, rc.right, rc.bottom, 10, 10); //根据窗口矩形创建一个圆角矩形最后两个是形成圆角的大小
-	//SetWindowRgn(rgn, TRUE);
+	CRgn rgn;
+	CRect rc;
+	GetWindowRect(&rc); //获得窗口矩形
+	rc -= rc.TopLeft();
+	rgn.CreateRoundRectRgn(rc.left, rc.top, rc.right, rc.bottom, 10, 10); //根据窗口矩形创建一个圆角矩形最后两个是形成圆角的大小
+	SetWindowRgn(rgn, TRUE);
 }
 
 

@@ -33,21 +33,35 @@ enum class MS_TYPE :unsigned char
 	UPDATE_ROOM,
 	HEARTBEAT,//ÐÄÌø°ü
 };
+
 enum class CardType : unsigned char
 {
 	Heart		,
 	Spade		,
 	Diamond		,
-	Club			,
-	Red_Joker	,
-	Black_Joker ,
+	Club		    ,
+	Joker	    ,
+};
+enum class PokerPoints : unsigned char
+{
+	Three=3,Four,Five,Six,Seven,Eight,Nine,Ten,jack,Queen,King,Ace,Two,Black_Joker,Red_Joker 
+};
+struct Poker
+{
+	CardType c_type;
+	PokerPoints point;
+	Poker(){}
+	Poker(CardType t,PokerPoints p)
+	{
+		c_type=t;
+		point=p;
+	}
 };
 struct Cards
 {
 	CardType c_type;
-	char val;
+	PokerPoints point;
 };
-
 struct USER_BUF
 {
 	wchar_t buf[USER_LENGTH];

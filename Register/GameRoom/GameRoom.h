@@ -1,7 +1,7 @@
 #pragma once
 #include "afxcmn.h"
 
-
+#include "Text.h"
 // CGameRoom 对话框
 
 class CGameRoom : public CDialogEx
@@ -17,10 +17,12 @@ public:
 
 protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-	afx_msg LRESULT OnUpdateRoom(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnUpdateRoom(WPARAM wParam=NULL, LPARAM lParam=NULL);
+	
 	DECLARE_MESSAGE_MAP()
 public:
 	CListCtrl m_room_list;
+	
 	virtual BOOL OnInitDialog();
 	afx_msg LRESULT OnAddRoom(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnBnClickedCreateRoom();

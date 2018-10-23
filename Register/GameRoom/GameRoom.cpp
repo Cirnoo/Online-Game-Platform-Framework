@@ -9,6 +9,15 @@
 
 // CGameRoom 对话框
 
+namespace PlayerPosition
+{
+	enum PlayerPosition
+	{
+		Front,Left,Right
+	};
+}
+using namespace PlayerPosition;
+
 IMPLEMENT_DYNAMIC(CGameRoom, CDialogEx)
 
 CGameRoom::CGameRoom(CWnd* pParent /*=NULL*/)
@@ -41,6 +50,8 @@ LRESULT CGameRoom::OnUpdateRoom(WPARAM wParam, LPARAM lParam)
 	return TRUE;
 }
 
+
+
 BEGIN_MESSAGE_MAP(CGameRoom, CDialogEx)
 	ON_BN_CLICKED(IDC_CREATE_ROOM, &CGameRoom::OnBnClickedCreateRoom)
 	ON_MESSAGE(WM_ADD_ROOM, &CGameRoom::OnAddRoom)
@@ -59,7 +70,8 @@ BOOL CGameRoom::OnInitDialog()
 	m_room_list.InsertColumn(1,_T("房主ID"),0,100);
 	m_room_list.InsertColumn(2,_T("房间人数"),0,100);
 	m_room_list.SetExtendedStyle(LVS_EX_FULLROWSELECT);
-	OnUpdateRoom(0,0);
+	OnUpdateRoom();
+	Gdiplus::Rect rec(300,400,30,20);
 	return TRUE;
 }
 
