@@ -24,7 +24,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV ÷ß≥÷
 	Cards m_card[54];//13*4+2=54’≈≈∆
 	std::vector<Cards> poker_in_hand;
-	void ShowCtrl(Graphics* & g);
+	void ShowCtrl(Gdiplus::Graphics *  g);
 	CText m_text[3];
 	DECLARE_MESSAGE_MAP()
 public:

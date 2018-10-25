@@ -1,7 +1,7 @@
 // GameDlg.cpp : 实现文件
 //
-#include <algorithm>
 #include "stdafx.h"
+#include <algorithm>
 #include "Register.h"
 #include "GameDlg.h"
 #include "afxdialogex.h"
@@ -11,14 +11,15 @@
 
 IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
-//#define Heart			m_card[0];	  //红桃
-//#define Spade			m_card[1];	  //黑桃
-//#define Diamond			m_card[2];	  //方片
-//#define Club				m_card[3];	  //梅花
-//#define Red_Joker		m_card[4][0]; //大王
-//#define Black_Joker		m_card[4][1]; //小王
+namespace PlayerPosition
+{
+	enum PlayerPosition
+	{
+		Front,Left,Right
+	};
+}
 
-
+using namespace PlayerPosition;
 const int a=sizeof(Cards);
 CGameDlg::CGameDlg(CString master)
 	: CDialogEx(CGameDlg::IDD)
@@ -38,7 +39,6 @@ void CGameDlg::DoDataExchange(CDataExchange* pDX)
 	CDialogEx::DoDataExchange(pDX);
 }
 
-
 BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_WM_PAINT()
 	ON_WM_SIZE()
@@ -54,8 +54,9 @@ BOOL CGameDlg::OnInitDialog()
 	CDialogEx::OnInitDialog();
 	m_width=720*1.4;
 	m_height=540*1.4;
-	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOPMOST, 0, 0,m_width,m_height,SWP_NOMOVE);
+	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOP , 0, 0,m_width,m_height,SWP_NOMOVE);
 	CenterWindow();
+	InitCtrl();
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 	return TRUE;
@@ -64,7 +65,10 @@ BOOL CGameDlg::OnInitDialog()
 
 void CGameDlg::InitCtrl()
 {
-
+	Rect rect=Rect(400,400,50,50);
+	m_text[Front].Create(rect,L"等待中",sys.font);
+	m_text[Left].Create(rect,L"",sys.font);
+	m_text[Right].Create(rect,L"",sys.font);
 }
 
 void CGameDlg::RandomShuffle()
@@ -75,7 +79,7 @@ void CGameDlg::SortHand()
 {
 }
 
-void CGameDlg::ShowCtrl(Graphics* & g)
+void CGameDlg::ShowCtrl(Gdiplus::Graphics *  g)
 {
 	for (int i=0;i<3;i++)
 	{
@@ -89,13 +93,12 @@ void CGameDlg::OnPaint()
 	Graphics graphics(hdc);
 	Bitmap bmp(this->m_width,this->m_height);
 	Graphics* gBuf=Graphics::FromImage(&bmp);
-	gBuf->DrawImage(sys.game_bg,0,0,m_width,m_height);
+	//gBuf->DrawImage(sys.game_bg,0,0,m_width,m_height);
 	ShowCtrl(gBuf);
 	graphics.DrawImage(&bmp,0,0);
 	::ReleaseDC(m_hWnd,hdc);
 	CDialogEx::OnPaint();
 }
-
 
 void CGameDlg::OnSize(UINT nType, int cx, int cy)
 {

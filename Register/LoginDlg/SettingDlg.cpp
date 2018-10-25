@@ -46,6 +46,7 @@ void CSettingDlg::OnBnClickedOk()
 	DWORD dwIP;
 	m_ipctrl.GetAddress(dwIP);
 	sys.addrServer.sin_addr.S_un.S_addr=htonl(dwIP);
+	sys.addrServer.sin_port=htons(_ttoi(m_port));
 	CDialogEx::OnOK();
 }
 

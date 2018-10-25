@@ -9,14 +9,7 @@
 
 // CGameRoom 对话框
 
-namespace PlayerPosition
-{
-	enum PlayerPosition
-	{
-		Front,Left,Right
-	};
-}
-using namespace PlayerPosition;
+
 
 IMPLEMENT_DYNAMIC(CGameRoom, CDialogEx)
 
@@ -71,7 +64,6 @@ BOOL CGameRoom::OnInitDialog()
 	m_room_list.InsertColumn(2,_T("房间人数"),0,100);
 	m_room_list.SetExtendedStyle(LVS_EX_FULLROWSELECT);
 	OnUpdateRoom();
-	Gdiplus::Rect rec(300,400,30,20);
 	return TRUE;
 }
 
