@@ -29,7 +29,7 @@ void CLoginDlg::DoDataExchange(CDataExchange* pDX)
 
 afx_msg LRESULT CLoginDlg::OnLogin(WPARAM wParam, LPARAM lParam)
 {
-	sys.user=mMediator.GetUserInfo();
+	theApp.sys.user=mMediator.GetUserInfo();
 	PostMessage(WM_CLOSE);
 	return 0;
 }
@@ -40,7 +40,6 @@ BEGIN_MESSAGE_MAP(CLoginDlg, CDialogEx)
 	ON_WM_SIZE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_ERASEBKGND()
-	ON_WM_SYSCOMMAND()
 	ON_WM_MOUSEMOVE()
 	ON_MESSAGE(WM_LOGIN, &CLoginDlg::OnLogin)
 END_MESSAGE_MAP()
@@ -99,8 +98,8 @@ void CLoginDlg::OnPaint()
 		Bitmap bmp(this->mWidth,this->mHeight);
 		Graphics* gBuf=Graphics::FromImage(&bmp);
 		
-		gBuf->DrawImage(sys.back,0,0);
-		gBuf->DrawImage(sys.mask,0,0);
+		gBuf->DrawImage(theApp.sys.back,0,0);
+		gBuf->DrawImage(theApp.sys.mask,0,0);
 		mMediator.ShowControl(gBuf);
 		graphics.DrawImage(&bmp,0,0);
 		::ReleaseDC(m_hWnd,hdc);

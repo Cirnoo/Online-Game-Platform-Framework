@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include <Register.h>
 #include "Sys.h"
 #include "Mediator.h"
 #include "PictureFrame.h"
@@ -29,7 +30,7 @@ Mediator::~Mediator()
 
 void Mediator::InitControl(CWnd * pParentWnd)
 {
-	auto & min_ctrl=sys.vec_bt_min[0];
+	auto & min_ctrl=theApp.sys.vec_bt_min[0];
 	CRect window_rect;
 	AfxGetMainWnd()->GetWindowRect(&window_rect);
 	const int mWidth=window_rect.Width();
@@ -50,13 +51,13 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	#define  pCheckBox		(  (CCheckBox*)       pControlBase  )
 	#define  pLinkButton		(  (CLinkButton*)     pControlBase  )
 	//min_control
-	c_width=sys.vec_bt_min[0]->GetWidth();
-	c_height=sys.vec_bt_min[0]->GetHeight();
+	c_width=theApp.sys.vec_bt_min[0]->GetWidth();
+	c_height=theApp.sys.vec_bt_min[0]->GetHeight();
 	Rect  rec;
 /**************************************************************************/
 	GetControl(CPNGButton)
 	rec=Rect(mWidth-(38+28)*RESOLUTION,0,c_width,c_height);
-	pPNGButton->Create(rec,pParentWnd,IDC_MIN,sys.vec_bt_min);
+	pPNGButton->Create(rec,pParentWnd,IDC_MIN,theApp.sys.vec_bt_min);
 	pPNGButton->SetCmd
 	([=]()
 	{
@@ -66,7 +67,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	
 	rec=Rect(mWidth-38*RESOLUTION,0,c_width+10,c_height);
 	GetControl(CPNGButton)
-	pPNGButton->Create(rec,pParentWnd,IDC_CLOSE,sys.vec_bt_close);
+	pPNGButton->Create(rec,pParentWnd,IDC_CLOSE,theApp.sys.vec_bt_close);
 	pPNGButton->SetCmd
 		([=]()
 	{
@@ -76,21 +77,21 @@ void Mediator::InitControl(CWnd * pParentWnd)
 
 	rec=Rect(16*RESOLUTION,139*RESOLUTION,87,87);
 	GetControl(CPictureFrame)
-	pPictureFrame->Create(rec,pParentWnd,IDC_PIC,sys.cirno);
+	pPictureFrame->Create(rec,pParentWnd,IDC_PIC,theApp.sys.cirno);
 	AddTheControl
 
 	rec=Rect((16-2)*RESOLUTION,139*RESOLUTION,87+2,87+2);
 	GetControl(CPictureFrame)
-	pPictureFrame->Create(rec,pParentWnd,ID_HEAD_BK,sys.head_bk);
+	pPictureFrame->Create(rec,pParentWnd,ID_HEAD_BK,theApp.sys.head_bk);
 	AddTheControl
 
 
-	c_width=sys.vec_bt_default[0]->GetWidth();
-	c_height=sys.vec_bt_default[0]->GetHeight();
+	c_width=theApp.sys.vec_bt_default[0]->GetWidth();
+	c_height=theApp.sys.vec_bt_default[0]->GetHeight();
 	rec=Rect(mWidth-79*RESOLUTION,mHeight-27*RESOLUTION,c_width,c_height);
 	GetControl(CTextButton)
-	pTextButton->Create(rec,pParentWnd,IDC_REGISTER,sys.vec_bt_default);
-	pTextButton->SetText(L"登录",sys.font);
+	pTextButton->Create(rec,pParentWnd,IDC_REGISTER,theApp.sys.vec_bt_default);
+	pTextButton->SetText(L"登录",theApp.sys.font);
 	pTextButton->SetCmd([=]
 	{
 		OnLogin();
@@ -99,8 +100,8 @@ void Mediator::InitControl(CWnd * pParentWnd)
 
 	rec=Rect(16*RESOLUTION,mHeight-27*RESOLUTION,c_width,c_height);
 	GetControl(CTextButton)
-	pTextButton->Create(rec,pParentWnd,IDC_NET,sys.vec_bt_default);
-	pTextButton->SetText(L"设置",sys.font);
+	pTextButton->Create(rec,pParentWnd,IDC_NET,theApp.sys.vec_bt_default);
+	pTextButton->SetText(L"设置",theApp.sys.font);
 	pTextButton->SetCmd([=]
 	{
 		CSettingDlg dlg;
@@ -108,31 +109,31 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	});
 	AddTheControl	
 
-	rec=Rect(112*RESOLUTION,213*RESOLUTION,sys.vec_checkbox[0]->GetWidth(),sys.vec_checkbox[0]->GetHeight());
+	rec=Rect(112*RESOLUTION,213*RESOLUTION,theApp.sys.vec_checkbox[0]->GetWidth(),theApp.sys.vec_checkbox[0]->GetHeight());
 	GetControl(CCheckBox)
-	pCheckBox->Create(rec,pParentWnd,IDC_CHECK_1,sys.vec_checkbox);
-	pCheckBox->SetText(L"记住我",sys.font);
+	pCheckBox->Create(rec,pParentWnd,IDC_CHECK_1,theApp.sys.vec_checkbox);
+	pCheckBox->SetText(L"记住我",theApp.sys.font);
 	AddTheControl
 	
 	CStringW str=L"注册账号";
 	rec=Rect(mWidth-81*RESOLUTION,147*RESOLUTION,str.GetLength()*16*RESOLUTION,20);
 	GetControl(CLinkButton)
 	pLinkButton->Create(rec,pParentWnd,IDC_LINK_1);
-	pLinkButton->SetText(str,sys.font);
+	pLinkButton->SetText(str,theApp.sys.font);
 	AddTheControl
 
 	str=L"找回密码";
 	rec=Rect(mWidth-81*RESOLUTION,(147+37)*RESOLUTION,str.GetLength()*16*RESOLUTION,20);
 	GetControl(CLinkButton)
 	pLinkButton->Create(rec,pParentWnd,IDC_LINK_2);
-	pLinkButton->SetText(str,sys.font);
+	pLinkButton->SetText(str,theApp.sys.font);
 	AddTheControl
 
 	str=L"游客登陆";
 	rec=Rect((112+117)*RESOLUTION,214*RESOLUTION,str.GetLength()*16*RESOLUTION,20);
 	GetControl(CLinkButton)
 	pLinkButton->Create(rec,pParentWnd,IDC_LINK_3);
-	pLinkButton->SetText(str,sys.font);
+	pLinkButton->SetText(str,theApp.sys.font);
 	AddTheControl
 
 /************************************************************************/
@@ -142,13 +143,13 @@ void Mediator::InitControl(CWnd * pParentWnd)
 	CEditEX * my_edit;
 	rec=Rect(112*RESOLUTION,142*RESOLUTION,191,28);
 	my_edit=new CEditEX;
-	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_USER,sys.vec_edit);
+	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_USER,theApp.sys.vec_edit);
 	my_edit->SetDefaultText(L"用户名");
 	vec_edit.push_back(my_edit);
 
 	rec=Rect(112*RESOLUTION,(142+34)*RESOLUTION,191,28);
 	my_edit=new CEditEX;
-	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_KEY,sys.vec_edit,true);
+	my_edit->CreateEditEx(rec,pParentWnd,IDC_EDIT_KEY,theApp.sys.vec_edit,true);
 	my_edit->SetDefaultText(L"密码");
 	vec_edit.push_back(my_edit);
 
@@ -208,15 +209,15 @@ void Mediator::OnLogin()
 		DATA_PACKAGE pack;
 		pack.ms_type=MS_TYPE::LOGIN_RQ;
 		pack.buf=info;
-		if(sys.tools.ConnectServer())
+		if(theApp.tools.ConnectServer())
 		{
-			sys.tools.DealData(pack);
+			theApp.tools.DealData(pack);
 		}	
 	}
 	catch(...) 
 	{
 		Warning("请输入用户名和密码");
-		sys.tools.Disconnect();
+		theApp.tools.Disconnect();
 		return;
 	}
 }

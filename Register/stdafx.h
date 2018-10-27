@@ -59,3 +59,4 @@
 #include <afxsock.h>
 #pragma comment(lib,"gdiplus.lib")
 using namespace Gdiplus;
+#include "Register.h"

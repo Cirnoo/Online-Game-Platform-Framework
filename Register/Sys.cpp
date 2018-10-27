@@ -8,8 +8,13 @@
 #define INIT_RES(x) pImage x=NULL; 
 
 //全局对象
-Global sys;
 using std::vector;
+
+
+Global & Global::GetInstance()
+{
+	return *Global::sys;
+}
 Global::Global()
 {
 	Gdiplus::GdiplusStartupInput gdiplusStartupInput;

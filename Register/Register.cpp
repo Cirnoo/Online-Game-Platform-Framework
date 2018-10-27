@@ -9,6 +9,7 @@
 #include "RegisterDlg.h"
 #include "SettingDlg.h"
 #include "GameDlg.h"
+#include "GameRoom.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -23,7 +24,7 @@ END_MESSAGE_MAP()
 
 // CRegisterApp 构造
 
-CRegisterApp::CRegisterApp()
+CRegisterApp::CRegisterApp():sys(Global::GetInstance()),tools(CTool::GetInstance())
 {
 	// 支持重新启动管理器
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
@@ -37,8 +38,9 @@ CRegisterApp::~CRegisterApp()
 	
 }
 
+Global * Global::sys= new Global();
+CTool * CTool::tool= new CTool(); //初始化单例
 // 唯一的一个 CRegisterApp 对象
-
 CRegisterApp theApp;
 
 
@@ -76,10 +78,10 @@ BOOL CRegisterApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	//CLoginDlg dlg;
+	CLoginDlg dlg;
 	//CRegisterDlg dlg;
 	//CGameRoom dlg;
-	CGameDlg dlg(L"123");
+	//CGameDlg dlg(L"123");
 	m_pMainWnd = &dlg;
 	
 	INT_PTR nResponse = dlg.DoModal();

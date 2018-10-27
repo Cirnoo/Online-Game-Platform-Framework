@@ -33,9 +33,9 @@ using std::vector;
 class Global
 {
 public:
-	Global();
+	static Global & GetInstance();
 	~Global();
-	
+	Global();
 	pImage back,mask,cirno,head_bk,game_bg;
 	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default,vec_edit,vec_checkbox;
 	Gdiplus::FontFamily * fontfamily;
@@ -44,15 +44,13 @@ public:
 	unsigned long  gdiplusToken;
 	sockaddr_in  addrServer;
 	USER_INFO  user;
-	CTool tools;
 private:
+	static Global * sys;
 	std::vector<pImage> res;
 	void LoadImg();
 	void LoadImg(pImage & img,int nId,bool resize=true);
 	void InitSockAddr();
 };
-
-
 
 pImage LoadPNGFormResource(int nId);
 pImage ResizeImg(pImage img);
@@ -68,7 +66,6 @@ RectF RectFTransform(Rect rect);
 void ResizeRect(Rect& rec,int val);
 
 WCHAR * multiByteToWideChar(const CString pKey);
-extern Global sys;
 
 bool ShowError();
 

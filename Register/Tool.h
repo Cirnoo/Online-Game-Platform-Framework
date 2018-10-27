@@ -5,14 +5,16 @@
 class CTool
 {
 public:
+	static CTool & GetInstance(); 
 	bool ConnectServer();
 	void Disconnect();
 	bool DealData(const DATA_PACKAGE & pack);
 	int  RecieveData(void * buf,int size,int peek_flag=0);
-public:
+	~CTool();
+private:
 	CTool(void);
-	~CTool(void);
 	CMySocket mysocket;
-	//std::unique_ptr<CData> data_deal;
+private:
+	static CTool* tool;//Singleton pattern
 };
 

@@ -3,12 +3,17 @@
 #include "MySocket.h"
 #include "Sys.h"
 
+
+CTool & CTool::GetInstance()
+{
+	return *CTool::tool;
+}
 bool CTool::ConnectServer()
 {
 	mysocket.SocketInit();
 	if (!mysocket.TestConnect())
 	{
-		mysocket.Connect((SOCKADDR*)&sys.addrServer,sizeof(sys.addrServer));
+		mysocket.Connect((SOCKADDR*)&theApp.sys.addrServer,sizeof(theApp.sys.addrServer));
 		if (GetLastError()==ERROR_SOCKET_ALREADE_CONNECT) //socket已经连接
 		{
 			mysocket.Close();
@@ -34,7 +39,6 @@ void CTool::Disconnect()
 
 CTool::CTool(void)
 {
-	
 }
 
 

@@ -32,11 +32,11 @@ void CGameRoom::DoDataExchange(CDataExchange* pDX)
 
 LRESULT CGameRoom::OnUpdateRoom(WPARAM wParam, LPARAM lParam)
 {
-	sys.tools.ConnectServer();
+	theApp.tools.ConnectServer();
 	m_room_list.DeleteAllItems();
 	DATA_PACKAGE pack;
 	pack.ms_type=MS_TYPE::GET_ROOM_LIST;
-	if(!sys.tools.DealData(pack))
+	if(!theApp.tools.DealData(pack))
 	{
 		Warning("房间信息获取失败");
 	}
@@ -92,7 +92,7 @@ void CGameRoom::OnBnClickedCreateRoom()
 	info.master=L"123";
 	info.name=L"121";
 	pack.buf=info;
-	sys.tools.DealData(pack);
+	theApp.tools.DealData(pack);
 }
 
 

@@ -32,6 +32,8 @@ public:
 	void InitCtrl();
 	void RandomShuffle();
 	void SortHand();
+	void GameStart();
+	void AddPlayer();
 	afx_msg void OnPaint();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

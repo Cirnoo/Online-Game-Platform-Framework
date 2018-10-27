@@ -43,7 +43,7 @@ void CMySocket::OnReceive(int nErrorCode)
 	{
 		this->Receive((char *)&pack,size,0);
 	}*/
-	sys.tools.DealData(pack);
+	theApp.tools.DealData(pack);
 }
 
 bool CMySocket::TestConnect()

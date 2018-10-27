@@ -37,12 +37,12 @@ void CRegisterDlg::OnRegister()
 		Warning("不合法的输入");
 		return ;
 	}
-	if (!sys.tools.ConnectServer())
+	if (!theApp.tools.ConnectServer())
 	{
 		return ;
 	}
 	DATA_PACKAGE pack(MS_TYPE::REGISTER_RQ,USER_INFO(name,key));
-	sys.tools.DealData(pack);
+	theApp.tools.DealData(pack);
 }
 
 
@@ -91,10 +91,10 @@ BOOL CRegisterDlg::OnInitDialog()
 
 	int x=rectDlg.CenterPoint().x-80;
 	Rect rec=Rect(x,rect_user.top-7,191,28);
-	mName.CreateEditEx(rec,this,IDC_EDIT_LOGIN_USER,sys.vec_edit);
+	mName.CreateEditEx(rec,this,IDC_EDIT_LOGIN_USER,theApp.sys.vec_edit);
 	mName.SetDefaultText(L"中英文或数字");
 	rec=Rect(x,rect_key.top-7,191,28);
-	mKey.CreateEditEx(rec,this,IDC_EDIT_LOGIN_KEY,sys.vec_edit);
+	mKey.CreateEditEx(rec,this,IDC_EDIT_LOGIN_KEY,theApp.sys.vec_edit);
 	mKey.SetDefaultText(L"4位以上的字母或数字");
 	return TRUE;
 }

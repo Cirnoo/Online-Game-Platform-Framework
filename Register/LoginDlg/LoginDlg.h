@@ -36,7 +36,7 @@ public:
 	int mHeight;
 private:
 	std::vector<CButton *> vt_vec; 
-	CWinThread * thread;
+	//CWinThread * thread;
 	Mediator mMediator;
 public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);

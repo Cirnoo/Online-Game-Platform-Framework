@@ -66,9 +66,9 @@ BOOL CGameDlg::OnInitDialog()
 void CGameDlg::InitCtrl()
 {
 	Rect rect=Rect(400,400,50,50);
-	m_text[Front].Create(rect,L"等待中",sys.font);
-	m_text[Left].Create(rect,L"",sys.font);
-	m_text[Right].Create(rect,L"",sys.font);
+	m_text[Front].Create(rect,L"等待中",theApp.sys.font);
+	m_text[Left].Create(rect,L"",theApp.sys.font);
+	m_text[Right].Create(rect,L"",theApp.sys.font);
 }
 
 void CGameDlg::RandomShuffle()
@@ -77,6 +77,20 @@ void CGameDlg::RandomShuffle()
 
 void CGameDlg::SortHand()
 {
+}
+
+void CGameDlg::GameStart()
+{
+	DATA_PACKAGE pack;
+	pack.ms_type=MS_TYPE::GAME_START;
+	theApp.tools.DealData(pack);
+}
+
+void CGameDlg::AddPlayer()
+{
+	DATA_PACKAGE pack;
+	pack.ms_type=MS_TYPE::ADD_PLAYER;
+	theApp.tools.DealData(pack);
 }
 
 void CGameDlg::ShowCtrl(Gdiplus::Graphics *  g)
@@ -93,7 +107,7 @@ void CGameDlg::OnPaint()
 	Graphics graphics(hdc);
 	Bitmap bmp(this->m_width,this->m_height);
 	Graphics* gBuf=Graphics::FromImage(&bmp);
-	//gBuf->DrawImage(sys.game_bg,0,0,m_width,m_height);
+	//gBuf->DrawImage(theApp.sys.game_bg,0,0,m_width,m_height);
 	ShowCtrl(gBuf);
 	graphics.DrawImage(&bmp,0,0);
 	::ReleaseDC(m_hWnd,hdc);

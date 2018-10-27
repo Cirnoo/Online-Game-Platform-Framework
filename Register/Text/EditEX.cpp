@@ -44,7 +44,7 @@ BOOL CEditEX::CreateEditEx(Rect rc,CWnd * pParentWnd,UINT nID, std::vector<Image
 	mRect=rc;
 	this->Create(WS_CHILD|WS_VISIBLE, 
 		CRect(rc.GetLeft()+7,rc.GetTop()+6,rc.GetRight()-3,rc.GetBottom()-4),pParentWnd,nID);
-	this->SetFont(sys.cfont);
+	this->SetFont(theApp.sys.cfont);
 	is_password=password;
 	return TRUE;
 }

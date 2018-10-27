@@ -9,6 +9,7 @@
 
 #include "resource.h"		// 主符号
 #include "Sys.h"
+#include "Tool.h"
 // CRegisterApp:
 // 有关此类的实现，请参阅 Register.cpp
 //
@@ -25,7 +26,8 @@ public:
 protected:
 	
 public:
-	
+	CTool & tools;
+	Global & sys;
 	DECLARE_MESSAGE_MAP()
 };
 

@@ -31,6 +31,8 @@ enum class MS_TYPE :unsigned char
 	ENTER_ROOM,
 	LEAVE_ROOM,
 	UPDATE_ROOM,
+	ADD_PLAYER,
+	GAME_START,
 	HEARTBEAT,//ÐÄÌø°ü
 };
 

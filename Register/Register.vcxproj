@@ -44,11 +44,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;./Network;$(IncludePath);./Network;./RegisterDlg;./LoginDlg</IncludePath>
+    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;./Network;$(IncludePath);./Network;./RegisterDlg;./LoginDlg;./GameRoom</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;$(IncludePath);./Network;./RegisterDlg;./LoginDlg</IncludePath>
+    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;$(IncludePath);./Network;./RegisterDlg;./LoginDlg;./GameRoom</IncludePath>
     <LibraryPath>gdiplus.lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
