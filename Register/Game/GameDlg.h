@@ -3,7 +3,7 @@
 #include <vector>
 #include "Text.h"
 #include "Packdef.h"
-
+#include "PokerLogic.h"
 // CGameDlg 对话框
 
 class CGameDlg : public CDialogEx
@@ -22,7 +22,6 @@ protected:
 	wstring m_master;
 	int m_width,m_height;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-	Cards m_card[54];//13*4+2=54张牌
 	Point poker_center;
 	std::vector<Poker> poker_in_hand;
 	void ShowCtrl(Gdiplus::Graphics *  g);
@@ -30,20 +29,13 @@ protected:
 	DECLARE_MESSAGE_MAP()
 private:
 	void InitVar();
-	void DrawHandPoker(Gdiplus::Graphics *  g);
 	void DrawRectFrame(Gdiplus::Graphics * g);
-	Rect GetFirstCardRect();
-	Rect GetLastCardRect();
-	Rect GetHandCardRect();
-	int  SelectPoker(const CPoint & point);
-	void SelectMutiPoker();
 	std::vector<pImage> vec_poker;
-	Size card_size;
-	const int card_interval;
-	const int card_up;
-	CPoint lbutton_down,lbutton_move;
+	CPoint lbutton_down;
 	Rect select_region;
 	bool is_lbutton_dowm;
+	bool is_select_multi;
+	CPokerLogic logic;
 public:
 	virtual BOOL OnInitDialog();
 	void InitCtrl();

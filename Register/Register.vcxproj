@@ -44,11 +44,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;./Network;$(IncludePath);./Network;./RegisterDlg;./LoginDlg;./GameRoom</IncludePath>
+    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;./Network;$(IncludePath);./RegisterDlg;./LoginDlg;./Game</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;$(IncludePath);./Network;./RegisterDlg;./LoginDlg;./GameRoom</IncludePath>
+    <IncludePath>./Button;./Mediator;./PictureFrame;./BaseControl;./;./CheckBox;./Text;$(IncludePath);./Network;./RegisterDlg;./LoginDlg;./GameRoom;./Game</IncludePath>
     <LibraryPath>gdiplus.lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -115,14 +115,15 @@
     <ClInclude Include="Button\PNGButton.h" />
     <ClInclude Include="Button\TextButton.h" />
     <ClInclude Include="CheckBox\CheckBox.h" />
-    <ClInclude Include="GameDlg.h" />
-    <ClInclude Include="GameRoom\GameRoom.h" />
+    <ClInclude Include="Game\GameDlg.h" />
+    <ClInclude Include="Game\GameRoom.h" />
     <ClInclude Include="LoginDlg\LoginDlg.h" />
     <ClInclude Include="LoginDlg\SettingDlg.h" />
     <ClInclude Include="Mediator\Mediator.h" />
     <ClInclude Include="Network\MySocket.h" />
     <ClInclude Include="Network\Packdef.h" />
     <ClInclude Include="PictureFrame\PictureFrame.h" />
+    <ClInclude Include="PokerLogic.h" />
     <ClInclude Include="Register.h" />
     <ClInclude Include="RegisterDlg\RegisterDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -139,13 +140,14 @@
     <ClCompile Include="Button\PNGButton.cpp" />
     <ClCompile Include="Button\TextButton.cpp" />
     <ClCompile Include="CheckBox\CheckBox.cpp" />
-    <ClCompile Include="GameDlg.cpp" />
-    <ClCompile Include="GameRoom\GameRoom.cpp" />
+    <ClCompile Include="Game\GameDlg.cpp" />
+    <ClCompile Include="Game\GameRoom.cpp" />
     <ClCompile Include="LoginDlg\LoginDlg.cpp" />
     <ClCompile Include="LoginDlg\SettingDlg.cpp" />
     <ClCompile Include="Mediator\Mediator.cpp" />
     <ClCompile Include="Network\MySocket.cpp" />
     <ClCompile Include="PictureFrame\PictureFrame.cpp" />
+    <ClCompile Include="PokerLogic.cpp" />
     <ClCompile Include="Register.cpp" />
     <ClCompile Include="RegisterDlg\RegisterDlg.cpp" />
     <ClCompile Include="stdafx.cpp">

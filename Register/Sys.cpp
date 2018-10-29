@@ -7,8 +7,6 @@
 
 #define INIT_RES(x) pImage x=NULL; 
 
-//全局对象
-using std::vector;
 
 
 Global & Global::GetInstance()

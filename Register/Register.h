@@ -13,6 +13,9 @@
 // CRegisterApp:
 // 有关此类的实现，请参阅 Register.cpp
 //
+using std::wstring;
+using std::string;
+using std::vector;
 class Global;
 class CTool;
 class CRegisterApp : public CWinApp

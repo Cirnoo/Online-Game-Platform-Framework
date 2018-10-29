@@ -61,6 +61,12 @@
     <Filter Include="Game\GameRoom">
       <UniqueIdentifier>{7d43170e-7312-47dc-aa19-cd79e6026d00}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\GameMain">
+      <UniqueIdentifier>{7881e45c-5143-426d-b888-240b09be7dc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameLogic">
+      <UniqueIdentifier>{1a80268c-affd-4308-b3cd-00b2287a1ab2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -126,11 +132,14 @@
     <ClInclude Include="LoginDlg\SettingDlg.h">
       <Filter>登录器</Filter>
     </ClInclude>
-    <ClInclude Include="GameDlg.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Game\GameDlg.h">
+      <Filter>Game\GameMain</Filter>
     </ClInclude>
-    <ClInclude Include="GameRoom\GameRoom.h">
+    <ClInclude Include="Game\GameRoom.h">
       <Filter>Game\GameRoom</Filter>
+    </ClInclude>
+    <ClInclude Include="PokerLogic.h">
+      <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -185,11 +194,14 @@
     <ClCompile Include="RegisterDlg\RegisterDlg.cpp">
       <Filter>注册器</Filter>
     </ClCompile>
-    <ClCompile Include="GameDlg.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\GameDlg.cpp">
+      <Filter>Game\GameMain</Filter>
     </ClCompile>
-    <ClCompile Include="GameRoom\GameRoom.cpp">
+    <ClCompile Include="Game\GameRoom.cpp">
       <Filter>Game\GameRoom</Filter>
+    </ClCompile>
+    <ClCompile Include="PokerLogic.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

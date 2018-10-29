@@ -47,8 +47,11 @@ enum class CardType : unsigned char
 };
 enum class PokerPoints : unsigned char
 {
-	Three=0,Four,Five,Six,Seven,Eight,Nine,Ten,jack,Queen,King,Ace,Two,Black_Joker,Red_Joker 
+	Three=0,Four,Five,Six,Seven,Eight,Nine,Ten,jack,Queen,King,Ace,Two,Black_Joker,Red_Joker,
+	
 };
+
+
 struct Poker
 {
 	CardType c_type;
@@ -77,6 +80,14 @@ struct Poker
 		InitVar();
 		c_type=t;
 		point=p;
+	}
+	char const operator-(const Poker & p) const
+	{
+		return (char)point-(char)p.point;
+	}
+	bool const operator==(const Poker & p) const
+	{
+		return point==p.point;
 	}
 	char toNum()
 	{
