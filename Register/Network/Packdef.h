@@ -39,10 +39,10 @@ enum class MS_TYPE :unsigned char
 
 enum class CardType : unsigned char
 {
-	Heart		,
-	Spade		,
 	Diamond		,
 	Club		    ,
+	Heart		,
+	Spade		,
 	Joker	    ,
 };
 enum class PokerPoints : unsigned char
@@ -53,20 +53,41 @@ struct Poker
 {
 	CardType c_type;
 	PokerPoints point;
-	bool hide;
-	bool check;
-	Poker(){}
+	bool hide;  //是否背面
+	bool check; //是否选中
+	bool select; //是否被选
+	Poker(){InitVar();}
+	Poker(char num)
+	{
+		InitVar();
+		ASSERT(num>=0&&num<54);
+		if (num<52)
+		{
+			c_type=CardType(num/13);
+			point=PokerPoints(num%13);
+		}
+		else
+		{
+			c_type=CardType::Joker;
+			point=PokerPoints(num-52+13);
+		}
+	}
 	Poker(CardType t,PokerPoints p)
 	{
+		InitVar();
 		c_type=t;
 		point=p;
-		hide=false;
-		check=false;
 	}
 	char toNum()
 	{
 		return c_type==CardType::Joker?52-13+(char)point:13*(char)c_type+(char)point;
 	}
+private:
+	void InitVar()
+	{
+		hide=false;check=false;select=false;
+	}
+
 };
 struct Cards
 {
