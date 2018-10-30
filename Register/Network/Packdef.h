@@ -51,14 +51,22 @@ enum class PokerPoints : unsigned char
 	
 };
 
+enum ArrayType
+{
+	无,单牌,对子,三张,三带一,三带对,顺子,双顺,三顺,飞机,四带二,炸弹,王炸 //英文无力,绝望了
+};
 
-struct Poker
+struct CardArray		//需要打出的牌
+{
+	char cards[20]={0}; //一次最多打20张牌
+};
+struct Poker		//单张扑克
 {
 	CardType c_type;
 	PokerPoints point;
 	bool hide;  //是否背面
 	bool check; //是否选中
-	bool select; //是否被选
+	bool select; //是否被框选
 	Poker(){InitVar();}
 	Poker(char num)
 	{
@@ -81,17 +89,21 @@ struct Poker
 		c_type=t;
 		point=p;
 	}
-	char const operator-(const Poker & p) const
+	int operator-(const Poker & p) const
 	{
-		return (char)point-(char)p.point;
+		return p.GetPointVal()-this->GetPointVal();
 	}
-	bool const operator==(const Poker & p) const
+	bool operator==(const Poker & p) const
 	{
 		return point==p.point;
 	}
-	char toNum()
+	char toNum() const
 	{
 		return c_type==CardType::Joker?52-13+(char)point:13*(char)c_type+(char)point;
+	}
+	char GetPointVal() const
+	{
+		return static_cast<char> (point);
 	}
 private:
 	void InitVar()

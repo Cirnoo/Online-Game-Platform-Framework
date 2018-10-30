@@ -2,11 +2,12 @@
 #include "PokerLogic.h"
 #include <algorithm>
 
+
 CPokerLogic::CPokerLogic(void):card_interval(25),card_up(20)
 {
 	auto m_width=720*1.4;
 	auto m_height=540*1.4;
-	card_size=Size(57,80);  //牌的长宽
+	card_size=Size(57*1.4,80*1.4);  //牌的长宽
 	poker_center=Point(m_width/2-57,m_height-250); //中间手牌位置
 	auto temp=GetImageGroup(IDB_POKER_CARDS,4,14);  //行列切割
 	vec_poker.resize(55);
@@ -75,7 +76,7 @@ int CPokerLogic::SelectPoker(const CPoint & point)
 		if (temp_rect.PtInRect(point))
 		{
 			i->check=!i->check;
-			TRACE("选中了第%d张牌",poker_in_hand.size()-cnt);
+			//TRACE("选中了第%d张牌",poker_in_hand.size()-cnt);
 			break;
 		}
 	}
@@ -107,7 +108,7 @@ bool CPokerLogic::SelectMutiPoker(const Rect & region)
 	return true;
 }
 
-void CPokerLogic::DrawHandPoker(Gdiplus::Graphics * g)
+void CPokerLogic::ShowHandPoker(Gdiplus::Graphics * g)
 {
 	auto rect=GetFirstCardRect();
 	for(auto i:poker_in_hand)
@@ -125,35 +126,53 @@ void CPokerLogic::DrawHandPoker(Gdiplus::Graphics * g)
 
 bool CPokerLogic::IsLegalOutput()
 {
-	MyPoker cd;
+	MyPoker cd=GetCheckedCards();
+	switch (cd.size())
+	{
+	case 0:
+		break;
+	case 1: //单牌
+		arrtype=单牌;
+		return true;
+	case 2: //对子 王炸
+		return (arrtype=对子, cd.front()==cd.back() )||
+			(arrtype=王炸,cd[0].c_type==CardType::Joker&&cd[1].c_type==CardType::Joker);
+
+	case 3: //三张
+		return (arrtype=三张, cd.front()==cd.back());
+	case 4: //炸弹 三带一
+		return (arrtype=炸弹, IsBomb(cd)) || (arrtype=三带一, Is3with1(cd) );
+	case 5: //三带对 顺子
+		return (arrtype=三带对, Is3with2(cd) )||(arrtype=顺子, IsStraight(cd) );
+	case 6: //顺子 双顺 三顺 四带二
+	default: //顺子 双顺 三顺 四带二 飞机 
+		return (arrtype=顺子, IsStraight(cd) ) 
+			|| (arrtype=双顺, IsDoubleStraight(cd) )
+			|| (arrtype=三顺, IsTripleStraight(cd) )
+			|| (arrtype=四带二, Is4with2(cd) )
+			|| (arrtype=飞机, IsPlane(cd) );
+		return true;
+	}
+	arrtype=无;
+	return false;
+}
+
+MyPoker CPokerLogic::GetCheckedCards()
+{
+	MyPoker cards;
 	for (const auto & i:poker_in_hand)
 	{
 		if (i.check)
 		{
-			cd.push_back(i);
+			cards.push_back(i);
 		}
 	}
-	switch (cd.size())
-	{
-	case 0:
-	case 1: //单牌
-		return true;
-	case 2: //对子 王炸
-		return cd.front()==cd.back() ||
-			cd[0].c_type==CardType::Joker&&cd[1].c_type==CardType::Joker;
+	return cards;
+}
 
-	case 3: //三张
-		return cd.front()==cd.back();
-	case 4: //炸弹 三带一
-		return IsBomb(cd)||Is3with1(cd);
-	case 5: //三带对 顺子
-		return Is3with2(cd)||IsStraight(cd);
-	case 6: //顺子 双顺 三顺
-
-	default:
-		return true;
-	}
-	
+ArrayType CPokerLogic::GetCardsArrType()
+{
+	return arrtype;
 }
 
 void CPokerLogic::SortHand()
@@ -168,7 +187,7 @@ void CPokerLogic::SortHand()
 
 bool CPokerLogic::IsBomb(const MyPoker & cards)
 {
-	return cards.front()==cards.back();
+	return cards.front()==cards.back()&&cards.size()==4;
 }
 
 bool CPokerLogic::Is3with1(const MyPoker & cards)
@@ -183,10 +202,36 @@ bool CPokerLogic::Is3with2(const MyPoker & cards)
 		(cards[2]==cards[4]&&cards[0]==cards[1]); //对子在前
 }
 
+bool CPokerLogic::Is4with2(const MyPoker & cards)
+{
+	for (int l=0,r=l+3;r<cards.size();l++,r++)
+	{
+		if (cards[l]==cards[r])  //l和r之间为炸
+		{
+			if (cards.size()==6)  //4带2单牌
+			{
+				return true;
+			}
+			else if (cards.size()==8) //4带2对
+			{
+				char temp=0;
+				for (const auto & i:cards)
+				{
+					temp^=i.GetPointVal();
+				}
+				return temp==0;
+			}
+			break;
+		}
+	}
+	return false;
+	
+}
+
 bool CPokerLogic::IsStraight(const MyPoker & cards)
 {
 	auto first_card=cards.front();
-	if ((char)cards.front().point>=(char)PokerPoints::Two)
+	if (cards.front().GetPointVal()>=(char)PokerPoints::Two)
 	{
 		return false;  //顺子不能有2和王
 	}
@@ -195,6 +240,10 @@ bool CPokerLogic::IsStraight(const MyPoker & cards)
 
 bool CPokerLogic::IsDoubleStraight(const MyPoker & cards)
 {
+	if (cards.size()<6)
+	{
+		return false;
+	}
 	MyPoker vec1,vec2;
 	bool flag=true;
 	for (const auto & i:cards)
@@ -208,6 +257,10 @@ bool CPokerLogic::IsDoubleStraight(const MyPoker & cards)
 bool CPokerLogic::IsTripleStraight(const MyPoker & cards)
 {
 	MyPoker vec[3];
+	if (cards.size()%3!=0)
+	{
+		return false;
+	}
 	for (int i=0;i<cards.size();i++)
 	{
 		vec[i%3].push_back(cards[i]);
@@ -227,4 +280,27 @@ bool CPokerLogic::IsTripleStraight(const MyPoker & cards)
 	{
 		return false;
 	}
+}
+
+bool CPokerLogic::IsPlane(const MyPoker & cards)
+{
+	char temp[15]={0};
+	for (const auto i:cards)
+	{
+		temp[i.GetPointVal()]++;
+	}
+	vector<char> plane;
+	vector<char> wing;  //飞机带翅膀
+	for (const auto i:temp)
+	{
+		(i==3?plane:wing).push_back(i);
+	}
+	const auto wing_size=cards.size()-plane.size()*3;
+	if (plane.size()==wing.size()&&		//飞机和翅膀个数相同
+		(wing.size()==wing_size		    //带的都是单牌
+		||wing.size()*2==wing_size))		//都是对子
+	{
+		return true;
+	}
+	return false;
 }

@@ -47,6 +47,7 @@ BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_WM_ERASEBKGND()
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONUP()
+	ON_WM_RBUTTONDOWN()
 END_MESSAGE_MAP()
 
 
@@ -149,7 +150,7 @@ void CGameDlg::OnPaint()
 	Graphics* gBuf=Graphics::FromImage(&bmp);
 	gBuf->DrawImage(theApp.sys.game_bg,0,0,m_width,m_height);
 	//ShowCtrl(gBuf);
-	logic.DrawHandPoker(gBuf);
+	logic.ShowHandPoker(gBuf);
 	DrawRectFrame(gBuf);
 	graphics.DrawImage(&bmp,0,0);
 	::ReleaseDC(m_hWnd,hdc);
@@ -238,4 +239,22 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	}
 	
 	CDialogEx::OnLButtonUp(nFlags, point);
+}
+
+
+void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	if (logic.IsLegalOutput())
+	{
+		//合法的出牌	
+		auto need_send=logic.GetCheckedCards();
+		ArrayType arrtype=logic.GetCardsArrType();
+		TRACE("出牌类型:%d\n",arrtype);
+	}
+	else
+	{
+		//输出信息
+	}
+	CDialogEx::OnRButtonDown(nFlags, point);
 }
