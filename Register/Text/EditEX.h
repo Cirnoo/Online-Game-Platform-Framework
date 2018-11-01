@@ -26,7 +26,7 @@ private:
 protected:
 	DECLARE_MESSAGE_MAP()
 	bool is_password;
-	void DrawEdit(Graphics* & g,std::vector<Image*> img);
+	void DrawEdit(Graphics* & g,std::vector<Image*>& img);
 	std::vector<std::vector<Image *>> vec_cut;
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnMouseLeave();

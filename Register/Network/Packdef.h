@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
 #include <iostream>
-
+#include <vector>
 #define PRINT(a) std::cout<<a<<"\n";
 
 #define _DEF_PORT 1234
@@ -51,15 +51,6 @@ enum class PokerPoints : unsigned char
 	
 };
 
-enum ArrayType
-{
-	无,单牌,对子,三张,三带一,三带对,顺子,双顺,三顺,飞机,四带二,炸弹,王炸 //英文无力,绝望了
-};
-
-struct CardArray		//需要打出的牌
-{
-	char cards[20]={0}; //一次最多打20张牌
-};
 struct Poker		//单张扑克
 {
 	CardType c_type;
@@ -112,10 +103,31 @@ private:
 	}
 
 };
-struct Cards
+
+
+enum ArrayType : unsigned char
 {
-	CardType c_type;
-	PokerPoints point;
+	无,单牌,对子,三张,三带一,三带对,顺子,双顺,三顺,飞机,四带二,炸弹,王炸
+
+	//英文无力,绝望了
+};
+
+struct CardArray		//需要打出的牌
+{
+	char cards[20]; //一次最多打20张牌
+	ArrayType type;	//牌组类型
+	unsigned char point; //计算出的大小点数
+	unsigned char num;  //牌个数
+	CardArray(const std::vector<Poker> & vec, ArrayType _type,unsigned char _point )
+	{
+		memset(cards,0,sizeof(cards));
+		num=vec.size();
+		type=_type;point=_point;
+		for (int i=0;i<num;i++)
+		{
+			cards[i]=vec[i].toNum();
+		}
+	}
 };
 struct USER_BUF
 {
@@ -227,6 +239,7 @@ struct ROOM_INFO
 	}
 };
 const int MAX_BUF_SIZE=sizeof(ROOM_LIST_INFO);
+
 struct DATA_BUF
 {
 	char buf[MAX_BUF_SIZE];
@@ -245,6 +258,8 @@ struct DATA_BUF
 		memset(buf+i,0,MAX_BUF_SIZE-i);
 	}
 };
+
+
 struct DATA_PACKAGE
 {
 	MS_TYPE ms_type;
@@ -261,6 +276,4 @@ struct DATA_PACKAGE
 		buf="";
 	}
 };
-
-
 

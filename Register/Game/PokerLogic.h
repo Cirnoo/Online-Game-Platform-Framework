@@ -1,7 +1,6 @@
 #pragma once
-
+#include "Packdef.h"
 typedef std::vector<Poker> MyPoker;
-enum ArrayType;
 class CPokerLogic
 {
 public:
@@ -11,12 +10,14 @@ public:
 	int  SelectPoker(const CPoint & point);
 	bool SelectMutiPoker(const Rect & region);
 	void ShowHandPoker(Gdiplus::Graphics *  g);
-	vector<pImage> vec_poker;
+	vector<pImage> poker_img;
 	bool IsLegalOutput();
 	MyPoker GetCheckedCards();
-	ArrayType GetCardsArrType();
+	CardArray GetCardsNeedSend();
 	Rect GetHandCardRect();
+	void DelCheckedCards();
 private:
+	unsigned char CalArrPoint(const MyPoker & cards,ArrayType type );
 	Rect GetFirstCardRect();
 	Rect GetLastCardRect();
 	ArrayType arrtype;
@@ -33,5 +34,7 @@ private:
 	bool IsDoubleStraight(const MyPoker & cards);
 	bool IsTripleStraight(const MyPoker & cards);
 	bool IsPlane(const MyPoker & cards);
+	bool IsGreater(const CardArray & self, const CardArray & per );
+	int  GetCardFormCount(const MyPoker & cards,int count);
 };
 

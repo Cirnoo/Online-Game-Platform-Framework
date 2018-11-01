@@ -28,6 +28,7 @@ const int WM_REGISETR		     =    WM_USER+11;//×¢²áÏûÏ¢
 const int WM_ADD_ROOM		     =    WM_USER+12;
 const int WM_UPDATE_ROOM		     =    WM_USER+13;
 const int WM_ENTER_ROOM			 =	  WM_USER+14;
+const int WM_ADD_PLAYE		     =	  WM_USER+14;
 #define Warning(x) ::MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL|MB_ICONEXCLAMATION  );
 typedef  Image* pImage;
 using std::vector;
@@ -55,7 +56,7 @@ private:
 };
 
 pImage LoadPNGFormResource(int nId);
-pImage ResizeImg(pImage img);
+pImage ResizeImg(pImage img, double scale = RESOLUTION);
 vector<pImage> GetImageGroup(pImage img,int row,int col);
 vector<pImage> GetImageGroup(int nID,int row,int col);
 vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col);
@@ -70,5 +71,3 @@ void ResizeRect(Rect& rec,int val);
 WCHAR * multiByteToWideChar(const CString pKey);
 
 bool ShowError();
-
-unsigned char GetBufSize(MS_TYPE type);

@@ -92,8 +92,8 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 		break;
 	case MS_TYPE::UPDATE_ROOM:
 		AfxGetMainWnd()->SendMessageW(WM_UPDATE_ROOM);
-	case MS_TYPE::ENTER_ROOM_RE:
-
+	case MS_TYPE::ADD_PLAYER:
+		AfxGetMainWnd()->SendMessageW(WM_ADD_PLAYE);
 	default:
 		SetEvent(mysocket.mHeartBeat);
 		break;

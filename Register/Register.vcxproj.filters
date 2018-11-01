@@ -64,7 +64,7 @@
     <Filter Include="Game\GameMain">
       <UniqueIdentifier>{7881e45c-5143-426d-b888-240b09be7dc7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameLogic">
+    <Filter Include="Game\PokerLogic">
       <UniqueIdentifier>{1a80268c-affd-4308-b3cd-00b2287a1ab2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -138,7 +138,13 @@
     <ClInclude Include="Game\GameRoom.h">
       <Filter>Game\GameRoom</Filter>
     </ClInclude>
-    <ClInclude Include="PokerLogic.h">
+    <ClInclude Include="Game\PokerLogic.h">
+      <Filter>Game\PokerLogic</Filter>
+    </ClInclude>
+    <ClInclude Include="GamePlayer.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -200,7 +206,13 @@
     <ClCompile Include="Game\GameRoom.cpp">
       <Filter>Game\GameRoom</Filter>
     </ClCompile>
-    <ClCompile Include="PokerLogic.cpp">
+    <ClCompile Include="Game\PokerLogic.cpp">
+      <Filter>Game\PokerLogic</Filter>
+    </ClCompile>
+    <ClCompile Include="GamePlayer.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
@@ -267,6 +279,9 @@
       <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\game\PokerCards.png">
+      <Filter>Gloabal\资源文件</Filter>
+    </Image>
+    <Image Include="res\game\button.png">
       <Filter>Gloabal\资源文件</Filter>
     </Image>
   </ItemGroup>

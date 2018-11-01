@@ -92,9 +92,9 @@ void Global::InitSockAddr()
 
 
 
-pImage ResizeImg(pImage img) //缩放
+pImage ResizeImg(pImage img,double scale) //缩放
 {
-	pImage newImg=img->GetThumbnailImage(img->GetWidth()*RESOLUTION,img->GetHeight()*RESOLUTION);
+	pImage newImg=img->GetThumbnailImage(img->GetWidth()*scale,img->GetHeight()*scale);
 	delete img;
 	return newImg;
 }
@@ -111,14 +111,14 @@ std::vector<pImage> GetImageGroup(pImage img,int row,int col) //行列切割
 			vec.push_back(CutImage(img,Width*j,Height*i,Width,Height));
 		}
 	}
+	//delete img;  //这里不能delete img资源是可能需要复用的
 	return vec;
 }
 
 std::vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col)
 {
 	pImage temp=Gdiplus::Image::FromFile(img_path);
-	vector<pImage> vec;
-	vec=GetImageGroup(temp,row,col);
+	vector<pImage> vec=GetImageGroup(temp,row,col);
 	delete temp;
 	return vec;
 }
@@ -127,8 +127,7 @@ std::vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col)
 vector<pImage> GetImageGroup(int nID,int row,int col)
 {
 	pImage temp=LoadPNGFormResource(nID);
-	vector<pImage> vec;
-	vec=GetImageGroup(temp,row,col);
+	vector<pImage> vec=GetImageGroup(temp,row,col);
 	delete temp;
 	return vec;
 }
@@ -222,23 +221,3 @@ bool ShowError()
 
 
 
-unsigned char GetBufSize(MS_TYPE type)
-{
-	int size=0;
-	switch (type)
-	{
-	case MS_TYPE::REGISTER_RQ:
-		size=sizeof(USER_INFO);
-		break;
-	case MS_TYPE::REGISTER_RE_T:
-		break;
-	case MS_TYPE::REGISTER_RE_F:
-		break;
-	case MS_TYPE::LOGIN_RQ:
-		break;
-	
-	default:
-		break;
-	}
-	return size;
-}

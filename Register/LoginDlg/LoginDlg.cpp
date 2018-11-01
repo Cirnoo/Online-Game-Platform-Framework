@@ -105,6 +105,7 @@ void CLoginDlg::OnPaint()
 		mMediator.ShowControl(gBuf);
 		graphics.DrawImage(&bmp,0,0);
 		::ReleaseDC(m_hWnd,hdc);
+		delete gBuf;
 		CDialogEx::OnPaint();
 	}
 	

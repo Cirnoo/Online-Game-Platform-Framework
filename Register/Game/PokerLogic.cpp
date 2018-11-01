@@ -5,27 +5,29 @@
 
 CPokerLogic::CPokerLogic(void):card_interval(25),card_up(20)
 {
-	auto m_width=720*1.4;
-	auto m_height=540*1.4;
+	auto m_width=720*1.6;
+	auto m_height=540*1.6;
 	card_size=Size(57*1.4,80*1.4);  //牌的长宽
-	poker_center=Point(m_width/2-57,m_height-250); //中间手牌位置
+	poker_center=Point(m_width/2-57,m_height-300); //中间手牌位置
 	auto temp=GetImageGroup(IDB_POKER_CARDS,4,14);  //行列切割
-	vec_poker.resize(55);
+	poker_img.resize(55);
 	for (int i=0;i<4;i++)
 	{
 		for (int j=0;j<13;j++)
 		{
-			vec_poker[13*i+j]=temp[14*i+j];
+			poker_img[13*i+j]=temp[14*i+j];
 		}
 	}
 	for (int i=0;i<2;i++)
 	{
-		vec_poker[52+i]=temp[13+14*i];
+		poker_img[52+i]=temp[13+14*i];
 	}
-	vec_poker.back()=temp[13+14*2];  //背面牌
-	for (int i=0;i<13;i++)
+	poker_img.back()=temp[13+14*2];  //背面牌
+
+	
+	for (int i=0;i<18;i++)
 	{
-		poker_in_hand.push_back(i);
+		poker_in_hand.push_back(rand()%50);
 	}
 	poker_in_hand.push_back(52);
 	poker_in_hand.push_back(53);
@@ -35,6 +37,41 @@ CPokerLogic::CPokerLogic(void):card_interval(25),card_up(20)
 
 CPokerLogic::~CPokerLogic(void)
 {
+	for (auto i:poker_img)
+	{
+		delete i;
+	}
+}
+
+
+unsigned char CPokerLogic::CalArrPoint(const MyPoker & cards,ArrayType type)
+{
+	if (cards.empty()||type==无)
+	{
+		return 0;
+	}
+	switch (type)
+	{
+	case 单牌   :
+	case 对子   :
+	case 三张   :
+	case 顺子   :
+	case 双顺   :
+	case 三顺   :
+		return cards.front().GetPointVal();		//直接比较最前的牌大小
+	case 三带一 :
+	case 三带对 :
+	case 飞机   :
+		return GetCardFormCount(cards,3);
+	case 四带二 :
+	case 炸弹   :
+		return GetCardFormCount(cards,4);
+	case 王炸   :
+		return UCHAR_MAX;
+	default:
+		break;
+	}
+	return 0;
 }
 
 Rect CPokerLogic::GetFirstCardRect()
@@ -57,6 +94,21 @@ Rect CPokerLogic::GetHandCardRect()
 	auto width=GetLastCardRect().GetRight()-left_rect.GetLeft();
 	return Rect(left_rect.GetLeft(),left_rect.GetTop()-card_up,width,left_rect.Height+card_up);
 
+}
+
+void CPokerLogic::DelCheckedCards()
+{
+	for (auto i=poker_in_hand.begin();i!=poker_in_hand.end();)
+	{
+		if (i->check)
+		{
+			i=poker_in_hand.erase(i);
+		}
+		else
+		{
+			i++;
+		}
+	}
 }
 
 int CPokerLogic::SelectPoker(const CPoint & point)
@@ -88,13 +140,17 @@ bool CPokerLogic::SelectMutiPoker(const Rect & region)
 	const auto hand_rect=GetHandCardRect();
 	if (!region.IntersectsWith(hand_rect))
 	{
+		for (auto & i:poker_in_hand)
+		{
+			i.select=false;
+		}
 		return false;
 	}
 	auto rect=GetFirstCardRect();
 	for(auto & i:poker_in_hand)
 	{
-		auto temp=Rect(rect.GetLeft()+card_interval/3,rect.GetTop()-card_up*i.check-card_interval/3,
-			card_size.Width/3,card_size.Height*2/3);//牌能够被选到的范围比实际小点
+		auto temp=Rect(rect.GetLeft()+card_interval*0.3,rect.GetTop()-card_up*i.check+card_interval,
+			card_size.Width*0.3,card_size.Height*0.5);//牌能够被选到的范围比实际小点
 		if (temp.IntersectsWith(region))
 		{
 			i.select=true;
@@ -111,10 +167,10 @@ bool CPokerLogic::SelectMutiPoker(const Rect & region)
 void CPokerLogic::ShowHandPoker(Gdiplus::Graphics * g)
 {
 	auto rect=GetFirstCardRect();
-	for(auto i:poker_in_hand)
+	for(const auto & i:poker_in_hand)
 	{
 		auto temp=Rect(rect.GetLeft(),rect.GetTop()-card_up*i.check,card_size.Width,card_size.Height);
-		g->DrawImage(vec_poker[i.toNum()],temp);
+		g->DrawImage(poker_img[i.toNum()],temp);
 		if (i.select)
 		{
 			SolidBrush brush(Color(100,46,156,209));
@@ -126,6 +182,7 @@ void CPokerLogic::ShowHandPoker(Gdiplus::Graphics * g)
 
 bool CPokerLogic::IsLegalOutput()
 {
+	
 	MyPoker cd=GetCheckedCards();
 	switch (cd.size())
 	{
@@ -170,9 +227,9 @@ MyPoker CPokerLogic::GetCheckedCards()
 	return cards;
 }
 
-ArrayType CPokerLogic::GetCardsArrType()
+CardArray CPokerLogic::GetCardsNeedSend()
 {
-	return arrtype;
+	return CardArray(GetCheckedCards(),arrtype,1);
 }
 
 void CPokerLogic::SortHand()
@@ -230,12 +287,18 @@ bool CPokerLogic::Is4with2(const MyPoker & cards)
 
 bool CPokerLogic::IsStraight(const MyPoker & cards)
 {
-	auto first_card=cards.front();
 	if (cards.front().GetPointVal()>=(char)PokerPoints::Two)
 	{
 		return false;  //顺子不能有2和王
 	}
-	return cards.back()-cards.front()==cards.size()-1;
+	for (auto i=cards.begin();i!=cards.end()-1;i++)
+	{
+		if (i->GetPointVal()-1!=(i+1)->GetPointVal())
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 bool CPokerLogic::IsDoubleStraight(const MyPoker & cards)
@@ -303,4 +366,33 @@ bool CPokerLogic::IsPlane(const MyPoker & cards)
 		return true;
 	}
 	return false;
+}
+
+bool CPokerLogic::IsGreater(const CardArray & self, const CardArray & per)
+{
+	if (per.type==王炸)
+	{
+		return false;
+	}
+	else if (per.type==self.type)		//牌型相同 比大小 和牌数
+	{
+		return per.num==self.num && self.point>per.point;
+	}
+	else
+	{
+		return self.type==炸弹||self.type==王炸;
+	}
+}
+
+int CPokerLogic::GetCardFormCount(const MyPoker & cards,int count)
+{
+	char temp[12]={0};
+	for(const auto & i:cards)
+	{
+		if (++temp[i.GetPointVal()]==count)
+		{
+			return i.GetPointVal();
+		}
+	}
+	ASSERT(0);
 }

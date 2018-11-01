@@ -69,12 +69,12 @@ bool CEditEX::IsEmpty()
 	return is_empty;
 }
 
-void CEditEX::DrawEdit(Graphics* & g,std::vector<Image*> img)
+void CEditEX::DrawEdit(Graphics* & g,std::vector<Image*> & img)
 {
 	int step=mRect.GetLeft();
 	auto & l=img[0],& c=img[1],& r=img[2];
-	auto rec=RectF(mRect.GetLeft(),mRect.GetTop(),l->GetWidth(),l->GetHeight());
 	int img_width=l->GetWidth(),img_hight=l->GetHeight();
+	auto rec=RectF(mRect.GetLeft(),mRect.GetTop(),img_width,img_hight);
 	g->DrawImage(l,rec);
 	rec.X+=img_width;
 	while (rec.X<mRect.GetRight()-img_width)

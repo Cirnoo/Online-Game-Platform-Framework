@@ -5,34 +5,31 @@
 #include "Register.h"
 #include "GameDlg.h"
 #include "afxdialogex.h"
+#include "GameCtrl.h"
 //#include ""
 
 // CGameDlg 对话框
-
+enum GameState
+{
+	Wait,Ready,Gaming,Over
+};
 IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
-namespace PlayerPosition
-{
-	enum PlayerPosition
-	{
-		Front,Left,Right
-	};
-}
 
-using namespace PlayerPosition;
-const int a=sizeof(Cards);
 CGameDlg::CGameDlg(wstring master)
-	: CDialogEx(CGameDlg::IDD)
+	: CDialogEx(CGameDlg::IDD),
+	game_ctrl(CGameCtrl::GetInstance())
 {
 	m_master=master;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	
 	InitVar();
+	
 }
 
 CGameDlg::~CGameDlg()
 {
-	
+	delete &game_ctrl;
 }
 
 void CGameDlg::DoDataExchange(CDataExchange* pDX)
@@ -56,12 +53,16 @@ END_MESSAGE_MAP()
 
 void CGameDlg::InitVar()
 {
-	m_width=720*1.4;
-	m_height=540*1.4;
+	m_width=720*1.6;
+	m_height=540*1.6;
 	lbutton_down.SetPoint(-1,-1);
 	is_lbutton_dowm=false;
 	is_select_multi=false;
-	
+	for (int i=0;i<3;i++)
+	{
+		player_arr[i]=nullptr;
+	}
+	player_arr[Front].reset(new CGamePlayer(Front));
 }
 
 
@@ -84,41 +85,37 @@ void CGameDlg::DrawRectFrame(Gdiplus::Graphics * g)
 
 
 
+void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
+{
+	for (int i=0;i<3;i++)
+	{
+		if (player_arr[i])
+		{
+			player_arr[i]->Show(g);
+		}
+	}
+}
+
+CPokerLogic & CGameDlg::GetSelfPokerLogic()
+{
+	return player_arr[Front]->logic;
+}
+
 BOOL CGameDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 	
 	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOP , 0, 0,m_width,m_height,SWP_NOMOVE);
+	SetClassLong(this->m_hWnd, GCL_STYLE, GetClassLong(this->m_hWnd, GCL_STYLE) | CS_DROPSHADOW);
 	CenterWindow();
-	InitCtrl();
+	game_ctrl.InitCtrl(this);
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 	return TRUE;
 }
 
 
-void CGameDlg::InitCtrl()
-{
-	Rect rect=Rect(400,400,50,50);
-	m_text[Front].Create(rect,L"等待中",theApp.sys.font);
-	m_text[Left].Create(rect,L"",theApp.sys.font);
-	m_text[Right].Create(rect,L"",theApp.sys.font);
-}
 
-void CGameDlg::RandomShuffle()
-{
-}
-
-void CGameDlg::SortHand()
-{
-	std::sort(poker_in_hand.begin(),poker_in_hand.end(),
-		[](Poker a, Poker b)->bool 
-	{
-		return a.point>b.point;     
-		//每种花色13张，52和53分别为小王大王
-	});
-
-}
 
 void CGameDlg::GameStart()
 {
@@ -134,13 +131,6 @@ void CGameDlg::AddPlayer()
 	theApp.tools.DealData(pack);
 }
 
-void CGameDlg::ShowCtrl(Gdiplus::Graphics *  g)
-{
-	for (int i=0;i<3;i++)
-	{
-		m_text->Show(g);
-	}
-}
 
 void CGameDlg::OnPaint()
 {
@@ -149,23 +139,25 @@ void CGameDlg::OnPaint()
 	Bitmap bmp(this->m_width,this->m_height);
 	Graphics* gBuf=Graphics::FromImage(&bmp);
 	gBuf->DrawImage(theApp.sys.game_bg,0,0,m_width,m_height);
-	//ShowCtrl(gBuf);
-	logic.ShowHandPoker(gBuf);
+	game_ctrl.Show(gBuf);
+	ShowPlayer(gBuf);
 	DrawRectFrame(gBuf);
 	graphics.DrawImage(&bmp,0,0);
 	::ReleaseDC(m_hWnd,hdc);
+	delete gBuf;
+	TRACE("1");
 	CDialogEx::OnPaint();
 }
 
 void CGameDlg::OnSize(UINT nType, int cx, int cy)
 {
 	CDialogEx::OnSize(nType, cx, cy);
-	CRgn rgn;
-	CRect rc;
-	GetWindowRect(&rc); //获得窗口矩形
-	rc -= rc.TopLeft();
-	rgn.CreateRoundRectRgn(rc.left, rc.top, rc.right, rc.bottom, 10, 10); //根据窗口矩形创建一个圆角矩形最后两个是形成圆角的大小
-	SetWindowRgn(rgn, TRUE);
+	//CRgn rgn;
+	//CRect rc;
+	//GetWindowRect(&rc); //获得窗口矩形
+	//rc -= rc.TopLeft();
+	//rgn.CreateRoundRectRgn(rc.left, rc.top, rc.right, rc.bottom, 10, 10); //根据窗口矩形创建一个圆角矩形最后两个是形成圆角的大小
+	//SetWindowRgn(rgn, TRUE);
 }
 
 
@@ -178,8 +170,11 @@ void CGameDlg::OnLButtonDown(UINT nFlags, CPoint point)
 			HTCAPTION,
 			MAKELPARAM(point.x, point.y));
 	}
-	is_lbutton_dowm=true;
-	lbutton_down=point;
+	else
+	{
+		is_lbutton_dowm=true;
+		lbutton_down=point;
+	}
 	SetFocus();
 	CDialogEx::OnLButtonDown(nFlags, point);
 }
@@ -196,18 +191,18 @@ BOOL CGameDlg::OnEraseBkgnd(CDC* pDC)
 void CGameDlg::OnMouseMove(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (is_lbutton_dowm)
+	if (is_lbutton_dowm && point!=lbutton_down)
 	{
+		auto & logic=GetSelfPokerLogic();
 		const auto & x1=lbutton_down.x,& x2=point.x;
 		const auto & y1=lbutton_down.y,& y2=point.y;
 		int width=abs(x2-x1);
 		int height=abs(y2-y1);
 		select_region=Rect(min(x1,x2),min(y1,y2),width,height);
 		InvalidateRect(Rect2CRect(select_region));
-		if(logic.SelectMutiPoker(select_region))
-		{
-			InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
-		}
+		is_select_multi=true;
+		logic.SelectMutiPoker(select_region);
+		InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
 	}
 	CDialogEx::OnMouseMove(nFlags, point);
 }
@@ -218,17 +213,20 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (is_lbutton_dowm)
 	{
-
 		lbutton_down.SetPoint(-1,-1);
-		for (auto & i:logic.poker_in_hand)
+		auto & logic=GetSelfPokerLogic();
+		if (is_select_multi)
 		{
-			if (i.select)
+			for (auto & i:logic.poker_in_hand)
 			{
-				i.select=false;
-				i.check=!i.check;
+				if (i.select)
+				{
+					i.select=false;
+					i.check=!i.check;
+				}
 			}
 		}
-		if (!is_select_multi)
+		else
 		{
 			logic.SelectPoker(point);
 		}
@@ -245,12 +243,14 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	auto & logic=GetSelfPokerLogic();
 	if (logic.IsLegalOutput())
 	{
 		//合法的出牌	
-		auto need_send=logic.GetCheckedCards();
-		ArrayType arrtype=logic.GetCardsArrType();
-		TRACE("出牌类型:%d\n",arrtype);
+		CardArray cards=logic.GetCardsNeedSend();
+		logic.DelCheckedCards();
+		InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
+		//TRACE("出牌类型:%d\n",cards.type);
 	}
 	else
 	{

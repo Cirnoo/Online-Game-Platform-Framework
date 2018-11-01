@@ -1,11 +1,11 @@
 #pragma once
 
 #include <vector>
-#include "Text.h"
 #include "Packdef.h"
 #include "PokerLogic.h"
+#include "GamePlayer.h"
 // CGameDlg 对话框
-
+class CGameCtrl;
 class CGameDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CGameDlg)
@@ -22,27 +22,23 @@ protected:
 	wstring m_master;
 	int m_width,m_height;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
-	Point poker_center;
-	std::vector<Poker> poker_in_hand;
-	void ShowCtrl(Gdiplus::Graphics *  g);
-	CText m_text[3];
 	DECLARE_MESSAGE_MAP()
 private:
+	void GameStart();
+	void AddPlayer();
 	void InitVar();
 	void DrawRectFrame(Gdiplus::Graphics * g);
-	std::vector<pImage> vec_poker;
+	void ShowPlayer(Gdiplus::Graphics * g);
 	CPoint lbutton_down;
 	Rect select_region;
 	bool is_lbutton_dowm;
 	bool is_select_multi;
-	CPokerLogic logic;
+	CGameCtrl & game_ctrl;
+	CPokerLogic & GetSelfPokerLogic();
+	std::unique_ptr<CGamePlayer> player_arr[3];
+
 public:
 	virtual BOOL OnInitDialog();
-	void InitCtrl();
-	void RandomShuffle();
-	void SortHand();
-	void GameStart();
-	void AddPlayer();
 	afx_msg void OnPaint();
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
