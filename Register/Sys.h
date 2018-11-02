@@ -5,9 +5,8 @@
 //全局常量
 const double RESOLUTION = 1.1;
 
-const int CMD_MINSIZE = 1;
-const int CMD_CLOSE   = 2;
-
+const int GAME_DLG_WIDTH         =    960*1.2;		//游戏对话框大小
+const int GAME_DLG_HEIGHT		 =	  720*1.2;
 const int ID_BASE				 =	  10000;
 const int IDC_MIN				 =	  ID_BASE+1;
 const int IDC_CLOSE				 =	  ID_BASE+2;
@@ -23,12 +22,16 @@ const int IDC_LINK_2				 =	  ID_BASE+11;
 const int IDC_LINK_3				 =	  ID_BASE+13;
 const int IDC_EDIT_LOGIN_USER	 =	  ID_BASE+14;
 const int IDC_EDIT_LOGIN_KEY		 =	  ID_BASE+15;
+
+
+
 const int WM_LOGIN				 =    WM_USER+10;//登录消息
 const int WM_REGISETR		     =    WM_USER+11;//注册消息
 const int WM_ADD_ROOM		     =    WM_USER+12;
 const int WM_UPDATE_ROOM		     =    WM_USER+13;
 const int WM_ENTER_ROOM			 =	  WM_USER+14;
 const int WM_ADD_PLAYE		     =	  WM_USER+14;
+
 #define Warning(x) ::MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL|MB_ICONEXCLAMATION  );
 typedef  Image* pImage;
 using std::vector;

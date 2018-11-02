@@ -1,12 +1,21 @@
 #pragma once
 #include "Packdef.h"
+namespace Player
+{
+	enum PlayerPosition
+	{
+		Self,Right,Left
+	};
+}
+
+using namespace Player;
+
 typedef std::vector<Poker> MyPoker;
 class CPokerLogic
 {
 public:
 	CPokerLogic(void);
 	~CPokerLogic(void);
-	MyPoker poker_in_hand;
 	int  SelectPoker(const CPoint & point);
 	bool SelectMutiPoker(const Rect & region);
 	void ShowHandPoker(Gdiplus::Graphics *  g);
@@ -15,17 +24,22 @@ public:
 	MyPoker GetCheckedCards();
 	CardArray GetCardsNeedSend();
 	Rect GetHandCardRect();
-	void DelCheckedCards();
+	void DelCheckedCards();	//我方出牌
+	void DelMateCards(const vector<char> & cards,const PlayerPosition pos);	//对方出牌
+	void SetPlayerPoker(const vector<char> & cards,const char self_num);	//分配扑克
+	MyPoker & GetSelfPoker();
 private:
-	unsigned char CalArrPoint(const MyPoker & cards,ArrayType type );
+	MyPoker hand_poker[3],poker_master;
+	unsigned char CalArrPoint(const MyPoker & cards,const ArrayType type );
+	Rect GetMateCardRect(PlayerPosition pos);
 	Rect GetFirstCardRect();
 	Rect GetLastCardRect();
 	ArrayType arrtype;
 	void SortHand();
-	Size card_size;
+	const Size card_size;
 	const int card_interval;
 	const int card_up;
-	Point poker_center;
+	const Point self_poker_center;
 	bool IsBomb(const MyPoker & cards);
 	bool Is3with1(const MyPoker & cards);
 	bool Is3with2(const MyPoker & cards);

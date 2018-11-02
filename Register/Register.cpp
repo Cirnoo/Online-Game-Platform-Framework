@@ -77,7 +77,7 @@ BOOL CRegisterApp::InitInstance()
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
 	//CLoginDlg dlg;
-	CGameDlg dlg(L"123");
+	CGameDlg dlg(L"123",1);
 	m_pMainWnd = &dlg;
 	
 	INT_PTR nResponse = dlg.DoModal();
@@ -112,7 +112,7 @@ int CRegisterApp::CreatGameRoom(CWnd* m_pMainWnd)
 
 int CRegisterApp::CreatGameDlg(CWnd* m_pMainWnd)
 {
-	CGameDlg dlg(sys.room.name);
+	CGameDlg dlg(sys.room.name,sys.room.num);
 	m_pMainWnd = &dlg;
 	return dlg.DoModal();
 }

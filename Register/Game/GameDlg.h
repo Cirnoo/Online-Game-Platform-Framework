@@ -11,7 +11,7 @@ class CGameDlg : public CDialogEx
 	DECLARE_DYNAMIC(CGameDlg)
 
 public:
-	CGameDlg(wstring master);   // 标准构造函数
+	CGameDlg(wstring master, int num /*当前玩家是第几人*/ );   
 	virtual ~CGameDlg();
 
 // 对话框数据
@@ -33,10 +33,11 @@ private:
 	Rect select_region;
 	bool is_lbutton_dowm;
 	bool is_select_multi;
+	PlayerPosition SerialNum2Pos(const int num);	//序列号转位置
 	CGameCtrl & game_ctrl;
 	CPokerLogic & GetSelfPokerLogic();
 	std::unique_ptr<CGamePlayer> player_arr[3];
-
+	const int self_serial_num; //序列号
 public:
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();

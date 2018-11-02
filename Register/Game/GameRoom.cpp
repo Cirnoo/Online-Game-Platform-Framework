@@ -76,8 +76,8 @@ LRESULT CGameRoom::OnAddRoom(WPARAM wParam, LPARAM lParam)
 	m_room_list.InsertItem(0,L"");
 	m_room_list.SetItemText(0,0,info->name.GetStr().c_str());
 	m_room_list.SetItemText(0,1,info->master.GetStr().c_str());
-	WCHAR num[2];
-	wsprintfW(num, L"%d", info->num);
+	CString num;
+	num.Format(_T("%d"),info->num);
 	m_room_list.SetItemText(0,2,num);
 	return TRUE;
 }
@@ -103,8 +103,12 @@ void CGameRoom::OnNMDblclkRoomList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	auto room_master=m_room_list.GetItemText(pNMItemActivate->iItem,1);
-	theApp.sys.room.name=room_master;  //房主名字
-	theApp.sys.room.mate_arr[0]=theApp.sys.user.name.GetStr(); //用户名字
+	auto num_str=m_room_list.GetItemText(pNMItemActivate->iItem,2);
+	auto & sys_room=theApp.sys.room;
+	int num=_ttoi(num_str);
+	sys_room.name=room_master;  //房主名字
+	sys_room.mate_arr[num]=theApp.sys.user.name.GetStr(); //用户名字
+	sys_room.num=num;
 	DATA_PACKAGE pack;
 	pack.ms_type=MS_TYPE::ENTER_ROOM;
 	theApp.tools.DealData(pack);

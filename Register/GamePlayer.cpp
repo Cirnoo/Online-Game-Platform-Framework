@@ -9,7 +9,7 @@ CGamePlayer::CGamePlayer(PlayerPosition _pos)
 	ASSERT(pos<3);
 	pos=_pos;
 	head_img=theApp.sys.cirno;
-	head_rect[Front]=Rect(300,700,70,70);
+	head_rect[Self]=Rect(300,700,70,70);
 }
 
 CGamePlayer::~CGamePlayer(void)

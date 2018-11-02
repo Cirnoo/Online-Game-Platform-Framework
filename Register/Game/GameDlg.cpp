@@ -16,15 +16,15 @@ enum GameState
 IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
 
-CGameDlg::CGameDlg(wstring master)
+CGameDlg::CGameDlg(wstring master,int num)
 	: CDialogEx(CGameDlg::IDD),
-	game_ctrl(CGameCtrl::GetInstance())
+	game_ctrl(CGameCtrl::GetInstance()),
+	self_serial_num(num)
 {
+	ASSERT(num<0||num>=3);
 	m_master=master;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	
 	InitVar();
-	
 }
 
 CGameDlg::~CGameDlg()
@@ -53,8 +53,8 @@ END_MESSAGE_MAP()
 
 void CGameDlg::InitVar()
 {
-	m_width=720*1.6;
-	m_height=540*1.6;
+	m_width=GAME_DLG_WIDTH;
+	m_height=GAME_DLG_HEIGHT;
 	lbutton_down.SetPoint(-1,-1);
 	is_lbutton_dowm=false;
 	is_select_multi=false;
@@ -62,7 +62,7 @@ void CGameDlg::InitVar()
 	{
 		player_arr[i]=nullptr;
 	}
-	player_arr[Front].reset(new CGamePlayer(Front));
+	player_arr[Self].reset(new CGamePlayer(Self));
 }
 
 
@@ -96,9 +96,19 @@ void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
 	}
 }
 
+Player::PlayerPosition CGameDlg::SerialNum2Pos(const int num)
+{
+	ASSERT(num<0||num>=3);
+	const char temp[]={0,1,2,0,1};
+	int flag_self=self_serial_num;
+	int flag_op=flag_self;
+	while(temp[++flag_op]!=num);
+	return PlayerPosition(flag_op-flag_self);
+}
+
 CPokerLogic & CGameDlg::GetSelfPokerLogic()
 {
-	return player_arr[Front]->logic;
+	return player_arr[Self]->logic;
 }
 
 BOOL CGameDlg::OnInitDialog()
@@ -145,7 +155,6 @@ void CGameDlg::OnPaint()
 	graphics.DrawImage(&bmp,0,0);
 	::ReleaseDC(m_hWnd,hdc);
 	delete gBuf;
-	TRACE("1");
 	CDialogEx::OnPaint();
 }
 
@@ -217,7 +226,7 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		auto & logic=GetSelfPokerLogic();
 		if (is_select_multi)
 		{
-			for (auto & i:logic.poker_in_hand)
+			for (auto & i:logic.GetSelfPoker())
 			{
 				if (i.select)
 				{
