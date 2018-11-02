@@ -3,6 +3,15 @@
 #include <algorithm>
 
 
+CPokerLogic * CPokerLogic::self_instance=nullptr;
+CPokerLogic & CPokerLogic::GetInstance()
+{
+	if (!self_instance)
+	{
+		self_instance=new CPokerLogic;
+	}
+	return *self_instance;
+}
 CPokerLogic::CPokerLogic(void)
 	:card_interval(25),card_up(20),
 	card_size(Size(57*1.4,80*1.4)),  //牌的长宽
@@ -23,24 +32,13 @@ CPokerLogic::CPokerLogic(void)
 	}
 	poker_img.back()=temp[13+14*2];  //背面牌
 
-	
-	for (int i=0;i<18;i++)
-	{
-		hand_poker[Left].push_back(rand()%50);
-		hand_poker[Left].back().hide=true;
-	}
-	hand_poker[Left].push_back(52);
-	hand_poker[Left].push_back(53);
-	SortHand();
 }
 
 
 CPokerLogic::~CPokerLogic(void)
 {
-	for (auto i:poker_img)
-	{
-		delete i;
-	}
+	
+	self_instance=nullptr;
 }
 
 
@@ -74,16 +72,19 @@ unsigned char CPokerLogic::CalArrPoint(const MyPoker & cards,ArrayType type)
 	return 0;
 }
 
-Rect CPokerLogic::GetMateCardRect(PlayerPosition pos)
+Rect CPokerLogic::GetMateCardRect(PlayerPosition pos,const int timer)
 {
+	int size;
 	int width=GAME_DLG_WIDTH;
 	int height=GAME_DLG_HEIGHT;
 	switch(pos)
 	{
 	case Left:
-		return Rect(Point(150,height*0.4-hand_poker[Left].size()*card_up/3),card_size);
+		size=timer<0?hand_poker[Left].size():timer;
+		return Rect(Point(150,height*0.35-size*card_up/2),card_size);
 	case Right:
-		return Rect(Point(width-150,height*0.4-hand_poker[Right].size()*card_up/3),card_size);
+		size=timer<0?hand_poker[Right].size():timer;
+		return Rect(Point(width-150-card_size.Width,height*0.35-size*card_up/2),card_size);
 	default:
 		ASSERT(0);
 	}
@@ -91,18 +92,19 @@ Rect CPokerLogic::GetMateCardRect(PlayerPosition pos)
 
 
 
-Rect CPokerLogic::GetFirstCardRect()
+Rect CPokerLogic::GetFirstCardRect(const int timer)
 {
+	const int size=timer<0?hand_poker[Self].size():timer;
 	auto p=self_poker_center;
-	p.X-=hand_poker[Self].size()/2*card_interval;
+	p.X-=size*card_interval*0.5;
 	return Rect(p,card_size);
 }
 
 Rect CPokerLogic::GetLastCardRect()
 {
-	auto p=self_poker_center;
-	p.X+=(hand_poker[Self].size()-hand_poker[Self].size()/2-1)*card_interval;
-	return Rect(p,card_size);
+	auto rect=GetFirstCardRect();
+	rect.X+=(hand_poker[Self].size()-1)*card_interval;
+	return rect;
 }
 
 
@@ -153,27 +155,28 @@ void CPokerLogic::DelMateCards(const vector<char> & cards,const PlayerPosition p
 
 void CPokerLogic::SetPlayerPoker(const vector<char> & cards,const char self_num)
 {
-	ASSERT(self_num<0||self_num>=3);
+	ASSERT(self_num>0&&self_num<3);
 	MyPoker * poker_arr[3];
 	MyPoker * temp_arr[4]={&hand_poker[Self],&hand_poker[Right],&hand_poker[Left],&poker_master};
-	for (auto i:temp_arr)
+	for (auto  i:temp_arr)
 	{
 		i->clear();
 		i->reserve(20);
 	}
 	const char temp[]={0,1,2,0,1};
 	int flag=self_num;
+	/*for (int i=0;i<3;i++)
+	{
+		poker_arr[temp[flag++]]=temp_arr[i];
+	}*/
 	for (int i=0;i<3;i++)
 	{
-		poker_arr[flag++]=temp_arr[i];
-	}
-	for (int i=0;i<3;i++)
-	{
-		bool hide_flag=i==0?false:true;
+		int cur=temp[flag+i];
+		bool hide_flag=cur==Self?false:true;
 		for (int j=0;j<17;j++)
 		{
-			poker_arr[i]->push_back(cards.at(i));
-			poker_arr[i]->back().hide=hide_flag;
+			temp_arr[cur]->push_back(cards.at(i*17+j));
+			temp_arr[cur]->back().hide=hide_flag;
 		}
 	}
 	for (auto i=cards.rbegin();i<cards.rbegin()+3;i++)	//地主牌
@@ -199,8 +202,7 @@ int CPokerLogic::SelectPoker(const CPoint & point)
 	for (auto i=hand_poker[Self].rbegin();i!=hand_poker[Self].rend();cnt++,i++)
 	{
 		auto temp_rect=right_rect;
-		temp_rect.OffsetRect(-card_interval*cnt,0);
-		temp_rect.OffsetRect(0,-card_up*i->check);
+		temp_rect.OffsetRect(-card_interval*cnt,-card_up*i->check);
 		if (temp_rect.PtInRect(point))
 		{
 			i->check=!i->check;
@@ -256,22 +258,60 @@ void CPokerLogic::ShowHandPoker(Gdiplus::Graphics * g)
 		rect.Offset(card_interval,card_up*i.check);
 	}
 
-	//别人的手牌
-	MyPoker * mate_poker[3];
-	mate_poker[Left]=&hand_poker[Left];
-	mate_poker[Right]=&hand_poker[Right];
-	const int interval = card_up*2/3;
-	const char back_img=54;
+
+	const int interval = card_up;
+	const auto & back_img=poker_img[54];
 	for (int i=Right;i<=Left;i++)
 	{
 		rect=GetMateCardRect((PlayerPosition)i);
-		for (const auto & j:*mate_poker[i])
+		for (const auto & j:hand_poker[i])
 		{
-			g->DrawImage(poker_img[j.hide?back_img:j.toNum()],rect);
+			g->DrawImage(j.hide?back_img:poker_img[j.toNum()],rect);
 			rect.Y+=interval;
 		}
 	}
 	
+}
+
+void CPokerLogic::ShowDealingCardsEffect(Gdiplus::Graphics * g,const int timer)
+{
+	const int size=min(timer,17);
+	auto rect=GetFirstCardRect(size);
+	const auto & back_img=poker_img[54];
+	for(int i=0;i<size;i++)
+	{
+		if (timer>18)
+		{
+			g->DrawImage(back_img,rect);
+		}
+		else
+		{
+			g->DrawImage(poker_img[hand_poker[Self][i].toNum()],rect);
+		}
+		rect.Offset(card_interval,0);
+	}
+	const int interval = card_up;
+	
+	for (int i=Right;i<=Left;i++)
+	{
+		rect=GetMateCardRect((PlayerPosition)i,size);
+		for(int i=0;i<size;i++)
+		{
+			g->DrawImage(back_img,rect);
+			rect.Y+=interval;
+		}
+	}
+	
+}
+
+void CPokerLogic::ShowLastThreeCards(Gdiplus::Graphics *  g)
+{
+	Rect rect(Point(self_poker_center.X-card_size.Width-6,100),card_size);
+	for (auto i:poker_master)
+	{
+		g->DrawImage(poker_img[i.toNum()],rect);
+		rect.X+=card_size.Width+5;
+	}
 }
 
 bool CPokerLogic::IsLegalOutput()
@@ -330,14 +370,13 @@ void CPokerLogic::SortHand()
 {
 	for (int i=Self;i<=Left;i++)
 	{
-		sort(hand_poker[Self].begin(),hand_poker[Self].end(),
-			[](Poker a, Poker b)->bool 
+		sort(hand_poker[i].begin(),hand_poker[i].end(),
+			[](Poker & a, Poker & b)->bool 
 		{
 			return a.point>b.point;     
 			//每种花色13张，52和53分别为小王大王
 		});
 	}
-	
 }
 
 bool CPokerLogic::IsBomb(const MyPoker & cards)

@@ -9,27 +9,27 @@
 //#include ""
 
 // CGameDlg 对话框
-enum GameState
-{
-	Wait,Ready,Gaming,Over
-};
+
 IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
 
 CGameDlg::CGameDlg(wstring master,int num)
 	: CDialogEx(CGameDlg::IDD),
 	game_ctrl(CGameCtrl::GetInstance()),
+	players(CGamePlayer::GetInstance()),
 	self_serial_num(num)
 {
-	ASSERT(num<0||num>=3);
+	ASSERT(num>0&&num<3);
 	m_master=master;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
+	
 	InitVar();
 }
 
 CGameDlg::~CGameDlg()
 {
 	delete &game_ctrl;
+	delete &players;
 }
 
 void CGameDlg::DoDataExchange(CDataExchange* pDX)
@@ -45,6 +45,9 @@ BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONUP()
 	ON_WM_RBUTTONDOWN()
+	ON_WM_TIMER()
+	ON_MESSAGE(WM_GET_ROOM_MATE,CGameDlg::OnGetMateInfo)
+	ON_MESSAGE(WM_GET_CARDS,CGameDlg::OnGetCards)
 END_MESSAGE_MAP()
 
 
@@ -58,11 +61,8 @@ void CGameDlg::InitVar()
 	lbutton_down.SetPoint(-1,-1);
 	is_lbutton_dowm=false;
 	is_select_multi=false;
-	for (int i=0;i<3;i++)
-	{
-		player_arr[i]=nullptr;
-	}
-	player_arr[Self].reset(new CGamePlayer(Self));
+	game_timer=19;
+	game_state=GameState::GetCards;
 }
 
 
@@ -82,33 +82,40 @@ void CGameDlg::DrawRectFrame(Gdiplus::Graphics * g)
 
 
 
-
-
-
 void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
 {
-	for (int i=0;i<3;i++)
+	players.Show(g);
+	
+	switch (game_state)
 	{
-		if (player_arr[i])
-		{
-			player_arr[i]->Show(g);
-		}
+	case GameState::Wait:
+		break;
+	case GameState::GetCards:
+		ASSERT(21-game_timer>=0);
+		players.logic.ShowDealingCardsEffect(g,21-game_timer);		//发牌效果
+		break;
+	case GameState::Ready:
+		players.logic.ShowHandPoker(g);
+		players.logic.ShowLastThreeCards(g);
+		break;
+	case GameState::Gaming:
+		players.logic.ShowHandPoker(g);
+		break;
+	case GameState::Over:
+		break;
+	default:
+		break;
 	}
 }
 
-Player::PlayerPosition CGameDlg::SerialNum2Pos(const int num)
+Player::PlayerPosition CGameDlg::SerialNum2Pos(const int num) const
 {
-	ASSERT(num<0||num>=3);
+	ASSERT(num>0&&num<3);
 	const char temp[]={0,1,2,0,1};
 	int flag_self=self_serial_num;
 	int flag_op=flag_self;
 	while(temp[++flag_op]!=num);
 	return PlayerPosition(flag_op-flag_self);
-}
-
-CPokerLogic & CGameDlg::GetSelfPokerLogic()
-{
-	return player_arr[Self]->logic;
 }
 
 BOOL CGameDlg::OnInitDialog()
@@ -121,6 +128,16 @@ BOOL CGameDlg::OnInitDialog()
 	game_ctrl.InitCtrl(this);
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
+
+	SetTimer(1,300,NULL);
+	vector<char> temp(53);
+	for (int i=0;i<53;i++)
+	{
+		temp[i]=i;
+	}
+
+	//ASSERT(game_state==GameState::GetCards);
+	players.logic.SetPlayerPoker(temp,self_serial_num);
 	return TRUE;
 }
 
@@ -202,7 +219,7 @@ void CGameDlg::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (is_lbutton_dowm && point!=lbutton_down)
 	{
-		auto & logic=GetSelfPokerLogic();
+		auto & logic=players.logic;
 		const auto & x1=lbutton_down.x,& x2=point.x;
 		const auto & y1=lbutton_down.y,& y2=point.y;
 		int width=abs(x2-x1);
@@ -223,7 +240,7 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	if (is_lbutton_dowm)
 	{
 		lbutton_down.SetPoint(-1,-1);
-		auto & logic=GetSelfPokerLogic();
+		auto & logic=players.logic;
 		if (is_select_multi)
 		{
 			for (auto & i:logic.GetSelfPoker())
@@ -252,7 +269,7 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	auto & logic=GetSelfPokerLogic();
+	auto & logic=players.logic;
 	if (logic.IsLegalOutput())
 	{
 		//合法的出牌	
@@ -266,4 +283,55 @@ void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
 		//输出信息
 	}
 	CDialogEx::OnRButtonDown(nFlags, point);
+}
+
+
+void CGameDlg::OnTimer(UINT_PTR nIDEvent)
+{
+	// TODO: 在此添加消息处理程序代码和/或调用默认值
+	switch(game_state)
+	{
+	case GameState::GetCards:
+		if (--game_timer==1)
+		{
+			players.logic.SortHand();
+		}
+		else if (game_timer==0)
+		{
+			game_state=GameState::Ready;
+			game_timer=20;
+		}
+		Invalidate();
+		break;
+	case GameState::Ready:
+		if (--game_timer==0)
+		{
+
+		}
+		break;
+	case GameState::Gaming:
+		--game_timer;
+	default:
+		break;
+	}
+	CDialogEx::OnTimer(nIDEvent);
+}
+
+LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
+{
+	players.SetPlayerName(theApp.sys.user.name.GetStr(),L"",L"");
+	return 0;
+}
+
+LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
+{
+	vector<char> temp(53);
+	for (int i=0;i<53;i++)
+	{
+		temp.push_back(i);
+	}
+	ASSERT(game_state==GameState::GetCards);
+	players.logic.SetPlayerPoker(temp,self_serial_num);
+	game_timer=17;
+	return 0;
 }

@@ -141,11 +141,11 @@
     <ClInclude Include="Game\PokerLogic.h">
       <Filter>Game\PokerLogic</Filter>
     </ClInclude>
-    <ClInclude Include="GamePlayer.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Game\GameCtrl.h">
+      <Filter>Game\GameMain</Filter>
     </ClInclude>
-    <ClInclude Include="GameCtrl.h">
-      <Filter>头文件</Filter>
+    <ClInclude Include="Game\GamePlayer.h">
+      <Filter>Game\GameMain</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -209,11 +209,11 @@
     <ClCompile Include="Game\PokerLogic.cpp">
       <Filter>Game\PokerLogic</Filter>
     </ClCompile>
-    <ClCompile Include="GamePlayer.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\GameCtrl.cpp">
+      <Filter>Game\GameMain</Filter>
     </ClCompile>
-    <ClCompile Include="GameCtrl.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Game\GamePlayer.cpp">
+      <Filter>Game\GameMain</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -225,6 +225,7 @@
     <None Include="res\Register.rc2">
       <Filter>Gloabal\资源文件</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Register.ico">

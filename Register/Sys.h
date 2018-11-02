@@ -30,8 +30,9 @@ const int WM_REGISETR		     =    WM_USER+11;//×¢²áÏûÏ¢
 const int WM_ADD_ROOM		     =    WM_USER+12;
 const int WM_UPDATE_ROOM		     =    WM_USER+13;
 const int WM_ENTER_ROOM			 =	  WM_USER+14;
-const int WM_ADD_PLAYE		     =	  WM_USER+14;
-
+const int WM_GET_ROOM_MATE		 =    WM_USER+15;
+const int WM_ADD_PLAYE		     =	  WM_USER+16;
+const int WM_GET_CARDS			 =	  WM_USER+17;
 #define Warning(x) ::MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL|MB_ICONEXCLAMATION  );
 typedef  Image* pImage;
 using std::vector;

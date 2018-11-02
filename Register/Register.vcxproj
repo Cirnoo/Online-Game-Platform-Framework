@@ -115,9 +115,9 @@
     <ClInclude Include="Button\PNGButton.h" />
     <ClInclude Include="Button\TextButton.h" />
     <ClInclude Include="CheckBox\CheckBox.h" />
-    <ClInclude Include="GameCtrl.h" />
-    <ClInclude Include="GamePlayer.h" />
+    <ClInclude Include="Game\GameCtrl.h" />
     <ClInclude Include="Game\GameDlg.h" />
+    <ClInclude Include="Game\GamePlayer.h" />
     <ClInclude Include="Game\GameRoom.h" />
     <ClInclude Include="Game\PokerLogic.h" />
     <ClInclude Include="LoginDlg\LoginDlg.h" />
@@ -142,9 +142,9 @@
     <ClCompile Include="Button\PNGButton.cpp" />
     <ClCompile Include="Button\TextButton.cpp" />
     <ClCompile Include="CheckBox\CheckBox.cpp" />
-    <ClCompile Include="GameCtrl.cpp" />
-    <ClCompile Include="GamePlayer.cpp" />
+    <ClCompile Include="Game\GameCtrl.cpp" />
     <ClCompile Include="Game\GameDlg.cpp" />
+    <ClCompile Include="Game\GamePlayer.cpp" />
     <ClCompile Include="Game\GameRoom.cpp" />
     <ClCompile Include="Game\PokerLogic.cpp" />
     <ClCompile Include="LoginDlg\LoginDlg.cpp" />
@@ -167,6 +167,7 @@
     <ResourceCompile Include="Register.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="res\Register.rc2" />
   </ItemGroup>
   <ItemGroup>

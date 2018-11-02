@@ -5,6 +5,12 @@
 #include "PokerLogic.h"
 #include "GamePlayer.h"
 // CGameDlg 对话框
+
+enum class GameState
+{
+	Wait,GetCards,Ready,Gaming,Over
+};
+
 class CGameCtrl;
 class CGameDlg : public CDialogEx
 {
@@ -29,14 +35,15 @@ private:
 	void InitVar();
 	void DrawRectFrame(Gdiplus::Graphics * g);
 	void ShowPlayer(Gdiplus::Graphics * g);
+	GameState game_state;
+	int game_timer;
 	CPoint lbutton_down;
 	Rect select_region;
 	bool is_lbutton_dowm;
 	bool is_select_multi;
-	PlayerPosition SerialNum2Pos(const int num);	//序列号转位置
+	PlayerPosition SerialNum2Pos(const int num) const;	 //序列号转位置
 	CGameCtrl & game_ctrl;
-	CPokerLogic & GetSelfPokerLogic();
-	std::unique_ptr<CGamePlayer> player_arr[3];
+	CGamePlayer & players;
 	const int self_serial_num; //序列号
 public:
 	virtual BOOL OnInitDialog();
@@ -47,4 +54,7 @@ public:
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnLButtonUp(UINT nFlags, CPoint point);
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
+	afx_msg void OnTimer(UINT_PTR nIDEvent);
+	afx_msg LRESULT OnGetMateInfo(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnGetCards(WPARAM wParam, LPARAM lParam);
 };
