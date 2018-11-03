@@ -11,7 +11,7 @@ public:
 	~CGamePlayer(void);
 	void Show(Gdiplus::Graphics * g);
 	void SetHead();
-	CPokerLogic & logic;
+	
 	void SetPlayerName(const wstring & name_self,const wstring & name_right,const wstring & name_lelf);
 	void SetPlayerName(const wstring & name,const PlayerPosition pos);
 private:

@@ -14,7 +14,7 @@ CGamePlayer & CGamePlayer::GetInstance()
 }
 
 
-CGamePlayer::CGamePlayer():logic(CPokerLogic::GetInstance())
+CGamePlayer::CGamePlayer()
 {
 	head_img=theApp.sys.cirno;
 	head_rect[Self]=Rect(300,700,70,70);
@@ -22,7 +22,6 @@ CGamePlayer::CGamePlayer():logic(CPokerLogic::GetInstance())
 
 CGamePlayer::~CGamePlayer(void)
 {
-	delete &logic;
 	self_instance=nullptr;
 }
 

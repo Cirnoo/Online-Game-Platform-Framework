@@ -22,7 +22,7 @@ const int IDC_LINK_2				 =	  ID_BASE+11;
 const int IDC_LINK_3				 =	  ID_BASE+13;
 const int IDC_EDIT_LOGIN_USER	 =	  ID_BASE+14;
 const int IDC_EDIT_LOGIN_KEY		 =	  ID_BASE+15;
-
+const int IDC_GAME_TIMER			 =	  ID_BASE+16;
 
 
 const int WM_LOGIN				 =    WM_USER+10;//µÇÂ¼ÏûÏ¢

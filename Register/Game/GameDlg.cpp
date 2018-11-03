@@ -16,6 +16,7 @@ IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 CGameDlg::CGameDlg(wstring master,int num)
 	: CDialogEx(CGameDlg::IDD),
 	game_ctrl(CGameCtrl::GetInstance()),
+	logic(CPokerLogic::GetInstance()),
 	players(CGamePlayer::GetInstance()),
 	self_serial_num(num)
 {
@@ -29,6 +30,7 @@ CGameDlg::CGameDlg(wstring master,int num)
 CGameDlg::~CGameDlg()
 {
 	delete &game_ctrl;
+	delete &logic;
 	delete &players;
 }
 
@@ -85,21 +87,21 @@ void CGameDlg::DrawRectFrame(Gdiplus::Graphics * g)
 void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
 {
 	players.Show(g);
-	
 	switch (game_state)
 	{
 	case GameState::Wait:
 		break;
 	case GameState::GetCards:
 		ASSERT(21-game_timer>=0);
-		players.logic.ShowDealingCardsEffect(g,21-game_timer);		//发牌效果
+		logic.ShowDealingCardsEffect(g,21-game_timer);		//发牌效果
 		break;
 	case GameState::Ready:
-		players.logic.ShowHandPoker(g);
-		players.logic.ShowLastThreeCards(g);
+		logic.ShowHandPoker(g);
+		logic.ShowFinalThreeCards(g);
 		break;
 	case GameState::Gaming:
-		players.logic.ShowHandPoker(g);
+		logic.ShowHandPoker(g);
+		logic.ShowLastRoundPoker(g);
 		break;
 	case GameState::Over:
 		break;
@@ -129,7 +131,7 @@ BOOL CGameDlg::OnInitDialog()
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	SetTimer(1,300,NULL);
+	SetTimer(IDC_GAME_TIMER,300,NULL);
 	vector<char> temp(53);
 	for (int i=0;i<53;i++)
 	{
@@ -137,7 +139,7 @@ BOOL CGameDlg::OnInitDialog()
 	}
 
 	//ASSERT(game_state==GameState::GetCards);
-	players.logic.SetPlayerPoker(temp,self_serial_num);
+	logic.SetPlayerPoker(temp,self_serial_num);
 	return TRUE;
 }
 
@@ -219,7 +221,6 @@ void CGameDlg::OnMouseMove(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (is_lbutton_dowm && point!=lbutton_down)
 	{
-		auto & logic=players.logic;
 		const auto & x1=lbutton_down.x,& x2=point.x;
 		const auto & y1=lbutton_down.y,& y2=point.y;
 		int width=abs(x2-x1);
@@ -240,17 +241,9 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	if (is_lbutton_dowm)
 	{
 		lbutton_down.SetPoint(-1,-1);
-		auto & logic=players.logic;
 		if (is_select_multi)
 		{
-			for (auto & i:logic.GetSelfPoker())
-			{
-				if (i.select)
-				{
-					i.select=false;
-					i.check=!i.check;
-				}
-			}
+			logic.FinishSelect();
 		}
 		else
 		{
@@ -269,7 +262,6 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	auto & logic=players.logic;
 	if (logic.IsLegalOutput())
 	{
 		//合法的出牌	
@@ -294,7 +286,7 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 	case GameState::GetCards:
 		if (--game_timer==1)
 		{
-			players.logic.SortHand();
+			logic.SortHand();
 		}
 		else if (game_timer==0)
 		{
@@ -331,7 +323,7 @@ LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
 		temp.push_back(i);
 	}
 	ASSERT(game_state==GameState::GetCards);
-	players.logic.SetPlayerPoker(temp,self_serial_num);
+	logic.SetPlayerPoker(temp,self_serial_num);
 	game_timer=17;
 	return 0;
 }

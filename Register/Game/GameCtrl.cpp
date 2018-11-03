@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "GameCtrl.h"
 
-
 CGameCtrl * CGameCtrl::self=nullptr;
 CGameCtrl & CGameCtrl::GetInstance()  //¶öººÊ½
 {
@@ -68,4 +67,9 @@ void CGameCtrl::InitCtrl(CWnd * parent)
 		parent->PostMessageW(WM_SYSCOMMAND ,SC_MINIMIZE, 0);
 	});
 	vec_ctl_base.push_back(&bt_min);
+}
+
+void CGameCtrl::OnGameTimer()
+{
+	game_timer++;
 }

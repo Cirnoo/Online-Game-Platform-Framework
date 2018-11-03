@@ -43,6 +43,7 @@ private:
 	bool is_select_multi;
 	PlayerPosition SerialNum2Pos(const int num) const;	 //序列号转位置
 	CGameCtrl & game_ctrl;
+	CPokerLogic & logic;
 	CGamePlayer & players;
 	const int self_serial_num; //序列号
 public:
