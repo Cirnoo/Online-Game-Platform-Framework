@@ -167,7 +167,6 @@
     <ResourceCompile Include="Register.rc" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
     <None Include="res\Register.rc2" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +183,8 @@
     <Image Include="res\game\button.png" />
     <Image Include="res\game\close.png" />
     <Image Include="res\game\game_bg.png" />
+    <Image Include="res\game\game_button.png" />
+    <Image Include="res\game\game_text.png" />
     <Image Include="res\game\minus.png" />
     <Image Include="res\game\PokerCards.png" />
     <Image Include="res\game_bg.png" />

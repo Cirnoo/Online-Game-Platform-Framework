@@ -41,6 +41,7 @@ private:
 	Rect select_region;
 	bool is_lbutton_dowm;
 	bool is_select_multi;
+	pImage back_img;
 	PlayerPosition SerialNum2Pos(const int num) const;	 //ÐòÁÐºÅ×ªÎ»ÖÃ
 	CGameCtrl & game_ctrl;
 	CPokerLogic & logic;
@@ -58,4 +59,6 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnGetMateInfo(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGetCards(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnSetLandlord(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnGameWin(WPARAM wParam, LPARAM lParam);
 };

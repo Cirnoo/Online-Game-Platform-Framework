@@ -11,9 +11,9 @@ namespace Player
 
 using namespace Player;
 
-typedef std::vector<Poker> MyPoker;
 class CPokerLogic
 {
+	typedef std::vector<Poker> MyPoker;
 public:
 	static CPokerLogic & GetInstance();
 	~CPokerLogic(void);

@@ -37,7 +37,7 @@ BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, Gdiplus::Image* BG
 	return OK;
 }
 
-BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, std::vector<Image*>& _bg)
+BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID,const std::vector<Image*>& _bg)
 {
 	LPCTSTR lpszClassName=AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW ,  AfxGetApp()->LoadStandardCursor(IDC_ARROW), (HBRUSH)GetStockObject(TRANSPARENT), NULL) ;   
 	SetRect(rect);
@@ -52,7 +52,7 @@ BOOL CPNGButton::Create(Rect rect,CWnd * pParentWnd,UINT nID, std::vector<Image*
 
 
 
-void CPNGButton::ClickDown(bool flag)
+void CPNGButton::SetClickDown(bool flag)
 {
 	is_click_move=flag;
 }

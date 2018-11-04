@@ -2,7 +2,7 @@
 #include "PokerLogic.h"
 #include <algorithm>
 
-
+typedef std::vector<Poker> MyPoker;
 CPokerLogic * CPokerLogic::self_instance=nullptr;
 CPokerLogic & CPokerLogic::GetInstance()
 {
@@ -117,18 +117,24 @@ Rect CPokerLogic::GetHandCardRect() const
 
 void CPokerLogic::DelCheckedCards()
 {
+	auto self_poker=hand_poker[Self];
 	last_round_poker[Self].clear();
-	for (auto i=hand_poker[Self].begin();i!=hand_poker[Self].end();)
+	for (auto i=self_poker.begin();i!=self_poker.end();)
 	{
 		if (i->check)
 		{
 			last_round_poker[Self].push_back(*i);
-			i=hand_poker[Self].erase(i);
+			i=self_poker.erase(i);
 		}
 		else
 		{
 			i++;
 		}
+	}
+	if (self_poker.empty())
+	{
+		//ÓÎÏ·Ê¤Àû
+		AfxGetMainWnd()->PostMessageW(WM_GAME_WIN);
 	}
 }
 
@@ -416,8 +422,11 @@ void CPokerLogic::SetLandlord(const PlayerPosition pos)
 {
 	for (auto & i:poker_landlord)
 	{
-		
+		hand_poker[pos].push_back(i);
 	}
+	poker_landlord.clear();
+	sort(hand_poker[pos].begin(),hand_poker[pos].end(),
+		[](Poker & a,Poker & b)->bool {return a.GetPointVal()>b.GetPointVal();});
 }
 
 bool CPokerLogic::IsBomb(const MyPoker & cards)

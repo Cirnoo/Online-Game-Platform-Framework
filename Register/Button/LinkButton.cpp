@@ -22,7 +22,7 @@ CLinkButton::~CLinkButton()
 
 
 
-void CLinkButton::SetText(CStringW str,Gdiplus::Font * font, Gdiplus::Color color_normal/*=Color(39, 134, 230)*/,Gdiplus::Color color_hover/*=Color(21, 112, 235)*/)
+void CLinkButton::SetText(const CStringW str,Gdiplus::Font * font, Gdiplus::Color color_normal/*=Color(39, 134, 230)*/,Gdiplus::Color color_hover/*=Color(21, 112, 235)*/)
 {
 	m_color_normal=color_normal;
 	m_color_hover=color_hover;

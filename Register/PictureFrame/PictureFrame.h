@@ -11,6 +11,7 @@ public:
 	virtual ~CPictureFrame();
 public:
 	BOOL Create(Rect rc,CWnd * pParentWnd,UINT ControlID,pImage _img);
+	BOOL Create(Region region,CWnd * pParentWnd,UINT ControlID,pImage _img);
 	virtual void Show(Graphics* & g);
 protected:
 	DECLARE_MESSAGE_MAP()

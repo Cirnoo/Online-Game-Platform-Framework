@@ -38,11 +38,6 @@ void CMySocket::OnReceive(int nErrorCode)
 {
 	DATA_PACKAGE pack;
 	this->Receive((char *)&pack,sizeof(pack),0);
-	/*unsigned char size=GetBufSize(pack.ms_type);
-	if(size>0)
-	{
-		this->Receive((char *)&pack,size,0);
-	}*/
 	theApp.tools.DealData(pack);
 }
 

@@ -34,6 +34,9 @@ enum class MS_TYPE :unsigned char
 	UPDATE_ROOM,
 	ADD_PLAYER,
 	GAME_START,
+	GAME_WIN,
+	WANT_LANDLORD,
+	NOT_WANT_LANDLORD,
 	HEARTBEAT,//ÐÄÌø°ü
 };
 

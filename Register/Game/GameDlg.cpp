@@ -15,7 +15,7 @@ IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
 CGameDlg::CGameDlg(wstring master,int num)
 	: CDialogEx(CGameDlg::IDD),
-	game_ctrl(CGameCtrl::GetInstance()),
+	game_ctrl(CGameCtrl::GetInstance(this)),
 	logic(CPokerLogic::GetInstance()),
 	players(CGamePlayer::GetInstance()),
 	self_serial_num(num)
@@ -29,6 +29,7 @@ CGameDlg::CGameDlg(wstring master,int num)
 
 CGameDlg::~CGameDlg()
 {
+	delete back_img;
 	delete &game_ctrl;
 	delete &logic;
 	delete &players;
@@ -63,6 +64,7 @@ void CGameDlg::InitVar()
 	lbutton_down.SetPoint(-1,-1);
 	is_lbutton_dowm=false;
 	is_select_multi=false;
+	back_img=::LoadPNGFormResource(IDB_GAME_BG);
 	game_timer=19;
 	game_state=GameState::GetCards;
 }
@@ -94,10 +96,12 @@ void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
 	case GameState::GetCards:
 		ASSERT(21-game_timer>=0);
 		logic.ShowDealingCardsEffect(g,21-game_timer);		//发牌效果
+		players.ShowLandlordLogo(g);
 		break;
 	case GameState::Ready:
 		logic.ShowHandPoker(g);
 		logic.ShowFinalThreeCards(g);
+		
 		break;
 	case GameState::Gaming:
 		logic.ShowHandPoker(g);
@@ -127,7 +131,7 @@ BOOL CGameDlg::OnInitDialog()
 	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOP , 0, 0,m_width,m_height,SWP_NOMOVE);
 	SetClassLong(this->m_hWnd, GCL_STYLE, GetClassLong(this->m_hWnd, GCL_STYLE) | CS_DROPSHADOW);
 	CenterWindow();
-	game_ctrl.InitCtrl(this);
+	game_ctrl.InitCtrl();
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
@@ -167,9 +171,9 @@ void CGameDlg::OnPaint()
 	Graphics graphics(hdc);
 	Bitmap bmp(this->m_width,this->m_height);
 	Graphics* gBuf=Graphics::FromImage(&bmp);
-	gBuf->DrawImage(theApp.sys.game_bg,0,0,m_width,m_height);
-	game_ctrl.Show(gBuf);
+	gBuf->DrawImage(back_img,0,0,m_width,m_height);
 	ShowPlayer(gBuf);
+	game_ctrl.Show(gBuf);
 	DrawRectFrame(gBuf);
 	graphics.DrawImage(&bmp,0,0);
 	::ReleaseDC(m_hWnd,hdc);
@@ -292,6 +296,7 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 		{
 			game_state=GameState::Ready;
 			game_timer=20;
+			OnSetLandlord(NULL,NULL);
 		}
 		Invalidate();
 		break;
@@ -325,5 +330,18 @@ LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
 	ASSERT(game_state==GameState::GetCards);
 	logic.SetPlayerPoker(temp,self_serial_num);
 	game_timer=17;
+	return 0;
+}
+
+LRESULT CGameDlg::OnSetLandlord(WPARAM wParam, LPARAM lParam)
+{
+	ASSERT(game_state==GameState::Ready);
+	logic.SetLandlord(Self);
+	players.SetLandlord(Self);
+	return 0;
+}
+
+LRESULT CGameDlg::OnGameWin(WPARAM wParam, LPARAM lParam)
+{
 	return 0;
 }

@@ -11,7 +11,7 @@ public:
 	virtual ~CLinkButton();
 	
 public:
-	void SetText(CStringW str,Gdiplus::Font * font,
+	void SetText(const CStringW str,Gdiplus::Font * font,
 		Gdiplus::Color color_normal=Color(20, 109, 175),Gdiplus::Color color_hover=Color(21, 112, 235));
 	
 	BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID);

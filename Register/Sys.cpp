@@ -60,7 +60,7 @@ void Global::LoadImg()
 	LoadImg(mask,IDB_MASK);
 	LoadImg(cirno,IDB_9);
 	LoadImg(head_bk,IDB_HEAD_BK);
-	LoadImg(game_bg,IDB_GAME_BG,false);
+	LoadImg(game_tool,IDB_GAME_TOOL,false);
 	vec_bt_min=GetImageGroup(IDB_BT_MIN,1,4);
 	vec_bt_close=GetImageGroup(IDB_BT_CLOSE,1,4);
 	vec_bt_default=GetImageGroup(IDB_BT_DEFAULT,1,4);
@@ -134,16 +134,38 @@ vector<pImage> GetImageGroup(int nID,int row,int col)
 
 pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height)
 {
-	
 	Bitmap *bmPhoto = new Bitmap(Width, Height);
 	bmPhoto->SetResolution(imgSrc->GetHorizontalResolution(), imgSrc->GetVerticalResolution());
 	Graphics grPhoto(bmPhoto);
 	grPhoto.Clear((ARGB)Color::Transparent);
 	grPhoto.SetInterpolationMode(InterpolationModeHighQualityBicubic);
 	grPhoto.DrawImage(imgSrc, 0, 0, x,y, Width,Height, UnitPixel);//关键代码，实现裁剪
-	bmPhoto->GetWidth();
-	bmPhoto->GetHeight();
 	return bmPhoto;
+}
+
+
+pImage CutImage(pImage imgSrc,const CRgn & region)
+{
+	Rect img_rect(0,0,imgSrc->GetWidth(),imgSrc->GetHeight());
+	Bitmap * bit_temp=new Bitmap(img_rect.Width,img_rect.Height);
+	Graphics gr_temp(bit_temp);
+	CRgn crgn;
+	crgn.CreateRectRgn(0,0,imgSrc->GetWidth(),imgSrc->GetHeight());
+	crgn.CombineRgn(&crgn,&region,RGN_DIFF);
+	gr_temp.DrawImage(imgSrc,img_rect);
+	gr_temp.FillRegion(&SolidBrush(Color::White),&Region(crgn));
+	
+
+	Bitmap * bit_region=new Bitmap(img_rect.Width,img_rect.Height);
+	Graphics gr_region(bit_region);
+	gr_region.FillRegion(&SolidBrush(Color::White),&Region(region));
+	ImageAttributes imgAttributes;
+	imgAttributes.SetColorKey(Color(255,255,255,255),Color(255,255,255,255),
+		ColorAdjustTypeBitmap);
+	gr_region.DrawImage(bit_temp,img_rect,0,0,img_rect.Width,img_rect.Height,UnitPixel,&imgAttributes);
+	//感觉mfc好麻烦啊。。
+	delete bit_temp;
+	return bit_region;
 }
 
 CRect Rect2CRect(Rect rect)

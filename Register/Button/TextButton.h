@@ -12,7 +12,7 @@ public:
 	virtual ~CTextButton();
 public:	
 	virtual void Show(Graphics* & g);
-	void SetText(CStringW str,Gdiplus::Font * font,
+	void SetText(const CStringW str,Gdiplus::Font * font,
 		Gdiplus::Color color=Gdiplus::Color::Black ,
 		StringAlignment format=StringAlignmentCenter);
 protected:

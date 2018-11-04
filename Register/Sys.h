@@ -33,6 +33,8 @@ const int WM_ENTER_ROOM			 =	  WM_USER+14;
 const int WM_GET_ROOM_MATE		 =    WM_USER+15;
 const int WM_ADD_PLAYE		     =	  WM_USER+16;
 const int WM_GET_CARDS			 =	  WM_USER+17;
+const int WM_GAME_WIN			 =	  WM_USER+18;
+const int WM_GAME_OVER			 =	  WM_USER+19;
 #define Warning(x) ::MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL|MB_ICONEXCLAMATION  );
 typedef  Image* pImage;
 using std::vector;
@@ -42,7 +44,7 @@ public:
 	static Global & GetInstance();
 	~Global();
 	Global();
-	pImage back,mask,cirno,head_bk,game_bg;
+	pImage back,mask,cirno,head_bk,game_tool;
 	std::vector<pImage> vec_bt_min,vec_bt_close,vec_bt_default,vec_edit,vec_checkbox;
 	Gdiplus::FontFamily * fontfamily;
 	Gdiplus::Font *font;
@@ -66,7 +68,7 @@ vector<pImage> GetImageGroup(int nID,int row,int col);
 vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col);
 
 pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height);
-
+pImage CutImage(pImage imgSrc,const CRgn & region);
 CRect Rect2CRect(Rect rect);
 RectF Rect2RectF(Rect rect);
 

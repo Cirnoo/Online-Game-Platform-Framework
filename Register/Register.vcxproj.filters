@@ -225,7 +225,6 @@
     <None Include="res\Register.rc2">
       <Filter>Gloabal\资源文件</Filter>
     </None>
-    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\Register.ico">
@@ -283,6 +282,12 @@
       <Filter>Gloabal\资源文件</Filter>
     </Image>
     <Image Include="res\game\button.png">
+      <Filter>Gloabal\资源文件</Filter>
+    </Image>
+    <Image Include="res\game\game_button.png">
+      <Filter>Gloabal\资源文件</Filter>
+    </Image>
+    <Image Include="res\game\game_text.png">
       <Filter>Gloabal\资源文件</Filter>
     </Image>
   </ItemGroup>
