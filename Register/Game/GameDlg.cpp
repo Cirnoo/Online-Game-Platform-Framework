@@ -6,18 +6,18 @@
 #include "GameDlg.h"
 #include "afxdialogex.h"
 #include "GameCtrl.h"
+
 //#include ""
 
 // CGameDlg ¶Ô»°¿ò
 
 IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
-
-CGameDlg::CGameDlg(wstring master,int num)
+CGameDlg::CGameDlg(const wstring master,const int num)
 	: CDialogEx(CGameDlg::IDD),
 	game_ctrl(CGameCtrl::GetInstance(this)),
 	logic(CPokerLogic::GetInstance()),
-	players(CGamePlayer::GetInstance()),
+	players(CGamePlayer::GetInstance(theApp.sys.user.name.GetStr())),
 	self_serial_num(num)
 {
 	ASSERT(num>0&&num<3);
@@ -65,8 +65,11 @@ void CGameDlg::InitVar()
 	is_lbutton_dowm=false;
 	is_select_multi=false;
 	back_img=::LoadPNGFormResource(IDB_GAME_BG);
-	game_timer=19;
-	game_state=GameState::GetCards;
+	game_timer=0;
+	game_state=GameState::Wait;
+	have_player[Self]=true;
+	have_player[Left]=false;
+	have_player[Right]=false;
 }
 
 
@@ -92,6 +95,7 @@ void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
 	switch (game_state)
 	{
 	case GameState::Wait:
+
 		break;
 	case GameState::GetCards:
 		ASSERT(21-game_timer>=0);
@@ -170,6 +174,7 @@ void CGameDlg::OnPaint()
 	HDC hdc = ::GetDC(this->m_hWnd);
 	Graphics graphics(hdc);
 	Bitmap bmp(this->m_width,this->m_height);
+	//PaintIrregularDlg(hdc,back_img);
 	Graphics* gBuf=Graphics::FromImage(&bmp);
 	gBuf->DrawImage(back_img,0,0,m_width,m_height);
 	ShowPlayer(gBuf);
@@ -316,7 +321,30 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 
 LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 {
-	players.SetPlayerName(theApp.sys.user.name.GetStr(),L"",L"");
+	typedef PLAYER_INFO MATE_INFO[2];
+	MATE_INFO * info=(MATE_INFO *) wParam;
+	wstring name[2];
+	PlayerPosition pos[2];
+	for(int i=0;i<2;i++)
+	{
+		name[i]=info[i]->name.GetStr();
+		if (name[i].empty())
+		{
+			continue;
+		}
+		pos[i]=SerialNum2Pos(info[i]->pos);
+		have_player[pos[i]]=true;
+		players.SetPlayerName(name[i],pos[i]);
+	}
+	
+	return 0;
+}
+
+LRESULT CGameDlg::OnDelPlayer(WPARAM wParam, LPARAM lParam)
+{
+	PLAYER_INFO * info = (PLAYER_INFO *) wParam;
+	auto pos=SerialNum2Pos(info->pos);
+	have_player[pos]=false;
 	return 0;
 }
 
@@ -345,3 +373,5 @@ LRESULT CGameDlg::OnGameWin(WPARAM wParam, LPARAM lParam)
 {
 	return 0;
 }
+
+

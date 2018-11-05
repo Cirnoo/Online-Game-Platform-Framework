@@ -19,7 +19,7 @@ CTextButton::~CTextButton()
 {
 }
 
-void CTextButton::Show(Graphics* & g)
+void CTextButton::Show(Graphics* const g)
 {
 
 	CPNGButton::Show(g);
@@ -31,7 +31,9 @@ void CTextButton::Show(Graphics* & g)
 	mText.Show(g,t_rect);
 }
 
-void CTextButton::SetText(const CStringW str,Gdiplus::Font * font, Gdiplus::Color color/*=Gdiplus::Color::Black */, StringAlignment format/*=StringAlignmentCenter*/)
+void CTextButton::SetText(const CStringW str,Gdiplus::Font * const font,
+						  const Gdiplus::Color color/*=Gdiplus::Color::Black */,
+						  const StringAlignment format/*=StringAlignmentCenter*/)
 {
 	Rect rec=Rect(mRect.GetLeft(),mRect.GetTop()+font->GetSize()/4+1,mRect.Width,mRect.Height);
 	mText.Create(rec,str,font,color,format);

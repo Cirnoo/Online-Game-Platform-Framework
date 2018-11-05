@@ -9,24 +9,24 @@ class CEditEX : public CEdit
 public:
 	CEditEX();
 	virtual ~CEditEX();
-	void Show(Graphics* & g);
-	BOOL CreateEditEx(Rect rect,CWnd * pParentWnd,UINT nID,
-		std::vector<Image*> &,bool password=false);
-	void SetDefaultText(CStringW str);
-	wstring GetEditText();
-	bool IsEmpty();
+	void Show(Graphics* const g);
+	BOOL CreateEditEx(const Rect rect,CWnd * const pParentWnd,const UINT nID,
+		const std::vector<Image*> &,const bool password=false);
+	void SetDefaultText(const CStringW str);
+	wstring GetEditText() const;
+	bool IsEmpty() const;
 private:
 	Rect mRect;
 	std::vector<Image *> vec_bg;
 	bool is_tracked;
 	bool is_empty;
-	void ControlRepaint();
+	void ControlRepaint() const;
 	CBrush m_brush ;
 	CStringW default_str;
 protected:
 	DECLARE_MESSAGE_MAP()
 	bool is_password;
-	void DrawEdit(Graphics* & g,std::vector<Image*>& img);
+	void DrawEdit(Graphics* const g,const std::vector<Image*>& img);
 	std::vector<std::vector<Image *>> vec_cut;
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
 	afx_msg void OnMouseLeave();

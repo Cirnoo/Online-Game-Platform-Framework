@@ -260,7 +260,7 @@ void CPokerLogic::FinishSelect()
 	}
 }
 
-void CPokerLogic::ShowHandPoker(Gdiplus::Graphics * g) const
+void CPokerLogic::ShowHandPoker(Graphics * const g) const
 {
 	//自己的手牌
 	auto rect=GetFirstCardRect(hand_poker[Self].size());
@@ -292,7 +292,7 @@ void CPokerLogic::ShowHandPoker(Gdiplus::Graphics * g) const
 	
 }
 
-void CPokerLogic::ShowDealingCardsEffect(Gdiplus::Graphics * g,const int timer) const
+void CPokerLogic::ShowDealingCardsEffect(Graphics * const g,const int timer) const
 {
 	const int size=min(timer,17);
 	auto rect=GetFirstCardRect(size);
@@ -323,7 +323,7 @@ void CPokerLogic::ShowDealingCardsEffect(Gdiplus::Graphics * g,const int timer) 
 	
 }
 
-void CPokerLogic::ShowFinalThreeCards(Gdiplus::Graphics *  g) const
+void CPokerLogic::ShowFinalThreeCards(Graphics * const  g) const
 {
 	Rect rect(Point(self_poker_center.X-card_size.Width-6,100),card_size);
 	for (auto i:poker_landlord)
@@ -333,7 +333,7 @@ void CPokerLogic::ShowFinalThreeCards(Gdiplus::Graphics *  g) const
 	}
 }
 
-void CPokerLogic::ShowLastRoundPoker(Gdiplus::Graphics * g) const
+void CPokerLogic::ShowLastRoundPoker(Graphics * const g) const
 {
 	Rect rect[3];
 	rect[Self]=GetFirstCardRect(last_round_poker[Self].size());
@@ -429,24 +429,24 @@ void CPokerLogic::SetLandlord(const PlayerPosition pos)
 		[](Poker & a,Poker & b)->bool {return a.GetPointVal()>b.GetPointVal();});
 }
 
-bool CPokerLogic::IsBomb(const MyPoker & cards)
+bool CPokerLogic::IsBomb(const MyPoker & cards)const
 {
 	return cards.front()==cards.back()&&cards.size()==4;
 }
 
-bool CPokerLogic::Is3with1(const MyPoker & cards)
+bool CPokerLogic::Is3with1(const MyPoker & cards) const
 {
 	return cards[0]==cards[2]||cards[1]==cards[3];
 }
 
-bool CPokerLogic::Is3with2(const MyPoker & cards)
+bool CPokerLogic::Is3with2(const MyPoker & cards) const
 {
 	return (cards[0]==cards[2]&&cards[3]==cards[4]) //对子在后
 		||
 		(cards[2]==cards[4]&&cards[0]==cards[1]); //对子在前
 }
 
-bool CPokerLogic::Is4with2(const MyPoker & cards)
+bool CPokerLogic::Is4with2(const MyPoker & cards) const
 {
 	for (int l=0,r=l+3;r<cards.size();l++,r++)
 	{
@@ -472,7 +472,7 @@ bool CPokerLogic::Is4with2(const MyPoker & cards)
 	
 }
 
-bool CPokerLogic::IsStraight(const MyPoker & cards)
+bool CPokerLogic::IsStraight(const MyPoker & cards) const
 {
 	if (cards.front().GetPointVal()>=(char)PokerPoints::Two)
 	{
@@ -488,7 +488,7 @@ bool CPokerLogic::IsStraight(const MyPoker & cards)
 	return true;
 }
 
-bool CPokerLogic::IsDoubleStraight(const MyPoker & cards)
+bool CPokerLogic::IsDoubleStraight(const MyPoker & cards) const
 {
 	if (cards.size()<6)
 	{
@@ -504,7 +504,7 @@ bool CPokerLogic::IsDoubleStraight(const MyPoker & cards)
 	return vec1==vec2&& IsStraight(vec1) && IsStraight(vec2);
 }
 
-bool CPokerLogic::IsTripleStraight(const MyPoker & cards)
+bool CPokerLogic::IsTripleStraight(const MyPoker & cards) const
 {
 	MyPoker vec[3];
 	if (cards.size()%3!=0)
@@ -532,7 +532,7 @@ bool CPokerLogic::IsTripleStraight(const MyPoker & cards)
 	}
 }
 
-bool CPokerLogic::IsPlane(const MyPoker & cards)
+bool CPokerLogic::IsPlane(const MyPoker & cards) const
 {
 	char temp[15]={0};
 	for (const auto i:cards)
@@ -555,7 +555,7 @@ bool CPokerLogic::IsPlane(const MyPoker & cards)
 	return false;
 }
 
-bool CPokerLogic::IsGreater(const CardArray & self, const CardArray & per)
+bool CPokerLogic::IsGreater(const CardArray & self, const CardArray & per) const
 {
 	if (per.type==王炸)
 	{
@@ -571,7 +571,7 @@ bool CPokerLogic::IsGreater(const CardArray & self, const CardArray & per)
 	}
 }
 
-int CPokerLogic::GetCardFormCount(const MyPoker & cards,int count)
+int CPokerLogic::GetCardFormCount(const MyPoker & cards,int count) const
 {
 	char temp[12]={0};
 	for(const auto & i:cards)

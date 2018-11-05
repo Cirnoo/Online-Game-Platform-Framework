@@ -34,7 +34,7 @@ void CBaseControl::VarInit()
 	is_click_move=false;
 }
 
-void CBaseControl::ControlRepaint()
+void CBaseControl::ControlRepaint() const
 {
 	CRect   rect;
 	GetWindowRect(&rect); 
@@ -51,17 +51,17 @@ BEGIN_MESSAGE_MAP(CBaseControl, CWnd)
 	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
-void CBaseControl::SetCmd(std::function<void()> cmd)
+void CBaseControl::SetCmd(const std::function<void()> cmd)
 {
 	mCmd=std::move(cmd);
 }
 
-void CBaseControl::SetRect(Rect rect)
+void CBaseControl::SetRect(const Rect rect)
 {
 	mRect=rect;
 }
 
-void CBaseControl::SetImg(std::vector<Image*> & _bg)
+void CBaseControl::SetImg(const std::vector<Image*> & _bg)
 {
 	vec_bg=_bg;
 }

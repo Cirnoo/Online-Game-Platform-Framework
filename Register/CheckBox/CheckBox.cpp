@@ -20,7 +20,7 @@ CCheckBox::~CCheckBox()
 }
 
 
-void CCheckBox::Show(Graphics* & g)
+void CCheckBox::Show(Graphics* const g)
 {
 	if (is_tracked)
 	{

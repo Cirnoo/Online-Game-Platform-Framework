@@ -10,9 +10,11 @@ public:
 	CPictureFrame();
 	virtual ~CPictureFrame();
 public:
-	BOOL Create(Rect rc,CWnd * pParentWnd,UINT ControlID,pImage _img);
-	BOOL Create(Region region,CWnd * pParentWnd,UINT ControlID,pImage _img);
-	virtual void Show(Graphics* & g);
+	BOOL Create(const Rect rc,CWnd * const pParentWnd,
+		const UINT ControlID,pImage const _img);
+	BOOL Create(const Region region,const CWnd * const pParentWnd,
+		const UINT ControlID,pImage const _img);
+	virtual void Show(Graphics* const g);
 protected:
 	DECLARE_MESSAGE_MAP()
 

@@ -11,7 +11,9 @@ CText::~CText(void)
 {
 }
 
-BOOL CText::Create(Rect rect,CStringW str,Gdiplus::Font * font, Gdiplus::Color color/*=Gdiplus::Color::Black */, StringAlignment format/*=StringAlignmentCenter*/)
+BOOL CText::Create(const Rect rect,const CStringW str,Gdiplus::Font * const font,
+				   const Gdiplus::Color color/*=Gdiplus::Color::Black */ ,
+				   const StringAlignment format/*=StringAlignmentCenter*/)
 {
 	str_rect=Rect2RectF(rect);
 	mFont=font;
@@ -21,7 +23,7 @@ BOOL CText::Create(Rect rect,CStringW str,Gdiplus::Font * font, Gdiplus::Color c
 	return TRUE;
 }
 
-void CText::Show(Graphics* & g)
+void CText::Show(Graphics* const g)
 {
 	SolidBrush brush(mColor);
 	StringFormat format;
@@ -29,7 +31,7 @@ void CText::Show(Graphics* & g)
 	g->DrawString(mStr,-1,mFont,str_rect,&format,&brush);
 }
 
-void CText::Show(Graphics* & g,RectF rec)
+void CText::Show(Graphics* const g,RectF rec)
 {
 	auto temp=str_rect;
 	str_rect=rec;
@@ -47,18 +49,18 @@ CStringW CText::GetStr()
 	return mBuf;
 }
 
-void CText::SetFont(Gdiplus::Font * font)
+void CText::SetFont(Gdiplus::Font * const font)
 {
 	mFont=font;
 }
 
-void CText::SetText(CStringW str)
+void CText::SetText(const CStringW str)
 {
 	mBuf=str;
 	mStr=mBuf.GetBuffer();
 }
 
-void CText::SetColor(Gdiplus::Color color)
+void CText::SetColor(const Gdiplus::Color color)
 {
 	mColor=color;
 }

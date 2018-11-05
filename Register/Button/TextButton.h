@@ -11,10 +11,10 @@ public:
 	CTextButton();
 	virtual ~CTextButton();
 public:	
-	virtual void Show(Graphics* & g);
-	void SetText(const CStringW str,Gdiplus::Font * font,
-		Gdiplus::Color color=Gdiplus::Color::Black ,
-		StringAlignment format=StringAlignmentCenter);
+	virtual void Show(Graphics* const g);
+	void SetText(const CStringW str,Gdiplus::Font * const font,
+		const Gdiplus::Color color=Gdiplus::Color::Black ,
+		const StringAlignment format=StringAlignmentCenter);
 protected:
 	DECLARE_MESSAGE_MAP()
 	CText mText;

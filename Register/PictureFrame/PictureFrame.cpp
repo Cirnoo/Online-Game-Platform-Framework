@@ -20,7 +20,8 @@ CPictureFrame::~CPictureFrame()
 }
 
 
-BOOL CPictureFrame::Create(Rect rc,CWnd * pParentWnd,UINT ControlID,pImage _img)
+BOOL CPictureFrame::Create(const Rect rc,CWnd * const pParentWnd,
+						   const UINT ControlID,pImage const _img)
 {
 	LPCTSTR lpszClassName=AfxRegisterWndClass( CS_HREDRAW|CS_VREDRAW ,  AfxGetApp()->LoadStandardCursor(IDC_ARROW), (HBRUSH)GetStockObject(TRANSPARENT), NULL) ;   
 	CRgn rgn;
@@ -34,12 +35,13 @@ BOOL CPictureFrame::Create(Rect rc,CWnd * pParentWnd,UINT ControlID,pImage _img)
 }
 
 
-BOOL CPictureFrame::Create(Region region,CWnd * pParentWnd,UINT ControlID,pImage _img)
+BOOL CPictureFrame::Create(const Region region,const CWnd * const pParentWnd,
+						   const UINT ControlID,pImage const _img)
 {
 	return TRUE;
 }
 
-void CPictureFrame::Show(Graphics* & g)
+void CPictureFrame::Show(Graphics* const g)
 {
 	g->DrawImage(mImg,mRect);	
 }

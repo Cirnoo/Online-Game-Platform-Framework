@@ -43,10 +43,7 @@ Global::Global()
 
 Global::~Global()
 {
-	for (auto i:res)
-	{
-		delete i;
-	}
+	
 	delete cfont;
 	delete font;
 	delete fontfamily;
@@ -61,6 +58,7 @@ void Global::LoadImg()
 	LoadImg(cirno,IDB_9);
 	LoadImg(head_bk,IDB_HEAD_BK);
 	LoadImg(game_tool,IDB_GAME_TOOL,false);
+	game_tool=ResizeImg(game_tool);
 	vec_bt_min=GetImageGroup(IDB_BT_MIN,1,4);
 	vec_bt_close=GetImageGroup(IDB_BT_CLOSE,1,4);
 	vec_bt_default=GetImageGroup(IDB_BT_DEFAULT,1,4);
@@ -79,7 +77,6 @@ void Global::LoadImg(pImage & img,int nId,bool resize/*=true*/)
 	{
 		img=LoadPNGFormResource(nId);
 	}
-	res.push_back(img);
 }
 
 void Global::InitSockAddr()

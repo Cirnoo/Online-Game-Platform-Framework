@@ -4,27 +4,28 @@
 #include <memory>
 class CTool;
 class CGameDlg;
+enum class GameState;
 class CGameCtrl		//负责转发游戏数据和管理控件
 {
-	enum  GameState
-	{
-		Wait,GetCards,Ready,Gaming,Over
-	};
+
 	typedef std::list<std::unique_ptr<CBaseControl>> CtrlList ;
 	struct GameRes
 	{
 		vector<pImage> vec_min,vec_close;
 		vector<pImage> vec_button_img[7];
+		vector<pImage> vec_text_img;
 		GameRes();
+		~GameRes();
 	};
 public:
 	static CGameCtrl & GetInstance(CGameDlg * parent);
 	~CGameCtrl(void);
-	void Show(Gdiplus::Graphics * g);
+	void Show(Graphics * const g);
 	void InitCtrl();
 	void OnGameTimer();
 	void OnGameWin(const int serial_num);
-	void ShowCtrl(Gdiplus::Graphics * g);
+	void ShowCtrl(Graphics * const g);
+	void ShowText(Graphics * const g);
 private:
 	CGameCtrl(CGameDlg * parent);
 	static CGameCtrl * self;
@@ -33,6 +34,7 @@ private:
 	const Point button_center;
 	const Size  button_size;
 	const GameRes res;
+	GameState & game_state;
 private:
 	CPNGButton bt_min,bt_close;
 	CtrlList ls_game_ctrl;

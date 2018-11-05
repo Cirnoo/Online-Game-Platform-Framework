@@ -12,7 +12,7 @@ public:
 	CCheckBox();
 	virtual ~CCheckBox();
 public:
-	void Show(Graphics* & g);
+	virtual void Show(Graphics* const g);
 	void SetText(const CStringW str,Gdiplus::Font * font,
 		Gdiplus::Color color=Gdiplus::Color::Black ,
 		StringAlignment format=StringAlignmentNear);

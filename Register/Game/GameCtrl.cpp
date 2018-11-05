@@ -11,13 +11,24 @@ CGameCtrl & CGameCtrl::GetInstance(CGameDlg * parent)  //饿汉式
 	}
 	return *self;
 }
-
-enum  ImgGroupType
+namespace ImgGroupType
 {
-	出牌,不出,提示,不叫,不抢,叫地主,抢地主,准备
-};
+	enum  
+	{
+		出牌,不出,提示,不叫,不抢,叫地主,抢地主,准备
+	};
+}
+namespace ImgTextType
+{
+	enum 
+	{
+		不出,抢地主,叫地主,准备,没大牌
+	};
+}
 
-CGameCtrl::CGameCtrl(CGameDlg * parent):data(CTool::GetInstance()),
+CGameCtrl::CGameCtrl(CGameDlg * parent):
+	data(CTool::GetInstance()),
+	game_state(parent->game_state),
 	main_dlg(parent),
 	button_center(GAME_DLG_WIDTH/2,GAME_DLG_HEIGHT/2+50),
 	button_size(100,39)
@@ -31,13 +42,14 @@ CGameCtrl::~CGameCtrl(void)
 	self=nullptr;
 }
 
-void CGameCtrl::Show(Gdiplus::Graphics * g)
+void CGameCtrl::Show(Gdiplus::Graphics * const g)
 {
 	for (const auto & i:ls_base_ctrl)
 	{
 		i->Show(g);
 	}
-	ShowCtrl(g);
+	//ShowCtrl(g);
+	ShowText(g);
 }
 
 void CGameCtrl::InitCtrl()
@@ -88,7 +100,7 @@ void CGameCtrl::CreatCtrl_Ready(IN CtrlList & ctrl_ls)
 	/************************************************************************/
 	Rect rect;
 	CPNGButton * button;
-
+	using namespace ImgGroupType;
 	//叫地主
 	button=new CPNGButton();
 	rect = Rect(Point(button_center.X-button_size.Width*1.5-10,button_center.Y),button_size);
@@ -114,7 +126,7 @@ void CGameCtrl::CreatCtrl_Ready(IN CtrlList & ctrl_ls)
 	ls_game_ctrl.emplace_back(button);
 }
 
-void CGameCtrl::ShowCtrl(Gdiplus::Graphics * g)
+void CGameCtrl::ShowCtrl(Gdiplus::Graphics * const g)
 {
 	for (const auto & i:ls_game_ctrl)
 	{
@@ -127,7 +139,7 @@ void CGameCtrl::CreatCtlr_Wait(CtrlList & ctrl_ls)
 	/************************************************************************/
 	/*						      开始                                      */
 	/************************************************************************/
-
+	using namespace ImgGroupType;
 	Rect rect;
 	CPNGButton * button;
 	button=new CPNGButton();
@@ -140,6 +152,32 @@ void CGameCtrl::CreatCtlr_Wait(CtrlList & ctrl_ls)
 		data.DealData(pack);
 	});
 	ls_game_ctrl.emplace_back(button);
+}
+
+void CGameCtrl::ShowText(Graphics * const g)
+{
+	using namespace ImgTextType;
+	switch (game_state)
+	{
+	case GameState::Wait:
+		{
+			Point point[3];
+			point[Self]=Point(GAME_DLG_WIDTH/2-50,GAME_DLG_HEIGHT/2+100);
+			point[Right]=Point(GAME_DLG_WIDTH/2+200,GAME_DLG_HEIGHT/2-100);
+			point[Left]=Point(GAME_DLG_WIDTH/2-300,GAME_DLG_HEIGHT/2-100);
+			for (int i=Self;i<=Left;i++)
+			{
+				if (main_dlg->have_player[i])
+				{
+					g->DrawImage(res.vec_text_img[准备],point[i]);
+				}
+			}
+			
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 CGameCtrl::GameRes::GameRes()
@@ -166,5 +204,32 @@ CGameCtrl::GameRes::GameRes()
 		{
 			vec_button_img[i][j]=vec_temp[3*i+j];
 		}
+	}
+	using namespace ImgTextType;
+	vec_text_img.resize(5);
+	vec_text_img[准备]=::CutImage(theApp.sys.game_tool,0,78,89,44);
+}
+
+CGameCtrl::GameRes::~GameRes()
+{
+	for (auto i:vec_min)
+	{
+		delete i;
+	}
+	for (auto i:vec_close)
+	{
+		delete i;
+	}
+
+	for (auto i:vec_button_img)
+	{
+		for (auto j:i)
+		{
+			delete j;
+		}
+	}
+	for (auto i:vec_text_img)
+	{
+		delete i;
 	}
 }

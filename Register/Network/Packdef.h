@@ -243,6 +243,13 @@ struct ROOM_INFO
 };
 const int MAX_BUF_SIZE=sizeof(ROOM_LIST_INFO);
 
+struct PLAYER_INFO
+{
+	USER_BUF name;
+	char pos;
+
+};
+
 struct DATA_BUF
 {
 	char buf[MAX_BUF_SIZE];

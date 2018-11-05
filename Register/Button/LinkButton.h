@@ -14,8 +14,8 @@ public:
 	void SetText(const CStringW str,Gdiplus::Font * font,
 		Gdiplus::Color color_normal=Color(20, 109, 175),Gdiplus::Color color_hover=Color(21, 112, 235));
 	
-	BOOL Create(Rect rect,CWnd * pParentWnd,UINT nID);
-	virtual void Show(Graphics* & g);
+	BOOL Create(const Rect rect,CWnd * const pParentWnd,const UINT nID);
+	virtual void Show(Graphics* const g);
 protected:
 	DECLARE_MESSAGE_MAP()
 	CText mText;

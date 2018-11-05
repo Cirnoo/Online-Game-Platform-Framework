@@ -29,7 +29,7 @@ void CLinkButton::SetText(const CStringW str,Gdiplus::Font * font, Gdiplus::Colo
 	mText.Create(mRect,str,font,m_color_normal);
 }
 
-BOOL CLinkButton::Create(Rect rect,CWnd * pParentWnd,UINT nID)
+BOOL CLinkButton::Create(const Rect rect,CWnd * const pParentWnd,const UINT nID)
 {
 	SetRect(rect);
 	BOOL OK=CWnd::Create(NULL,NULL,WS_CHILDWINDOW|WS_VISIBLE|WS_CLIPCHILDREN,Rect2CRect(rect),pParentWnd, nID, NULL);
@@ -38,7 +38,7 @@ BOOL CLinkButton::Create(Rect rect,CWnd * pParentWnd,UINT nID)
 	return OK;
 }
 
-void CLinkButton::Show(Graphics* & g)
+void CLinkButton::Show(Graphics* const g)
 {
 	mText.Show(g);
 }

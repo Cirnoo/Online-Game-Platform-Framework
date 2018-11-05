@@ -20,10 +20,10 @@ public:
 	int  SelectPoker(const CPoint & point);
 	bool SelectMutiPoker(const Rect & region);
 	void FinishSelect();
-	void ShowHandPoker(Gdiplus::Graphics *  g) const ;
-	void ShowDealingCardsEffect(Gdiplus::Graphics *  g,const int timer) const;
-	void ShowFinalThreeCards(Gdiplus::Graphics *  g) const ;
-	void ShowLastRoundPoker(Gdiplus::Graphics *  g) const;
+	void ShowHandPoker(Graphics * const g) const ;
+	void ShowDealingCardsEffect(Graphics * const g,const int timer) const;
+	void ShowFinalThreeCards(Graphics * const g) const ;
+	void ShowLastRoundPoker(Graphics * const g) const;
 	vector<pImage> poker_img;
 	bool IsLegalOutput();
 	MyPoker GetCheckedCards() const;
@@ -40,7 +40,7 @@ private:
 	MyPoker hand_poker[3],poker_landlord;
 	MyPoker last_round_poker[3]; //…œ“ª ÷≈∆
 	unsigned char CalArrPoint(const MyPoker & cards,const ArrayType type );
-	Rect GetMateCardRect(PlayerPosition pos,const int size) const;
+	Rect GetMateCardRect(const PlayerPosition pos,const int size) const;
 	Rect GetFirstCardRect(const int size) const;
 	Rect GetLastCardRect() const;
 	ArrayType arrtype;
@@ -48,15 +48,15 @@ private:
 	const int card_interval;
 	const int card_up;
 	const Point self_poker_center;
-	bool IsBomb(const MyPoker & cards);
-	bool Is3with1(const MyPoker & cards);
-	bool Is3with2(const MyPoker & cards);
-	bool Is4with2(const MyPoker & cards);
-	bool IsStraight(const MyPoker & cards);
-	bool IsDoubleStraight(const MyPoker & cards);
-	bool IsTripleStraight(const MyPoker & cards);
-	bool IsPlane(const MyPoker & cards);
-	bool IsGreater(const CardArray & self, const CardArray & per );
-	int  GetCardFormCount(const MyPoker & cards,int count);
+	bool IsBomb(const MyPoker & cards) const;
+	bool Is3with1(const MyPoker & cards) const;
+	bool Is3with2(const MyPoker & cards) const;
+	bool Is4with2(const MyPoker & cards) const;
+	bool IsStraight(const MyPoker & cards) const;
+	bool IsDoubleStraight(const MyPoker & cards) const;
+	bool IsTripleStraight(const MyPoker & cards) const;
+	bool IsPlane(const MyPoker & cards) const;
+	bool IsGreater(const CardArray & self, const CardArray & per ) const;
+	int  GetCardFormCount(const MyPoker & cards,int count) const;
 };
 

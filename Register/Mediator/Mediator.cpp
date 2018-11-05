@@ -28,7 +28,7 @@ Mediator::~Mediator()
 	}
 }
 
-void Mediator::InitControl(CWnd * pParentWnd)
+void Mediator::InitControl(CWnd * const pParentWnd)
 {
 	auto & min_ctrl=theApp.sys.vec_bt_min[0];
 	CRect window_rect;
@@ -155,7 +155,7 @@ void Mediator::InitControl(CWnd * pParentWnd)
 
 }
 
-void Mediator::ShowControl(Graphics* & p)
+void Mediator::ShowControl(Graphics* const p)
 {
 	for (auto i:vec_control)
 	{
@@ -168,13 +168,13 @@ void Mediator::ShowControl(Graphics* & p)
 }
 
 
-bool Mediator::GetTask()
+bool Mediator::GetTask() const
 {
 	return task_flag;
 }
 
 
-USER_INFO Mediator::GetUserInfo()
+USER_INFO Mediator::GetUserInfo() const
 {
 	USER_INFO info;
 	auto name_ctl=GetEditCtl(IDC_EDIT_USER);
@@ -189,7 +189,7 @@ USER_INFO Mediator::GetUserInfo()
 	return info;
 }
 
-CEditEX * Mediator::GetEditCtl(int nID)
+CEditEX * Mediator::GetEditCtl(int nID) const
 {
 	for (auto i:vec_edit)
 	{

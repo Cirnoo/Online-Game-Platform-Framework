@@ -17,9 +17,10 @@ class CGameDlg : public CDialogEx
 	DECLARE_DYNAMIC(CGameDlg)
 
 public:
-	CGameDlg(wstring master, int num /*当前玩家是第几人*/ );   
+	CGameDlg(const wstring master,const int num /*当前玩家是第几人*/ );   
 	virtual ~CGameDlg();
-
+	GameState game_state;
+	bool have_player[3];
 // 对话框数据
 	enum { IDD = IDD_GAMEDLG };
 	
@@ -35,7 +36,6 @@ private:
 	void InitVar();
 	void DrawRectFrame(Gdiplus::Graphics * g);
 	void ShowPlayer(Gdiplus::Graphics * g);
-	GameState game_state;
 	int game_timer;
 	CPoint lbutton_down;
 	Rect select_region;
@@ -58,6 +58,7 @@ public:
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnGetMateInfo(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnDelPlayer(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGetCards(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnSetLandlord(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGameWin(WPARAM wParam, LPARAM lParam);

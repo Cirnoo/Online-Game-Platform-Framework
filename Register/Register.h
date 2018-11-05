@@ -26,8 +26,8 @@ public:
 	virtual BOOL InitInstance();
 // й╣ож
 protected:
-	int CreatGameRoom(CWnd* m_pMainWnd);
-	int CreatGameDlg(CWnd* m_pMainWnd);
+	int CreatGameRoom(CWnd *  m_pMainWnd);
+	int CreatGameDlg(CWnd *  m_pMainWnd);
 public:
 	CTool & tools;
 	Global & sys;

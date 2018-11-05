@@ -22,7 +22,7 @@ CEditEX::~CEditEX()
 }
 
 
-void CEditEX::Show(Graphics* & g)
+void CEditEX::Show(Graphics* const g)
 {
 	if(is_tracked)
 	{
@@ -37,7 +37,8 @@ void CEditEX::Show(Graphics* & g)
 
 
 
-BOOL CEditEX::CreateEditEx(Rect rc,CWnd * pParentWnd,UINT nID, std::vector<Image*> & vec_img,bool password/*=false*/)
+BOOL CEditEX::CreateEditEx(const Rect rc,CWnd * const pParentWnd,const UINT nID,
+						   const std::vector<Image*> & vec_img,const bool password/*=false*/)
 {
 	vec_cut.push_back(GetImageGroup(vec_img[NORMAL],1,3));
 	vec_cut.push_back(GetImageGroup(vec_img[HOVER],1,3));
@@ -49,7 +50,7 @@ BOOL CEditEX::CreateEditEx(Rect rc,CWnd * pParentWnd,UINT nID, std::vector<Image
 	return TRUE;
 }
 
-void CEditEX::SetDefaultText(CStringW str)
+void CEditEX::SetDefaultText(const CStringW str)
 {
 	default_str=str;
 	this->SetWindowTextW(str);
@@ -57,19 +58,19 @@ void CEditEX::SetDefaultText(CStringW str)
 
 
 
-wstring CEditEX::GetEditText()
+wstring CEditEX::GetEditText() const
 {
 	CString str;
 	GetWindowText(str);
 	return (wstring)str;
 }
 
-bool CEditEX::IsEmpty()
+bool CEditEX::IsEmpty() const
 {
 	return is_empty;
 }
 
-void CEditEX::DrawEdit(Graphics* & g,std::vector<Image*> & img)
+void CEditEX::DrawEdit(Graphics* const g,const std::vector<Image*> & img)
 {
 	int step=mRect.GetLeft();
 	auto & l=img[0],& c=img[1],& r=img[2];
@@ -100,7 +101,7 @@ END_MESSAGE_MAP()
 // CEditEX 消息处理程序
 
 
-void CEditEX::ControlRepaint()
+void CEditEX::ControlRepaint() const
 {
 	//CRect   rect=RectTransform(mRect);
 	//GetWindowRect(&rect);

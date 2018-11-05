@@ -54,7 +54,6 @@ public:
 	ROOM_INFO room;
 private:
 	static Global * sys;
-	std::vector<pImage> res;
 	unsigned long  gdiplusToken;
 	void LoadImg();
 	void LoadImg(pImage & img,int nId,bool resize=true);
