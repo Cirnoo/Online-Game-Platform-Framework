@@ -20,11 +20,12 @@ CGameDlg::CGameDlg(const wstring master,const int num)
 	players(CGamePlayer::GetInstance(theApp.sys.user.name.GetStr())),
 	self_serial_num(num)
 {
-	ASSERT(num>0&&num<3);
+	ASSERT(num>=0&&num<3);
 	m_master=master;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	
 	InitVar();
+	
 }
 
 CGameDlg::~CGameDlg()
@@ -120,7 +121,11 @@ void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
 
 Player::PlayerPosition CGameDlg::SerialNum2Pos(const int num) const
 {
-	ASSERT(num>0&&num<3);
+	ASSERT(num>=0&&num<3);
+	if (num==self_serial_num)
+	{
+		return Self;
+	}
 	const char temp[]={0,1,2,0,1};
 	int flag_self=self_serial_num;
 	int flag_op=flag_self;
@@ -132,7 +137,7 @@ BOOL CGameDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
 	
-	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOP , 0, 0,m_width,m_height,SWP_NOMOVE);
+	::SetWindowPos(this->m_hWnd, HWND_TOP , 0, 0,m_width,m_height,SWP_NOMOVE);
 	SetClassLong(this->m_hWnd, GCL_STYLE, GetClassLong(this->m_hWnd, GCL_STYLE) | CS_DROPSHADOW);
 	CenterWindow();
 	game_ctrl.InitCtrl();
@@ -146,7 +151,6 @@ BOOL CGameDlg::OnInitDialog()
 		temp[i]=i;
 	}
 
-	//ASSERT(game_state==GameState::GetCards);
 	logic.SetPlayerPoker(temp,self_serial_num);
 	return TRUE;
 }
@@ -336,7 +340,14 @@ LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 		have_player[pos[i]]=true;
 		players.SetPlayerName(name[i],pos[i]);
 	}
-	
+	if(std::count(have_player.begin(),have_player.end(),true)==3)
+	{
+		//可以开始游戏了
+		DATA_PACKAGE pack;
+		pack.ms_type=MS_TYPE::GAME_START;
+		game_ctrl.data.DealData(pack);
+		
+	}
 	return 0;
 }
 

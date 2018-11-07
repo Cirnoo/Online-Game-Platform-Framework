@@ -163,7 +163,7 @@ void CPokerLogic::DelMateCards(const vector<char> & cards,const PlayerPosition p
 
 void CPokerLogic::SetPlayerPoker(const vector<char> & cards,const char self_num)
 {
-	ASSERT(self_num>0&&self_num<3);
+	ASSERT(self_num>=0&&self_num<3);
 	MyPoker * poker_arr[3];
 	MyPoker * temp_arr[4]={&hand_poker[Self],&hand_poker[Right],&hand_poker[Left],&poker_landlord};
 	for (auto  i:temp_arr)

@@ -14,8 +14,10 @@ public:
 
 // 对话框数据
 	enum { IDD = IDD_GAMEROOM };
-
+	
 protected:
+
+	
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	afx_msg LRESULT OnUpdateRoom(WPARAM wParam=NULL, LPARAM lParam=NULL);
 	

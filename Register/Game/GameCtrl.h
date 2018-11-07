@@ -26,11 +26,11 @@ public:
 	void OnGameWin(const int serial_num);
 	void ShowCtrl(Graphics * const g);
 	void ShowText(Graphics * const g);
+	CTool & data;
 private:
 	CGameCtrl(CGameDlg * parent);
 	static CGameCtrl * self;
 	CGameDlg * const main_dlg;
-	CTool & data;
 	const Point button_center;
 	const Size  button_size;
 	const GameRes res;

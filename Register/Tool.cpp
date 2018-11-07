@@ -70,6 +70,7 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 	case MS_TYPE::GET_ROOM_LIST:
 	case MS_TYPE::CREATE_ROOM:
 	case MS_TYPE::ENTER_ROOM:
+	case MS_TYPE::LEAVE_ROOM:
 		if(mysocket.SendMS(pack)<0)
 		{
 			return false;

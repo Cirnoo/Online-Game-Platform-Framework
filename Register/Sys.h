@@ -66,8 +66,8 @@ vector<pImage> GetImageGroup(pImage img,int row,int col);
 vector<pImage> GetImageGroup(int nID,int row,int col);
 vector<pImage> GetImageGroup(WCHAR * img_path,int row,int col);
 
-pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height);
-pImage CutImage(pImage imgSrc,const CRgn & region);
+pImage CutImage(const pImage imgSrc,int x,int y, int Width, int Height);
+pImage CutImage(const pImage imgSrc,const CRgn & region);
 CRect Rect2CRect(Rect rect);
 RectF Rect2RectF(Rect rect);
 

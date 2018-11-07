@@ -77,7 +77,8 @@ BOOL CRegisterApp::InitInstance()
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
 	//CLoginDlg dlg;
-	CGameDlg dlg(L"123",1);
+	CGameRoom dlg;
+	//CGameDlg dlg(L"123",1);
 	m_pMainWnd = &dlg;
 	
 	INT_PTR nResponse = dlg.DoModal();
@@ -86,31 +87,37 @@ BOOL CRegisterApp::InitInstance()
 		TRACE(traceAppMsg, 0, "警告: 对话框创建失败，应用程序将意外终止。\n");
 		TRACE(traceAppMsg, 0, "警告: 如果您在对话框上使用 MFC 控件，则无法 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS。\n");
 	}
-	if (nResponse != WM_LOGIN)
+	/*if (nResponse != WM_LOGIN)
 	{
-		return FALSE;
-	}
+	return FALSE;
+	}*/
 	//登录成功
-	nResponse=CreatGameRoom(m_pMainWnd);
-
+	//nResponse=CreatGameRoom(m_pMainWnd);
 	if (nResponse!=WM_ENTER_ROOM)
 	{
 		return FALSE;
 	}
+	nResponse=CreatGameDlg();
 	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
 	//  而不是启动应用程序的消息泵。
 	
 	return FALSE;
 }
 
-int CRegisterApp::CreatGameRoom(CWnd* m_pMainWnd) 
+
+void CRegisterApp::CloseMainWnd()
+{
+	m_pMainWnd=NULL;
+}
+
+int CRegisterApp::CreatGameRoom() 
 {
 	CGameRoom dlg;
 	m_pMainWnd = &dlg;
 	return dlg.DoModal();
 }
 
-int CRegisterApp::CreatGameDlg(CWnd* m_pMainWnd)
+int CRegisterApp::CreatGameDlg()
 {
 	CGameDlg dlg(sys.room.name,sys.room.num);
 	m_pMainWnd = &dlg;

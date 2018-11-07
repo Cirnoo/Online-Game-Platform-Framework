@@ -24,10 +24,11 @@ public:
 // ÷ÿ–¥
 public:
 	virtual BOOL InitInstance();
+	void CloseMainWnd();
 //  µœ÷
 protected:
-	int CreatGameRoom(CWnd *  m_pMainWnd);
-	int CreatGameDlg(CWnd *  m_pMainWnd);
+	int CreatGameRoom();
+	int CreatGameDlg();
 public:
 	CTool & tools;
 	Global & sys;

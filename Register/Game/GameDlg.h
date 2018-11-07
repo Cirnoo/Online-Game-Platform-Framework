@@ -1,6 +1,8 @@
 #pragma once
 
 #include <vector>
+#include <array>
+#include <algorithm>
 #include "Packdef.h"
 #include "PokerLogic.h"
 #include "GamePlayer.h"
@@ -17,16 +19,17 @@ class CGameDlg : public CDialogEx
 	DECLARE_DYNAMIC(CGameDlg)
 
 public:
-	CGameDlg(const wstring master,const int num /*当前玩家是第几人*/ );   
+	CGameDlg(const wstring master,const int num=0 /*当前玩家是第几人*/ );   
 	virtual ~CGameDlg();
 	GameState game_state;
-	bool have_player[3];
+	std::array<bool,3> have_player;
+	wstring m_master;
 // 对话框数据
 	enum { IDD = IDD_GAMEDLG };
 	
 protected:
 	HICON m_hIcon;
-	wstring m_master;
+	
 	int m_width,m_height;
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	DECLARE_MESSAGE_MAP()

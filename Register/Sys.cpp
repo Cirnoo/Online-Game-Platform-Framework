@@ -129,7 +129,7 @@ vector<pImage> GetImageGroup(int nID,int row,int col)
 	return vec;
 }
 
-pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height)
+pImage CutImage(const pImage imgSrc,int x,int y, int Width, int Height)
 {
 	Bitmap *bmPhoto = new Bitmap(Width, Height);
 	bmPhoto->SetResolution(imgSrc->GetHorizontalResolution(), imgSrc->GetVerticalResolution());
@@ -141,7 +141,7 @@ pImage CutImage(pImage imgSrc,int x,int y, int Width, int Height)
 }
 
 
-pImage CutImage(pImage imgSrc,const CRgn & region)
+pImage CutImage(const pImage imgSrc,const CRgn & region)
 {
 	Rect img_rect(0,0,imgSrc->GetWidth(),imgSrc->GetHeight());
 	Bitmap * bit_temp=new Bitmap(img_rect.Width,img_rect.Height);

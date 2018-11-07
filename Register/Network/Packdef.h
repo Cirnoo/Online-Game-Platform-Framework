@@ -29,11 +29,12 @@ enum class MS_TYPE :unsigned char
 	GET_ROOM_LIST,
 	CREATE_ROOM,
 	ENTER_ROOM,
-	ENTER_ROOM_RE,
+	MATE_INFO_RE,
 	LEAVE_ROOM,
 	UPDATE_ROOM,
 	ADD_PLAYER,
 	GAME_START,
+	ALLOC_POKER,
 	GAME_WIN,
 	WANT_LANDLORD,
 	NOT_WANT_LANDLORD,
@@ -153,13 +154,15 @@ struct USER_BUF
 		wstring t=s2ws(str);
 		this->USER_BUF::USER_BUF(t);
 	}
-	void operator=(const USER_BUF & u )
+	USER_BUF& operator=(const USER_BUF & u )
 	{
 		memcpy(buf,u.buf,USER_LENGTH);
+		return *this;
 	}
-	void operator=(const wstring & str)
+	USER_BUF& operator=(const wstring & str)
 	{
 		str.copy(buf, str.size(), 0);
+		return *this;
 	}
 	wstring GetStr() const
 	{
@@ -201,15 +204,21 @@ struct CLIENT_INFO
 
 struct ROOM_LIST_INFO
 {
-	USER_BUF master,name;
+	USER_BUF name;
 	unsigned char num;
+};
+
+struct PLAYER_INFO
+{
+	USER_BUF name,room_name;
+	char pos;
 };
 
 class QTcpSocket;
 struct ROOM_INFO
 {
 	wstring mate_arr[3],name;
-	unsigned char num;
+	char num;
 	QTcpSocket * socket_arr[3];
 	ROOM_INFO()
 	{
@@ -217,8 +226,9 @@ struct ROOM_INFO
 		{
 			socket_arr[i]=nullptr;
 		}
+		num=0;
 	}
-	bool AddPlayer( QTcpSocket * _socket,const ROOM_LIST_INFO & info)
+	bool AddPlayer( QTcpSocket * _socket,const PLAYER_INFO & info)
 	{
 		for(int i=0;i<3;i++)
 		{
@@ -226,14 +236,11 @@ struct ROOM_INFO
 			{
 				if(i==0)
 				{
-					name=info.name.GetStr();
-					num=1;
+					name=info.room_name.GetStr();
+					
 				}
-				else
-				{
-					num++;
-				}
-				mate_arr[i]=info.master.GetStr();
+				++num;
+				mate_arr[i]=info.name.GetStr();
 				socket_arr[i]=_socket;
 				return true;
 			}
@@ -241,14 +248,10 @@ struct ROOM_INFO
 		return false;
 	}
 };
-const int MAX_BUF_SIZE=sizeof(ROOM_LIST_INFO);
 
-struct PLAYER_INFO
-{
-	USER_BUF name;
-	char pos;
+const unsigned int MAX_BUF_SIZE=sizeof(PLAYER_INFO);
 
-};
+
 
 struct DATA_BUF
 {
