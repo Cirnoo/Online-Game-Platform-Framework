@@ -40,10 +40,10 @@ CGameCtrl::CGameCtrl(CGameDlg * parent):
 CGameCtrl::~CGameCtrl(void)
 {
 	self=nullptr;
-	DATA_PACKAGE pack;
+	/*DATA_PACKAGE pack;
 	pack.ms_type=MS_TYPE::LEAVE_ROOM;
 	pack.buf=USER_BUF(main_dlg->m_master);
-	data.DealData(pack);
+	data.DealData(pack);*/
 }
 
 void CGameCtrl::Show(Gdiplus::Graphics * const g)

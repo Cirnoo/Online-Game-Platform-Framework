@@ -12,7 +12,7 @@
 #define _DEF_ROOMBUFFERSIZE 550*1000
 #define _DEF_NUM 10
 #define _DEF_SQLLEN 100
-#define USER_LENGTH 20
+#define USER_LENGTH 10
 #define ERROR_SOCKET_ALREADE_CONNECT 10056
 using std::wstring;
 using std::string;
@@ -28,7 +28,11 @@ enum class MS_TYPE :unsigned char
 	ADD_ROOM,
 	GET_ROOM_LIST,
 	CREATE_ROOM,
+	CREATE_ROOM_RE_T,
+	CREATE_ROOM_RE_F,
 	ENTER_ROOM,
+	ENTER_ROOM_RE_T,
+	ENTER_ROOM_RE_F,
 	MATE_INFO_RE,
 	LEAVE_ROOM,
 	UPDATE_ROOM,
@@ -38,6 +42,7 @@ enum class MS_TYPE :unsigned char
 	GAME_WIN,
 	WANT_LANDLORD,
 	NOT_WANT_LANDLORD,
+	GAME_OFFLINE,
 	HEARTBEAT,//ÐÄÌø°ü
 };
 
@@ -138,12 +143,8 @@ struct USER_BUF
 	wchar_t buf[USER_LENGTH];
 	USER_BUF()
 	{
-		for(int i=0;i<USER_LENGTH;i++)
-		{
-			buf[i]=0;
-		}
+		Clear();
 	}
-
 	USER_BUF(const wstring & str)
 	{
 		this->USER_BUF::USER_BUF();
@@ -178,6 +179,10 @@ struct USER_BUF
 		delete[] wide;
 		return w_str;
 	}
+	void Clear()
+	{
+		memset(buf,0,sizeof(buf));
+	}
 };
 
 
@@ -187,8 +192,8 @@ struct USER_INFO
 	USER_BUF password;
 	USER_INFO()
 	{
-		name=L"";
-		password=L"";
+		name.Clear();
+		password.Clear();
 	}
 	USER_INFO(USER_BUF n,USER_BUF p)
 	{
@@ -249,7 +254,7 @@ struct ROOM_INFO
 	}
 };
 
-const unsigned int MAX_BUF_SIZE=sizeof(PLAYER_INFO);
+const unsigned int MAX_BUF_SIZE=sizeof(ROOM_LIST_INFO)*3;
 
 
 
@@ -270,6 +275,10 @@ struct DATA_BUF
 		}
 		memset(buf+i,0,MAX_BUF_SIZE-i);
 	}
+	void Clear()
+	{
+		memset(buf,0,MAX_BUF_SIZE);
+	}
 };
 
 
@@ -286,7 +295,7 @@ struct DATA_PACKAGE
 	DATA_PACKAGE()
 	{
 		ms_type=MS_TYPE::HEARTBEAT;
-		buf="";
+		buf.Clear();
 	}
 };
 

@@ -325,22 +325,30 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 
 LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 {
-	typedef PLAYER_INFO MATE_INFO[2];
+	typedef USER_BUF MATE_INFO[3];
 	MATE_INFO * info=(MATE_INFO *) wParam;
 	wstring name[2];
 	PlayerPosition pos[2];
-	for(int i=0;i<2;i++)
+	for (int i=0;i<3;i++)
 	{
-		name[i]=info[i]->name.GetStr();
-		if (name[i].empty())
+		PlayerPosition pos=SerialNum2Pos(i);
+		if (pos==Self)
 		{
 			continue;
 		}
-		pos[i]=SerialNum2Pos(info[i]->pos);
-		have_player[pos[i]]=true;
-		players.SetPlayerName(name[i],pos[i]);
+		wstring name=info[i]->GetStr();
+		if (name.empty())
+		{
+			players.DelPlayer(pos);
+			have_player[pos]=false;
+		}
+		else
+		{
+			players.SetPlayerName(name,pos);
+			have_player[pos]=true;
+		}
 	}
-	if(std::count(have_player.begin(),have_player.end(),true)==3)
+	if(game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)
 	{
 		//可以开始游戏了
 		DATA_PACKAGE pack;

@@ -54,6 +54,7 @@ void CTool::GetRoomInfo(const DATA_PACKAGE & pack)
 
 CTool::~CTool(void)
 {
+
 }
 
 
@@ -75,26 +76,40 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 		{
 			return false;
 		}
+		break;
 	case MS_TYPE::LOGIN_RE_T:
 		AfxGetMainWnd()->PostMessageW(WM_LOGIN);
 		break;
 	case MS_TYPE::LOGIN_RE_F:
-		Warning("用户名或密码错误");
+		Warning("用户名或密码错误")
 		break;
 	case MS_TYPE::REGISTER_RE_T:
 		AfxGetMainWnd()->PostMessageW(WM_REGISETR);
-		Warning("注册成功");
+		Warning("注册成功")
 		break;
 	case MS_TYPE::REGISTER_RE_F:
-		Warning("用户已存在");
+		Warning("用户已存在")
 		break;
 	case MS_TYPE::ADD_ROOM:
 		AfxGetMainWnd()->SendMessageW(WM_ADD_ROOM,(WPARAM)&pack);
 		break;
 	case MS_TYPE::UPDATE_ROOM:
-		AfxGetMainWnd()->SendMessageW(WM_UPDATE_ROOM);
+		AfxGetMainWnd()->SendMessageW(WM_UPDATE_ROOM,(WPARAM)&pack);
+		break;
 	case MS_TYPE::ADD_PLAYER:
 		AfxGetMainWnd()->SendMessageW(WM_ADD_PLAYE);
+		break;
+	case MS_TYPE::CREATE_ROOM_RE_T:
+	case MS_TYPE::ENTER_ROOM_RE_T:
+		AfxGetMainWnd()->SendMessage(WM_ENTER_ROOM,(WPARAM)&pack);
+		break;
+	case MS_TYPE::CREATE_ROOM_RE_F:
+	case MS_TYPE::ENTER_ROOM_RE_F:
+		Warning("未知错误,请重试")
+		break;
+	case MS_TYPE::MATE_INFO_RE:
+
+		break;
 	default:
 		SetEvent(mysocket.mHeartBeat);
 		break;

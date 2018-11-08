@@ -17,6 +17,9 @@ CMySocket::CMySocket()
 
 CMySocket::~CMySocket()
 {
+	DATA_PACKAGE pack;
+	pack.ms_type=MS_TYPE::GAME_OFFLINE;
+	SendMS(pack);
 }
 
 void CMySocket::OnConnect(int nErrorCode)
