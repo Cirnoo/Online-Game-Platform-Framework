@@ -17,7 +17,7 @@ CGameDlg::CGameDlg(const wstring master,const int num)
 	: CDialogEx(CGameDlg::IDD),
 	game_ctrl(CGameCtrl::GetInstance(this)),
 	logic(CPokerLogic::GetInstance()),
-	players(CGamePlayer::GetInstance(theApp.sys.user.name.GetStr())),
+	players(CGamePlayer::GetInstance(theApp.sys.client_info.user.name.GetStr())),
 	self_serial_num(num)
 {
 	ASSERT(num>=0&&num<3);
@@ -326,9 +326,7 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 {
 	typedef USER_BUF MATE_INFO[3];
-	MATE_INFO * info=(MATE_INFO *) wParam;
-	wstring name[2];
-	PlayerPosition pos[2];
+	MATE_INFO * info=(MATE_INFO *)((PBYTE)wParam+1);
 	for (int i=0;i<3;i++)
 	{
 		PlayerPosition pos=SerialNum2Pos(i);
@@ -361,7 +359,7 @@ LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 
 LRESULT CGameDlg::OnDelPlayer(WPARAM wParam, LPARAM lParam)
 {
-	PLAYER_INFO * info = (PLAYER_INFO *) wParam;
+	PLAYER_INFO * info = (PLAYER_INFO *)((PBYTE)wParam+1);
 	auto pos=SerialNum2Pos(info->pos);
 	have_player[pos]=false;
 	return 0;

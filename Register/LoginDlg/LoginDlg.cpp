@@ -31,7 +31,7 @@ afx_msg LRESULT CLoginDlg::OnLogin(WPARAM wParam, LPARAM lParam)
 {
 	/********************µÇÂ½³É¹¦***********************************/
 	
-	theApp.sys.user=mMediator.GetUserInfo();
+	theApp.sys.client_info.user=mMediator.GetUserInfo();
 	EndDialog(WM_LOGIN);
 	return 0;
 }

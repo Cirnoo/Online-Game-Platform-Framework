@@ -64,7 +64,7 @@ END_MESSAGE_MAP()
 BOOL RoomName::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
-	
+
 	return TRUE;
 }
 
@@ -79,7 +79,7 @@ void RoomName::OnOK()
 		Warning("请输入房间名");
 		return ;
 	}
-	theApp.sys.room.name=m_str;
+	theApp.sys.client_info.room.name=m_str;
 	EndDialog(WM_ENTER_ROOM);
 	CDialogEx::OnOK();
 }
@@ -88,7 +88,7 @@ void RoomName::OnOK()
 // CGameRoom 对话框
 IMPLEMENT_DYNAMIC(CGameRoom, CDialogEx)
 
-CGameRoom::CGameRoom(CWnd* pParent /*=NULL*/)
+	CGameRoom::CGameRoom(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CGameRoom::IDD, pParent)
 {
 
@@ -107,7 +107,7 @@ void CGameRoom::DoDataExchange(CDataExchange* pDX)
 
 LRESULT CGameRoom::OnUpdateRoom(WPARAM wParam, LPARAM lParam)
 {
-	auto room_info=(ROOM_LIST_INFO *)wParam;
+	ROOM_LIST_INFO * room_info=(ROOM_LIST_INFO *)(PBYTE(wParam)+1);
 	char num=room_info->num;
 	const CString str=room_info->name.GetStr().c_str();
 	for(int i=0;i<m_room_list.GetItemCount();i++)
@@ -161,12 +161,11 @@ BOOL CGameRoom::OnInitDialog()
 
 LRESULT CGameRoom::OnAddRoom(WPARAM wParam, LPARAM lParam)
 {
-	auto * pack=(DATA_PACKAGE *)wParam;
-	ROOM_LIST_INFO * info=(ROOM_LIST_INFO *)&pack->buf;
+	ROOM_LIST_INFO * room_info=(ROOM_LIST_INFO *)(PBYTE(wParam)+1);
 	m_room_list.InsertItem(0,L"");
-	m_room_list.SetItemText(0,0,info->name.GetStr().c_str());
+	m_room_list.SetItemText(0,0,room_info->name.GetStr().c_str());
 	CString num;
-	num.Format(_T("%d"),info->num);
+	num.Format(_T("%d"),room_info->num);
 	m_room_list.SetItemText(0,1,num);
 	return TRUE;
 }
@@ -180,9 +179,9 @@ void CGameRoom::OnBnClickedCreateRoom()
 	{
 		return ;
 	}
-	auto & sys=theApp.sys;
-	sys.room.num=1;
-	sys.room.mate_arr[0]=sys.user.name.GetStr();
+	auto & client=theApp.sys.client_info;
+	client.room.num=1;
+	client.room.mate_arr[0]=client.user.name.GetStr();
 	SendEnterRoomMs(MS_TYPE::CREATE_ROOM);
 }
 
@@ -195,11 +194,11 @@ void CGameRoom::OnNMDblclkRoomList(NMHDR *pNMHDR, LRESULT *pResult)
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	auto room_name=m_room_list.GetItemText(pNMItemActivate->iItem,0);	
 	auto num_str=m_room_list.GetItemText(pNMItemActivate->iItem,1);
-	auto & sys_room=theApp.sys.room;
+	auto & sys_room=theApp.sys.client_info.room;
 	int num=_ttoi(num_str);
 
 	sys_room.name=room_name;  //房间名字
-	sys_room.mate_arr[num-1]=theApp.sys.user.name.GetStr(); //用户名字
+	sys_room.mate_arr[num-1]=theApp.sys.client_info.user.name.GetStr(); //用户名字
 	sys_room.num=num-1;
 	SendEnterRoomMs(MS_TYPE::ENTER_ROOM);
 }
@@ -209,13 +208,13 @@ LRESULT CGameRoom::OnEnterRoom(WPARAM wParam, LPARAM lParam)
 {
 	//进入房间成功
 	auto info=(DATA_PACKAGE *)wParam;
-	if (info->ms_type==MS_TYPE::ENTER_ROOM_RE_T)		//如果是新加入房间 则接受玩家信息
+	if (info->ms_type==MS_TYPE::ENTER_ROOM_RE_T)		//如果是新加入房间 则接收当前房间玩家信息
 	{
 		typedef USER_BUF SIMPLE_ROOM_INFO[3];
 		auto buf=(SIMPLE_ROOM_INFO*)&info->buf;
 		for (int i=0;i<3;i++)
 		{
-			theApp.sys.room.mate_arr[i]=buf[i]->GetStr();
+			theApp.sys.client_info.room.mate_arr[i]=buf[i]->GetStr();
 		}
 	}
 	theApp.CloseMainWnd();	//重要 勿删
@@ -225,16 +224,16 @@ LRESULT CGameRoom::OnEnterRoom(WPARAM wParam, LPARAM lParam)
 
 void CGameRoom::SendEnterRoomMs(const MS_TYPE type) 
 {
-	auto & sys=theApp.sys;
+	auto & client=theApp.sys.client_info;
 	DATA_PACKAGE pack;
 	pack.ms_type=type;
 	PLAYER_INFO info;
-	info.name=sys.user.name;
-	info.room_name=sys.room.name;
-	info.pos=sys.room.num-1;
+	info.name=client.user.name;
+	info.room_name=client.room.name;
+	info.pos=client.room.num-1;
 	pack.buf=info;
 	theApp.tools.DealData(pack);
-	
+
 }
 
 bool CGameRoom::GetRoomList()

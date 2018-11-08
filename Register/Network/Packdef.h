@@ -33,7 +33,7 @@ enum class MS_TYPE :unsigned char
 	ENTER_ROOM,
 	ENTER_ROOM_RE_T,
 	ENTER_ROOM_RE_F,
-	MATE_INFO_RE,
+	MATE_INFO_UPDATE,
 	LEAVE_ROOM,
 	UPDATE_ROOM,
 	ADD_PLAYER,
@@ -200,12 +200,7 @@ struct USER_INFO
 		name=n;password=p;
 	}
 };
-struct CLIENT_INFO
-{
-	wstring username;
-	string ip;
-	unsigned short port;
-};
+
 
 struct ROOM_LIST_INFO
 {
@@ -257,33 +252,30 @@ struct ROOM_INFO
 const unsigned int MAX_BUF_SIZE=sizeof(ROOM_LIST_INFO)*3;
 
 
-
-struct DATA_BUF
-{
-	char buf[MAX_BUF_SIZE];
-	DATA_BUF()
-	{
-		memset(buf,0,MAX_BUF_SIZE);
-	}
-	template  <class T>
-	DATA_BUF(const T & u)
-	{
-		int i=0;
-		for(i=0;i<sizeof(u);i++)
-		{
-			buf[i]=(*((char *)&u+i));
-		}
-		memset(buf+i,0,MAX_BUF_SIZE-i);
-	}
-	void Clear()
-	{
-		memset(buf,0,MAX_BUF_SIZE);
-	}
-};
-
-
 struct DATA_PACKAGE
 {
+	struct DATA_BUF
+	{
+		char buf[MAX_BUF_SIZE];
+		DATA_BUF()
+		{
+			memset(buf,0,MAX_BUF_SIZE);
+		}
+		template  <class T>
+		DATA_BUF(const T & u)
+		{
+			int i=0;
+			for(i=0;i<sizeof(u);i++)
+			{
+				buf[i]=(*((char *)&u+i));
+			}
+			memset(buf+i,0,MAX_BUF_SIZE-i);
+		}
+		void Clear()
+		{
+			memset(buf,0,MAX_BUF_SIZE);
+		}
+	};
 	MS_TYPE ms_type;
 	DATA_BUF buf;
 	template  <class T>

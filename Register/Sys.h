@@ -40,6 +40,13 @@ typedef  Image* pImage;
 using std::vector;
 class Global
 {
+	struct ClientInfo
+	{
+		sockaddr_in  addrServer;
+		USER_INFO  user;
+		ROOM_INFO room;
+		char player_pos;
+	};
 public:
 	static Global & GetInstance();
 	~Global();
@@ -49,9 +56,7 @@ public:
 	Gdiplus::FontFamily * fontfamily;
 	Gdiplus::Font *font;
 	CFont * cfont;
-	sockaddr_in  addrServer;
-	USER_INFO  user;
-	ROOM_INFO room;
+	ClientInfo client_info;
 private:
 	static Global * sys;
 	unsigned long  gdiplusToken;

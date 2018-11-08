@@ -10,10 +10,11 @@ CTool & CTool::GetInstance()
 }
 bool CTool::ConnectServer()
 {
+	const auto & addrServer=theApp.sys.client_info.addrServer;
 	mysocket.SocketInit();
 	if (!mysocket.TestConnect())
 	{
-		mysocket.Connect((SOCKADDR*)&theApp.sys.addrServer,sizeof(theApp.sys.addrServer));
+		mysocket.Connect((SOCKADDR*)&addrServer,sizeof(addrServer));
 		if (GetLastError()==ERROR_SOCKET_ALREADE_CONNECT) //socket已经连接
 		{
 			mysocket.Close();
@@ -46,7 +47,7 @@ void CTool::GetRoomInfo(const DATA_PACKAGE & pack)
 {
 /////////////////////////获取另外两个玩家名字//////////////////////////////////////////////
 	typedef USER_BUF Name[2];
-	auto & mate=theApp.sys.room.mate_arr;
+	auto & mate=theApp.sys.client_info.room.mate_arr;
 	Name * name=(Name *)&pack.buf;
 	mate[1]=name[0]->GetStr();
 	mate[2]=name[1]->GetStr();
@@ -107,8 +108,8 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 	case MS_TYPE::ENTER_ROOM_RE_F:
 		Warning("未知错误,请重试")
 		break;
-	case MS_TYPE::MATE_INFO_RE:
-
+	case MS_TYPE::MATE_INFO_UPDATE:
+		AfxGetMainWnd()->SendMessage(WM_GET_ROOM_MATE,(WPARAM)&pack);
 		break;
 	default:
 		SetEvent(mysocket.mHeartBeat);

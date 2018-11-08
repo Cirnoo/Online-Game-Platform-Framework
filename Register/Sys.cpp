@@ -37,8 +37,8 @@ Global::Global()
 		DEFAULT_QUALITY,			// 逻辑字体与输出设备的实际
 		DEFAULT_PITCH | FF_SWISS,	// 字体间距和字体集
 		L"宋体");					// 字体名称
-	user.name=L"沙包";
-	user.password=L"";
+	client_info.user.name=L"沙包";
+	client_info.user.password=L"";
 }
 
 Global::~Global()
@@ -81,7 +81,7 @@ void Global::LoadImg(pImage & img,int nId,bool resize/*=true*/)
 
 void Global::InitSockAddr()
 {
-
+	auto & addrServer=client_info.addrServer;
 	addrServer.sin_family = AF_INET;
 	addrServer.sin_addr.S_un.S_addr = inet_addr(_SERVER_IP);
 	addrServer.sin_port = htons(_DEF_SERVERPORT);

@@ -119,7 +119,8 @@ int CRegisterApp::CreatGameRoom()
 
 int CRegisterApp::CreatGameDlg()
 {
-	CGameDlg dlg(sys.room.name,sys.room.num);
+	auto sys_room=sys.client_info.room;
+	CGameDlg dlg(sys.client_info.room.name,sys.client_info.player_pos);
 	m_pMainWnd = &dlg;
 	return dlg.DoModal();
 }

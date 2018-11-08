@@ -15,7 +15,7 @@ CSettingDlg::CSettingDlg(CWnd* pParent /*=NULL*/)
 	: CDialogEx(CSettingDlg::IDD, pParent)
 	, m_port(_T(""))
 {
-	m_port.Format(L"%d",ntohs(theApp.sys.addrServer.sin_port));
+	m_port.Format(L"%d",ntohs(theApp.sys.client_info.addrServer.sin_port));
 }
 
 CSettingDlg::~CSettingDlg()
@@ -41,12 +41,13 @@ END_MESSAGE_MAP()
 void CSettingDlg::OnBnClickedOk()
 {
 	// TODO: 在此添加控件通知处理程序代码
+	auto & addrServer=theApp.sys.client_info.addrServer;
 	UpdateData(TRUE);
-	theApp.sys.addrServer.sin_addr.S_un.S_addr;
+	addrServer.sin_addr.S_un.S_addr;
 	DWORD dwIP;
 	m_ipctrl.GetAddress(dwIP);
-	theApp.sys.addrServer.sin_addr.S_un.S_addr=htonl(dwIP);
-	theApp.sys.addrServer.sin_port=htons(_ttoi(m_port));
+	addrServer.sin_addr.S_un.S_addr=htonl(dwIP);
+	addrServer.sin_port=htons(_ttoi(m_port));
 	CDialogEx::OnOK();
 }
 
@@ -54,7 +55,7 @@ void CSettingDlg::OnBnClickedOk()
 BOOL CSettingDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
-	DWORD dwIP=theApp.sys.addrServer.sin_addr.S_un.S_addr;
+	DWORD dwIP=theApp.sys.client_info.addrServer.sin_addr.S_un.S_addr;
 	unsigned char *pIP = (unsigned char*)&dwIP;
 	m_ipctrl.SetAddress(*pIP, *(pIP+1), *(pIP+2), *(pIP+3));
 	return TRUE;
