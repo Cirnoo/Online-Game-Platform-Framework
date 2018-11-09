@@ -420,13 +420,14 @@ void CPokerLogic::SortHand()
 
 void CPokerLogic::SetLandlord(const PlayerPosition pos)
 {
-	for (auto & i:poker_landlord)
+	/*for (auto & i:poker_landlord)
 	{
-		hand_poker[pos].push_back(i);
+	hand_poker[pos].push_back(i);
 	}
 	poker_landlord.clear();
 	sort(hand_poker[pos].begin(),hand_poker[pos].end(),
-		[](Poker & a,Poker & b)->bool {return a.GetPointVal()>b.GetPointVal();});
+	[](Poker & a,Poker & b)->bool {return a.GetPointVal()>b.GetPointVal();});*/
+	MergeSortedVec(hand_poker[pos],poker_landlord);
 }
 
 bool CPokerLogic::IsBomb(const MyPoker & cards)const
@@ -582,4 +583,20 @@ int CPokerLogic::GetCardFormCount(const MyPoker & cards,int count) const
 		}
 	}
 	ASSERT(0);
+}
+
+void CPokerLogic::MergeSortedVec(MyPoker & vec1,MyPoker & vec2)
+{
+	int i1=vec1.size()-1;
+	int i2=vec2.size()-1;
+	vec1.resize(i1+i2+1);
+	int icur=i1+i2-1;
+	while (i1>=0&&i2>=0)
+	{
+		vec1[icur--]=vec1[i1].GetPointVal()>=vec2[i2].GetPointVal()?vec1[i1--]:vec2[i2--];
+	}
+	while(i2>=0)
+	{
+		vec1[icur--]=vec2[i2--];
+	}
 }

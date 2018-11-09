@@ -181,7 +181,7 @@ void CGameRoom::OnBnClickedCreateRoom()
 	}
 	auto & client=theApp.sys.client_info;
 	client.room.num=1;
-	client.room.mate_arr[0]=client.user.name.GetStr();
+	client.room.mate_arr[0]=client.player_name;
 	SendEnterRoomMs(MS_TYPE::CREATE_ROOM);
 }
 
@@ -198,7 +198,7 @@ void CGameRoom::OnNMDblclkRoomList(NMHDR *pNMHDR, LRESULT *pResult)
 	int num=_ttoi(num_str);
 
 	sys_room.name=room_name;  //房间名字
-	sys_room.mate_arr[num-1]=theApp.sys.client_info.user.name.GetStr(); //用户名字
+	sys_room.mate_arr[num-1]=theApp.sys.client_info.player_name; //用户名字
 	sys_room.num=num-1;
 	SendEnterRoomMs(MS_TYPE::ENTER_ROOM);
 }
@@ -208,15 +208,16 @@ LRESULT CGameRoom::OnEnterRoom(WPARAM wParam, LPARAM lParam)
 {
 	//进入房间成功
 	auto info=(DATA_PACKAGE *)wParam;
+	auto buf=(ENTER_ROOM_RE*)&info->buf;
+	auto & client_info=theApp.sys.client_info;
 	if (info->ms_type==MS_TYPE::ENTER_ROOM_RE_T)		//如果是新加入房间 则接收当前房间玩家信息
 	{
-		typedef USER_BUF SIMPLE_ROOM_INFO[3];
-		auto buf=(SIMPLE_ROOM_INFO*)&info->buf;
 		for (int i=0;i<3;i++)
 		{
-			theApp.sys.client_info.room.mate_arr[i]=buf[i]->GetStr();
+			client_info.room.mate_arr[i]=buf->mate_name[i].GetStr();
 		}
 	}
+	client_info.player_pos=buf->player_pos;
 	theApp.CloseMainWnd();	//重要 勿删
 	EndDialog(WM_ENTER_ROOM);
 	return 0;
@@ -228,7 +229,7 @@ void CGameRoom::SendEnterRoomMs(const MS_TYPE type)
 	DATA_PACKAGE pack;
 	pack.ms_type=type;
 	PLAYER_INFO info;
-	info.name=client.user.name;
+	info.name=client.player_name;
 	info.room_name=client.room.name;
 	info.pos=client.room.num-1;
 	pack.buf=info;

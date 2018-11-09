@@ -35,6 +35,7 @@ private:
 	const Size  button_size;
 	const GameRes res;
 	GameState & game_state;
+	void InvalidateRect(Rect & rect);
 private:
 	CPNGButton bt_min,bt_close;
 	CtrlList ls_game_ctrl;

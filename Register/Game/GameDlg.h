@@ -22,7 +22,7 @@ public:
 	CGameDlg(const wstring master,const int num=0 /*当前玩家是第几人*/ );   
 	virtual ~CGameDlg();
 	GameState game_state;
-	std::array<bool,3> have_player;
+	
 	wstring m_master;
 // 对话框数据
 	enum { IDD = IDD_GAMEDLG };
@@ -34,23 +34,28 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	DECLARE_MESSAGE_MAP()
 private:
+	void InitPlayerInfo();
 	void GameStart();
 	void AddPlayer();
 	void InitVar();
 	void DrawRectFrame(Gdiplus::Graphics * g);
 	void ShowPlayer(Gdiplus::Graphics * g);
+	PlayerPosition SerialNum2Pos(const int num) const;	 //序列号转位置
 	int game_timer;
 	CPoint lbutton_down;
 	Rect select_region;
 	bool is_lbutton_dowm;
 	bool is_select_multi;
+	ROOM_INFO & room_info;
 	pImage back_img;
-	PlayerPosition SerialNum2Pos(const int num) const;	 //序列号转位置
 	CGameCtrl & game_ctrl;
 	CPokerLogic & logic;
 	CGamePlayer & players;
 	const int self_serial_num; //序列号
+	Bitmap * bit_buf;
+	Graphics * gra_buf;
 public:
+	std::array<bool,3> & have_player;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
 	afx_msg void OnSize(UINT nType, int cx, int cy);

@@ -17,13 +17,15 @@ CGameDlg::CGameDlg(const wstring master,const int num)
 	: CDialogEx(CGameDlg::IDD),
 	game_ctrl(CGameCtrl::GetInstance(this)),
 	logic(CPokerLogic::GetInstance()),
-	players(CGamePlayer::GetInstance(theApp.sys.client_info.user.name.GetStr())),
+	players(CGamePlayer::GetInstance()),
+	have_player(players.have_player),
+	room_info(theApp.sys.client_info.room),
 	self_serial_num(num)
 {
 	ASSERT(num>=0&&num<3);
 	m_master=master;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
-	
+	have_player=players.have_player;
 	InitVar();
 	
 }
@@ -34,6 +36,8 @@ CGameDlg::~CGameDlg()
 	delete &game_ctrl;
 	delete &logic;
 	delete &players;
+	delete bit_buf;
+	delete gra_buf;
 }
 
 void CGameDlg::DoDataExchange(CDataExchange* pDX)
@@ -68,9 +72,8 @@ void CGameDlg::InitVar()
 	back_img=::LoadPNGFormResource(IDB_GAME_BG);
 	game_timer=0;
 	game_state=GameState::Wait;
-	have_player[Self]=true;
-	have_player[Left]=false;
-	have_player[Right]=false;
+	bit_buf=new Bitmap(this->m_width,this->m_height);
+	gra_buf=Graphics::FromImage(bit_buf);
 }
 
 
@@ -141,6 +144,7 @@ BOOL CGameDlg::OnInitDialog()
 	SetClassLong(this->m_hWnd, GCL_STYLE, GetClassLong(this->m_hWnd, GCL_STYLE) | CS_DROPSHADOW);
 	CenterWindow();
 	game_ctrl.InitCtrl();
+	InitPlayerInfo();
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
@@ -157,6 +161,18 @@ BOOL CGameDlg::OnInitDialog()
 
 
 
+
+void CGameDlg::InitPlayerInfo()
+{
+	const auto & mate_name_arr=room_info.mate_arr;
+	for (int i=0;i<3;i++)
+	{
+		if (!mate_name_arr[i].empty())
+		{
+			players.SetPlayerName(mate_name_arr[i],SerialNum2Pos(i));
+		}
+	}
+}
 
 void CGameDlg::GameStart()
 {
@@ -177,16 +193,13 @@ void CGameDlg::OnPaint()
 {
 	HDC hdc = ::GetDC(this->m_hWnd);
 	Graphics graphics(hdc);
-	Bitmap bmp(this->m_width,this->m_height);
 	//PaintIrregularDlg(hdc,back_img);
-	Graphics* gBuf=Graphics::FromImage(&bmp);
-	gBuf->DrawImage(back_img,0,0,m_width,m_height);
-	ShowPlayer(gBuf);
-	game_ctrl.Show(gBuf);
-	DrawRectFrame(gBuf);
-	graphics.DrawImage(&bmp,0,0);
+	gra_buf->DrawImage(back_img,0,0,m_width,m_height);
+	ShowPlayer(gra_buf);
+	game_ctrl.Show(gra_buf);
+	DrawRectFrame(gra_buf);
+	graphics.DrawImage(bit_buf,0,0);
 	::ReleaseDC(m_hWnd,hdc);
-	delete gBuf;
 	CDialogEx::OnPaint();
 }
 
@@ -238,11 +251,19 @@ void CGameDlg::OnMouseMove(UINT nFlags, CPoint point)
 		const auto & y1=lbutton_down.y,& y2=point.y;
 		int width=abs(x2-x1);
 		int height=abs(y2-y1);
+		//重绘选择框
+		CRgn old_regin,new_region;
+		old_regin.CreateRectRgnIndirect(Rect2CRect(select_region));
+
 		select_region=Rect(min(x1,x2),min(y1,y2),width,height);
-		InvalidateRect(Rect2CRect(select_region));
+		new_region.CreateRectRgnIndirect(Rect2CRect(select_region));
+		new_region.CombineRgn(&new_region,&old_regin,RGN_DIFF);
+		InvalidateRgn(&new_region);
 		is_select_multi=true;
-		logic.SelectMutiPoker(select_region);
-		InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
+		if(logic.SelectMutiPoker(select_region))
+		{
+			InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
+		}
 	}
 	CDialogEx::OnMouseMove(nFlags, point);
 }
@@ -334,16 +355,14 @@ LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 		{
 			continue;
 		}
-		wstring name=info[i]->GetStr();
+		wstring name=(*info)[i].GetStr();
 		if (name.empty())
 		{
 			players.DelPlayer(pos);
-			have_player[pos]=false;
 		}
 		else
 		{
 			players.SetPlayerName(name,pos);
-			have_player[pos]=true;
 		}
 	}
 	if(game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)

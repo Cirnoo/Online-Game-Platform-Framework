@@ -2,6 +2,7 @@
 #include <vector>
 #include "Tool.h"
 #include "Packdef.h"
+#include <array>
 //全局常量
 const double RESOLUTION = 1.1;
 
@@ -43,7 +44,7 @@ class Global
 	struct ClientInfo
 	{
 		sockaddr_in  addrServer;
-		USER_INFO  user;
+		wstring player_name,password;
 		ROOM_INFO room;
 		char player_pos;
 	};
@@ -81,3 +82,6 @@ void ResizeRect(Rect& rec,int val);
 WCHAR * multiByteToWideChar(const CString pKey);
 
 bool ShowError();
+
+
+void InvalidateRect(int x, int y, int width, int height);

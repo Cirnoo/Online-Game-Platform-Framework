@@ -37,8 +37,8 @@ Global::Global()
 		DEFAULT_QUALITY,			// 逻辑字体与输出设备的实际
 		DEFAULT_PITCH | FF_SWISS,	// 字体间距和字体集
 		L"宋体");					// 字体名称
-	client_info.user.name=L"沙包";
-	client_info.user.password=L"";
+	client_info.player_name=L"沙包";
+	client_info.password=L"";
 }
 
 Global::~Global()
@@ -238,5 +238,9 @@ bool ShowError()
 	return error;
 }
 
+void InvalidateRect(int x, int y, int width, int height)
+{
+	AfxGetMainWnd()->InvalidateRect(CRect(x,y,x+width,y+height));
+}
 
 

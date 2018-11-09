@@ -4,17 +4,18 @@
 
 
 CGamePlayer * CGamePlayer::self_instance=nullptr;
-CGamePlayer & CGamePlayer::GetInstance(wstring & self_name)
+CGamePlayer & CGamePlayer::GetInstance()
 {
 	if (!self_instance)
 	{
-		self_instance=new CGamePlayer(self_name);
+		self_instance=new CGamePlayer();
 	}
 	return *self_instance;
 }
 
 
-CGamePlayer::CGamePlayer(wstring & self_name)
+
+CGamePlayer::CGamePlayer()
 {
 	const pImage head_temp=theApp.sys.cirno;
 	CRgn rgn;
@@ -22,11 +23,12 @@ CGamePlayer::CGamePlayer(wstring & self_name)
 	rgn.CreateRoundRectRgn(rc.left, rc.top, rc.right, rc.bottom, 25, 25);
 	head_img=CutImage(head_temp,rgn);	//²Ã¼ô³ÉÔ²½ÇµÄÍ·Ïñ
 	
-	player_name[Self]=self_name;
-
+	for (auto & i:have_player)
+	{
+		i=false;
+	}
 	landlord_logo=::CutImage(theApp.sys.game_tool,97,110,56,93);
 	landlord_logo=::ResizeImg(landlord_logo,0.9);
-
 
 	head_rect[Self]=Rect(300,GAME_DLG_HEIGHT-150,80,80);
 	head_rect[Right]=Rect(GAME_DLG_WIDTH-190,300,80,80);
@@ -60,17 +62,17 @@ void CGamePlayer::ShowLandlordLogo(Gdiplus::Graphics * g)
 void CGamePlayer::SetPlayerName(const wstring & name,const PlayerPosition pos)
 {
 	player_name[pos]=name;
+	have_player[pos]=true;
+	AfxGetMainWnd()->InvalidateRect(Rect2CRect(head_rect[pos]));
 }
 
-void CGamePlayer::SetPlayerName(const wstring & name_right,const wstring & name_left)
-{
-	player_name[Right]=name_right;
-	player_name[Left]=name_left;
-}
+
 
 void CGamePlayer::DelPlayer(const PlayerPosition pos)
 {
 	player_name[pos].clear();
+	have_player[pos]=false;
+	AfxGetMainWnd()->InvalidateRect(Rect2CRect(head_rect[pos]));
 }
 
 void CGamePlayer::SetLandlord(const PlayerPosition pos)

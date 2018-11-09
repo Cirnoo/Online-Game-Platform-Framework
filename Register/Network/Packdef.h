@@ -215,6 +215,11 @@ struct PLAYER_INFO
 };
 
 class QTcpSocket;
+struct ENTER_ROOM_RE
+{
+	USER_BUF mate_name[3];
+	char player_pos;
+};
 struct ROOM_INFO
 {
 	wstring mate_arr[3],name;

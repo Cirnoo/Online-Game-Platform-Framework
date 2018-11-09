@@ -169,11 +169,13 @@ void CGameCtrl::ShowText(Graphics * const g)
 			point[Self]=Point(GAME_DLG_WIDTH/2-50,GAME_DLG_HEIGHT/2+100);
 			point[Right]=Point(GAME_DLG_WIDTH/2+200,GAME_DLG_HEIGHT/2-100);
 			point[Left]=Point(GAME_DLG_WIDTH/2-300,GAME_DLG_HEIGHT/2-100);
+			const auto & img=res.vec_text_img[准备];
 			for (int i=Self;i<=Left;i++)
 			{
 				if (main_dlg->have_player[i])
 				{
-					g->DrawImage(res.vec_text_img[准备],point[i]);
+					g->DrawImage(img,point[i]);
+					::InvalidateRect(point[i].X,point[i].Y,img->GetWidth(),img->GetHeight());
 				}
 			}
 			
@@ -182,6 +184,11 @@ void CGameCtrl::ShowText(Graphics * const g)
 	default:
 		break;
 	}
+}
+
+void CGameCtrl::InvalidateRect(Rect & rect)
+{
+	AfxGetMainWnd()->InvalidateRect(Rect2CRect(rect));
 }
 
 CGameCtrl::GameRes::GameRes()
@@ -211,7 +218,7 @@ CGameCtrl::GameRes::GameRes()
 	}
 	using namespace ImgTextType;
 	vec_text_img.resize(5);
-	vec_text_img[准备]=::CutImage(theApp.sys.game_tool,0,78,89,44);
+	vec_text_img[准备]=::CutImage(theApp.sys.game_tool,0,80,89,42);
 }
 
 CGameCtrl::GameRes::~GameRes()

@@ -30,8 +30,9 @@ void CLoginDlg::DoDataExchange(CDataExchange* pDX)
 afx_msg LRESULT CLoginDlg::OnLogin(WPARAM wParam, LPARAM lParam)
 {
 	/********************µÇÂ½³É¹¦***********************************/
-	
-	theApp.sys.client_info.user=mMediator.GetUserInfo();
+	USER_INFO && info=mMediator.GetUserInfo();
+	theApp.sys.client_info.player_name=info.name.GetStr();
+	theApp.sys.client_info.password=info.password.GetStr();
 	EndDialog(WM_LOGIN);
 	return 0;
 }

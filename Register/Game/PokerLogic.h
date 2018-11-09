@@ -58,5 +58,6 @@ private:
 	bool IsPlane(const MyPoker & cards) const;
 	bool IsGreater(const CardArray & self, const CardArray & per ) const;
 	int  GetCardFormCount(const MyPoker & cards,int count) const;
+	void MergeSortedVec(MyPoker & vec1,MyPoker & vec2);
 };
 
