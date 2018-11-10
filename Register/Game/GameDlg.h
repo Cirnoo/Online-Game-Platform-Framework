@@ -19,7 +19,7 @@ class CGameDlg : public CDialogEx
 	DECLARE_DYNAMIC(CGameDlg)
 
 public:
-	CGameDlg(const wstring master,const int num=0 /*当前玩家是第几人*/ );   
+	CGameDlg(const wstring master,const int self_serial_num=0 /*当前玩家是第几人*/ );   
 	virtual ~CGameDlg();
 	GameState game_state;
 	
@@ -29,18 +29,12 @@ public:
 	
 protected:
 	HICON m_hIcon;
-	
 	int m_width,m_height;
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV 支持
 	DECLARE_MESSAGE_MAP()
 private:
-	void InitPlayerInfo();
-	void GameStart();
-	void AddPlayer();
 	void InitVar();
 	void DrawRectFrame(Gdiplus::Graphics * g);
 	void ShowPlayer(Gdiplus::Graphics * g);
-	PlayerPosition SerialNum2Pos(const int num) const;	 //序列号转位置
 	int game_timer;
 	CPoint lbutton_down;
 	Rect select_region;
@@ -51,7 +45,6 @@ private:
 	CGameCtrl & game_ctrl;
 	CPokerLogic & logic;
 	CGamePlayer & players;
-	const int self_serial_num; //序列号
 	Bitmap * bit_buf;
 	Graphics * gra_buf;
 public:

@@ -191,6 +191,14 @@ void CGameCtrl::InvalidateRect(Rect & rect)
 	AfxGetMainWnd()->InvalidateRect(Rect2CRect(rect));
 }
 
+void CGameCtrl::GameStart() const
+{
+
+	DATA_PACKAGE pack;
+	pack.ms_type=MS_TYPE::GAME_START;
+	data.DealData(pack);
+}
+
 CGameCtrl::GameRes::GameRes()
 {
 	auto vec_temp=::GetImageGroup(IDB_GAME_CTRL,2,3);

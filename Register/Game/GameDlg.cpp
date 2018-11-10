@@ -13,16 +13,15 @@
 
 IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
-CGameDlg::CGameDlg(const wstring master,const int num)
+CGameDlg::CGameDlg(const wstring master,const int self_serial_num)
 	: CDialogEx(CGameDlg::IDD),
 	game_ctrl(CGameCtrl::GetInstance(this)),
 	logic(CPokerLogic::GetInstance()),
-	players(CGamePlayer::GetInstance()),
+	players(CGamePlayer::GetInstance(self_serial_num)),
 	have_player(players.have_player),
-	room_info(theApp.sys.client_info.room),
-	self_serial_num(num)
+	room_info(theApp.sys.client_info.room)
 {
-	ASSERT(num>=0&&num<3);
+	ASSERT(self_serial_num>=0 && self_serial_num<3);
 	m_master=master;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	have_player=players.have_player;
@@ -38,11 +37,6 @@ CGameDlg::~CGameDlg()
 	delete &players;
 	delete bit_buf;
 	delete gra_buf;
-}
-
-void CGameDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
 }
 
 BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
@@ -108,7 +102,7 @@ void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
 		break;
 	case GameState::Ready:
 		logic.ShowHandPoker(g);
-		logic.ShowFinalThreeCards(g);
+		logic.ShowLandlordCards(g);
 		
 		break;
 	case GameState::Gaming:
@@ -122,19 +116,7 @@ void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
 	}
 }
 
-Player::PlayerPosition CGameDlg::SerialNum2Pos(const int num) const
-{
-	ASSERT(num>=0&&num<3);
-	if (num==self_serial_num)
-	{
-		return Self;
-	}
-	const char temp[]={0,1,2,0,1};
-	int flag_self=self_serial_num;
-	int flag_op=flag_self;
-	while(temp[++flag_op]!=num);
-	return PlayerPosition(flag_op-flag_self);
-}
+
 
 BOOL CGameDlg::OnInitDialog()
 {
@@ -144,49 +126,14 @@ BOOL CGameDlg::OnInitDialog()
 	SetClassLong(this->m_hWnd, GCL_STYLE, GetClassLong(this->m_hWnd, GCL_STYLE) | CS_DROPSHADOW);
 	CenterWindow();
 	game_ctrl.InitCtrl();
-	InitPlayerInfo();
+	players.InitPlayerInfo();
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	SetTimer(IDC_GAME_TIMER,300,NULL);
-	vector<char> temp(53);
-	for (int i=0;i<53;i++)
-	{
-		temp[i]=i;
-	}
-
-	logic.SetPlayerPoker(temp,self_serial_num);
 	return TRUE;
 }
 
-
-
-
-void CGameDlg::InitPlayerInfo()
-{
-	const auto & mate_name_arr=room_info.mate_arr;
-	for (int i=0;i<3;i++)
-	{
-		if (!mate_name_arr[i].empty())
-		{
-			players.SetPlayerName(mate_name_arr[i],SerialNum2Pos(i));
-		}
-	}
-}
-
-void CGameDlg::GameStart()
-{
-	DATA_PACKAGE pack;
-	pack.ms_type=MS_TYPE::GAME_START;
-	theApp.tools.DealData(pack);
-}
-
-void CGameDlg::AddPlayer()
-{
-	DATA_PACKAGE pack;
-	pack.ms_type=MS_TYPE::ADD_PLAYER;
-	theApp.tools.DealData(pack);
-}
 
 
 void CGameDlg::OnPaint()
@@ -347,15 +294,15 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 {
 	typedef USER_BUF MATE_INFO[3];
-	MATE_INFO * info=(MATE_INFO *)((PBYTE)wParam+1);
+	const auto & info=::GetPackBufData<MATE_INFO>(wParam);
 	for (int i=0;i<3;i++)
 	{
-		PlayerPosition pos=SerialNum2Pos(i);
+		PlayerPosition pos=players.SerialNum2Pos(i);
 		if (pos==Self)
 		{
 			continue;
 		}
-		wstring name=(*info)[i].GetStr();
+		wstring name=info[i].GetStr();
 		if (name.empty())
 		{
 			players.DelPlayer(pos);
@@ -365,34 +312,28 @@ LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 			players.SetPlayerName(name,pos);
 		}
 	}
-	if(game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)
+	if(players.self_serial_num==0 && game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)
 	{
 		//可以开始游戏了
-		DATA_PACKAGE pack;
-		pack.ms_type=MS_TYPE::GAME_START;
-		game_ctrl.data.DealData(pack);
-		
+		game_ctrl.GameStart();
 	}
 	return 0;
 }
 
 LRESULT CGameDlg::OnDelPlayer(WPARAM wParam, LPARAM lParam)
 {
-	PLAYER_INFO * info = (PLAYER_INFO *)((PBYTE)wParam+1);
-	auto pos=SerialNum2Pos(info->pos);
+	const auto & info=::GetPackBufData<PLAYER_INFO>(wParam);
+	auto pos=players.SerialNum2Pos(info.pos);
 	have_player[pos]=false;
 	return 0;
 }
 
 LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
 {
-	vector<char> temp(53);
-	for (int i=0;i<53;i++)
-	{
-		temp.push_back(i);
-	}
 	ASSERT(game_state==GameState::GetCards);
-	logic.SetPlayerPoker(temp,self_serial_num);
+	typedef char PokerGroup[53];
+	const auto & poker_group=::GetPackBufData<PokerGroup>(wParam);
+	logic.SetPlayerPoker(vector<char>(poker_group,poker_group+53),players.self_serial_num);
 	game_timer=17;
 	return 0;
 }

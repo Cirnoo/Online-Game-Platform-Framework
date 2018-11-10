@@ -5,7 +5,7 @@
 #include "Register.h"
 #include "GameRoom.h"
 #include "afxdialogex.h"
-
+#include "Sys.h"
 
 
 
@@ -107,9 +107,9 @@ void CGameRoom::DoDataExchange(CDataExchange* pDX)
 
 LRESULT CGameRoom::OnUpdateRoom(WPARAM wParam, LPARAM lParam)
 {
-	ROOM_LIST_INFO * room_info=(ROOM_LIST_INFO *)(PBYTE(wParam)+1);
-	char num=room_info->num;
-	const CString str=room_info->name.GetStr().c_str();
+	const auto & room_info=::GetPackBufData<ROOM_LIST_INFO>(wParam);
+	char num=room_info.num;
+	const CString str=room_info.name.GetStr().c_str();
 	for(int i=0;i<m_room_list.GetItemCount();i++)
 	{
 		if(str==m_room_list.GetItemText(i,0))
@@ -161,11 +161,11 @@ BOOL CGameRoom::OnInitDialog()
 
 LRESULT CGameRoom::OnAddRoom(WPARAM wParam, LPARAM lParam)
 {
-	ROOM_LIST_INFO * room_info=(ROOM_LIST_INFO *)(PBYTE(wParam)+1);
+	const auto & room_info=::GetPackBufData<ROOM_LIST_INFO>(wParam);
 	m_room_list.InsertItem(0,L"");
-	m_room_list.SetItemText(0,0,room_info->name.GetStr().c_str());
+	m_room_list.SetItemText(0,0,room_info.name.GetStr().c_str());
 	CString num;
-	num.Format(_T("%d"),room_info->num);
+	num.Format(_T("%d"),room_info.num);
 	m_room_list.SetItemText(0,1,num);
 	return TRUE;
 }
@@ -216,6 +216,10 @@ LRESULT CGameRoom::OnEnterRoom(WPARAM wParam, LPARAM lParam)
 		{
 			client_info.room.mate_arr[i]=buf->mate_name[i].GetStr();
 		}
+	}
+	else	//如果是直接创建房间 第一个玩家名为自己
+	{
+		client_info.room.mate_arr[0]=client_info.player_name;
 	}
 	client_info.player_pos=buf->player_pos;
 	theApp.CloseMainWnd();	//重要 勿删

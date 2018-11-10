@@ -10,7 +10,6 @@ namespace Player
 }
 
 using namespace Player;
-
 class CPokerLogic
 {
 	typedef std::vector<Poker> MyPoker;
@@ -22,7 +21,7 @@ public:
 	void FinishSelect();
 	void ShowHandPoker(Graphics * const g) const ;
 	void ShowDealingCardsEffect(Graphics * const g,const int timer) const;
-	void ShowFinalThreeCards(Graphics * const g) const ;
+	void ShowLandlordCards(Graphics * const g) const ;
 	void ShowLastRoundPoker(Graphics * const g) const;
 	vector<pImage> poker_img;
 	bool IsLegalOutput();

@@ -32,7 +32,7 @@ const int WM_ADD_ROOM		     =    WM_USER+12;
 const int WM_UPDATE_ROOM		     =    WM_USER+13;
 const int WM_ENTER_ROOM			 =	  WM_USER+14;
 const int WM_GET_ROOM_MATE		 =    WM_USER+15;
-const int WM_ADD_PLAYE		     =	  WM_USER+16;
+const int WM_GAME_START			 =    WM_USER+16;
 const int WM_GET_CARDS			 =	  WM_USER+17;
 const int WM_GAME_WIN			 =	  WM_USER+18;
 const int WM_GAME_OVER			 =	  WM_USER+19;
@@ -83,5 +83,10 @@ WCHAR * multiByteToWideChar(const CString pKey);
 
 bool ShowError();
 
+template<class T,class P>
+const T & GetPackBufData(P & pParam)
+{
+	return *reinterpret_cast<T*>(reinterpret_cast<char *>(pParam)+1);
+}
 
 void InvalidateRect(int x, int y, int width, int height);

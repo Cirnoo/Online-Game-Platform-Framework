@@ -97,9 +97,6 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 	case MS_TYPE::UPDATE_ROOM:
 		AfxGetMainWnd()->SendMessageW(WM_UPDATE_ROOM,(WPARAM)&pack);
 		break;
-	case MS_TYPE::ADD_PLAYER:
-		AfxGetMainWnd()->SendMessageW(WM_ADD_PLAYE);
-		break;
 	case MS_TYPE::CREATE_ROOM_RE_T:
 	case MS_TYPE::ENTER_ROOM_RE_T:
 		AfxGetMainWnd()->SendMessage(WM_ENTER_ROOM,(WPARAM)&pack);

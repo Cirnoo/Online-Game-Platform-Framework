@@ -323,10 +323,10 @@ void CPokerLogic::ShowDealingCardsEffect(Graphics * const g,const int timer) con
 	
 }
 
-void CPokerLogic::ShowFinalThreeCards(Graphics * const  g) const
+void CPokerLogic::ShowLandlordCards(Graphics * const  g) const
 {
-	Rect rect(Point(self_poker_center.X-card_size.Width-6,100),card_size);
-	for (auto i:poker_landlord)
+	Rect rect(Point(self_poker_center.X-card_size.Width-6,70),card_size);
+	for (const auto & i:poker_landlord)
 	{
 		g->DrawImage(poker_img[i.toNum()],rect);
 		rect.X+=card_size.Width+5;

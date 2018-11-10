@@ -26,6 +26,7 @@ public:
 	void OnGameWin(const int serial_num);
 	void ShowCtrl(Graphics * const g);
 	void ShowText(Graphics * const g);
+	void GameStart() const;
 	CTool & data;
 private:
 	CGameCtrl(CGameDlg * parent);
