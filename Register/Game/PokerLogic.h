@@ -20,7 +20,7 @@ public:
 	bool SelectMutiPoker(const Rect & region);
 	void FinishSelect();
 	void ShowHandPoker(Graphics * const g) const ;
-	void ShowDealingCardsEffect(Graphics * const g,const int timer) const;
+	void ShowDealingCardsEffect(Graphics * const g,const int timer) const;	//发牌效果
 	void ShowLandlordCards(Graphics * const g) const ;
 	void ShowLastRoundPoker(Graphics * const g) const;
 	vector<pImage> poker_img;
@@ -33,6 +33,7 @@ public:
 	void SetPlayerPoker(const vector<char> & cards,const char self_num);	//分配扑克
 	void SortHand();
 	void SetLandlord(const PlayerPosition pos);
+	void OnTimer(const GameState state,const int timer);
 private:
 	static CPokerLogic * self_instance;
 	CPokerLogic(void);

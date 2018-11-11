@@ -115,6 +115,7 @@
     <ClInclude Include="Button\PNGButton.h" />
     <ClInclude Include="Button\TextButton.h" />
     <ClInclude Include="CheckBox\CheckBox.h" />
+    <ClInclude Include="GameInterface.h" />
     <ClInclude Include="Game\GameCtrl.h" />
     <ClInclude Include="Game\GameDlg.h" />
     <ClInclude Include="Game\GamePlayer.h" />

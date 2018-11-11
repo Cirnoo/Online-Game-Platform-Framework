@@ -8,20 +8,17 @@
 #include "GamePlayer.h"
 // CGameDlg 对话框
 
-enum class GameState
-{
-	Wait,GetCards,Ready,Gaming,Over
-};
+
 
 class CGameCtrl;
 class CGameDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CGameDlg)
-
+	friend class CGameCtrl;
 public:
 	CGameDlg(const wstring master,const int self_serial_num=0 /*当前玩家是第几人*/ );   
 	virtual ~CGameDlg();
-	GameState game_state;
+	static GameState s_game_state;
 	
 	wstring m_master;
 // 对话框数据

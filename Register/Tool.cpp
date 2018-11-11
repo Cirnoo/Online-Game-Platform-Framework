@@ -45,7 +45,7 @@ CTool::CTool(void)
 
 void CTool::GetRoomInfo(const DATA_PACKAGE & pack)
 {
-/////////////////////////获取另外两个玩家名字//////////////////////////////////////////////
+	/////////////////////////获取另外两个玩家名字//////////////////////////////////////////////
 	typedef USER_BUF Name[2];
 	auto & mate=theApp.sys.client_info.room.mate_arr;
 	Name * name=(Name *)&pack.buf;
@@ -73,6 +73,7 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 	case MS_TYPE::CREATE_ROOM:
 	case MS_TYPE::ENTER_ROOM:
 	case MS_TYPE::LEAVE_ROOM:
+	case MS_TYPE::GAME_START:
 		if(mysocket.SendMS(pack)<0)
 		{
 			return false;
@@ -83,14 +84,14 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 		break;
 	case MS_TYPE::LOGIN_RE_F:
 		Warning("用户名或密码错误")
-		break;
+			break;
 	case MS_TYPE::REGISTER_RE_T:
 		AfxGetMainWnd()->PostMessageW(WM_REGISETR);
 		Warning("注册成功")
-		break;
+			break;
 	case MS_TYPE::REGISTER_RE_F:
 		Warning("用户已存在")
-		break;
+			break;
 	case MS_TYPE::ADD_ROOM:
 		AfxGetMainWnd()->SendMessageW(WM_ADD_ROOM,(WPARAM)&pack);
 		break;
@@ -108,6 +109,8 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 	case MS_TYPE::MATE_INFO_UPDATE:
 		AfxGetMainWnd()->SendMessage(WM_GET_ROOM_MATE,(WPARAM)&pack);
 		break;
+	case MS_TYPE::ALLOC_POKER:
+		AfxGetMainWnd()->SendMessage(WM_GAME_START,(WPARAM)&pack);
 	default:
 		SetEvent(mysocket.mHeartBeat);
 		break;

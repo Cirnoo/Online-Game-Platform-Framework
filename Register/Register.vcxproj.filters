@@ -147,6 +147,9 @@
     <ClInclude Include="Game\GamePlayer.h">
       <Filter>Game\GameMain</Filter>
     </ClInclude>
+    <ClInclude Include="GameInterface.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Register.cpp">

@@ -24,9 +24,10 @@ public:
 	void InitCtrl();
 	void OnGameTimer();
 	void OnGameWin(const int serial_num);
-	void ShowCtrl(Graphics * const g);
-	void ShowText(Graphics * const g);
-	void GameStart() const;
+	void ShowCtrl(Graphics * const g) const;
+	void ShowText(Graphics * const g) const;
+	void ShowPlayer(Graphics * const g);
+	void GameStart() ;
 	CTool & data;
 private:
 	CGameCtrl(CGameDlg * parent);

@@ -66,6 +66,11 @@ private:
 	void InitSockAddr();
 };
 
+enum class GameState
+{
+	Wait,GetCards,Ready,Gaming,Over
+};
+
 pImage LoadPNGFormResource(int nId);
 pImage ResizeImg(pImage img, double scale = RESOLUTION);
 vector<pImage> GetImageGroup(pImage img,int row,int col);

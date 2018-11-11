@@ -13,6 +13,7 @@
 
 IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
+GameState CGameDlg::s_game_state=GameState::Wait;
 CGameDlg::CGameDlg(const wstring master,const int self_serial_num)
 	: CDialogEx(CGameDlg::IDD),
 	game_ctrl(CGameCtrl::GetInstance(this)),
@@ -65,7 +66,7 @@ void CGameDlg::InitVar()
 	is_select_multi=false;
 	back_img=::LoadPNGFormResource(IDB_GAME_BG);
 	game_timer=0;
-	game_state=GameState::Wait;
+	s_game_state=GameState::Wait;
 	bit_buf=new Bitmap(this->m_width,this->m_height);
 	gra_buf=Graphics::FromImage(bit_buf);
 }
@@ -90,14 +91,14 @@ void CGameDlg::DrawRectFrame(Gdiplus::Graphics * g)
 void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
 {
 	players.Show(g);
-	switch (game_state)
+	switch (s_game_state)
 	{
 	case GameState::Wait:
 
 		break;
 	case GameState::GetCards:
 		ASSERT(21-game_timer>=0);
-		logic.ShowDealingCardsEffect(g,21-game_timer);		//发牌效果
+		logic.ShowDealingCardsEffect(g,21-game_timer/3);		//发牌效果
 		players.ShowLandlordLogo(g);
 		break;
 	case GameState::Ready:
@@ -126,11 +127,11 @@ BOOL CGameDlg::OnInitDialog()
 	SetClassLong(this->m_hWnd, GCL_STYLE, GetClassLong(this->m_hWnd, GCL_STYLE) | CS_DROPSHADOW);
 	CenterWindow();
 	game_ctrl.InitCtrl();
-	players.InitPlayerInfo();
+	players.OnInit();
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
-	SetTimer(IDC_GAME_TIMER,300,NULL);
+	SetTimer(IDC_GAME_TIMER,100,NULL);		//100ms调用一次Ontimer,10次为1s
 	return TRUE;
 }
 
@@ -262,16 +263,17 @@ void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
 void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	switch(game_state)
+	game_ctrl.OnGameTimer();
+	switch(s_game_state)
 	{
 	case GameState::GetCards:
-		if (--game_timer==1)
+		if (game_timer==1)
 		{
 			logic.SortHand();
 		}
 		else if (game_timer==0)
 		{
-			game_state=GameState::Ready;
+			s_game_state=GameState::Ready;
 			game_timer=20;
 			OnSetLandlord(NULL,NULL);
 		}
@@ -312,7 +314,7 @@ LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 			players.SetPlayerName(name,pos);
 		}
 	}
-	if(players.self_serial_num==0 && game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)
+	if(players.self_serial_num==0 && s_game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)
 	{
 		//可以开始游戏了
 		game_ctrl.GameStart();
@@ -330,17 +332,17 @@ LRESULT CGameDlg::OnDelPlayer(WPARAM wParam, LPARAM lParam)
 
 LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(game_state==GameState::GetCards);
+	ASSERT(s_game_state==GameState::GetCards);
 	typedef char PokerGroup[53];
 	const auto & poker_group=::GetPackBufData<PokerGroup>(wParam);
 	logic.SetPlayerPoker(vector<char>(poker_group,poker_group+53),players.self_serial_num);
-	game_timer=17;
+	game_timer=17*3;	//发牌效果持续时间	17张牌 每张300ms
 	return 0;
 }
 
 LRESULT CGameDlg::OnSetLandlord(WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(game_state==GameState::Ready);
+	ASSERT(s_game_state==GameState::Ready);
 	logic.SetLandlord(Self);
 	players.SetLandlord(Self);
 	return 0;

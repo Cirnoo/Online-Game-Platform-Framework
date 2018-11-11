@@ -28,7 +28,7 @@ namespace ImgTextType
 
 CGameCtrl::CGameCtrl(CGameDlg * parent):
 	data(CTool::GetInstance()),
-	game_state(parent->game_state),
+	game_state(parent->s_game_state),
 	main_dlg(parent),
 	button_center(GAME_DLG_WIDTH/2,GAME_DLG_HEIGHT/2+50),
 	button_size(100,39)
@@ -52,8 +52,14 @@ void CGameCtrl::Show(Gdiplus::Graphics * const g)
 	{
 		i->Show(g);
 	}
-	//ShowCtrl(g);
-	ShowText(g);
+	switch (game_state)
+	{
+	case GameState::Wait:
+		ShowText(g);
+	default:
+		break;
+	}
+	
 }
 
 void CGameCtrl::InitCtrl()
@@ -87,6 +93,7 @@ void CGameCtrl::InitCtrl()
 void CGameCtrl::OnGameTimer()
 {
 	game_timer++;
+
 }
 
 void CGameCtrl::OnGameWin(const int serial_num)
@@ -130,7 +137,7 @@ void CGameCtrl::CreatCtrl_Ready(IN CtrlList & ctrl_ls)
 	ls_game_ctrl.emplace_back(button);
 }
 
-void CGameCtrl::ShowCtrl(Gdiplus::Graphics * const g)
+void CGameCtrl::ShowCtrl(Gdiplus::Graphics * const g) const
 {
 	for (const auto & i:ls_game_ctrl)
 	{
@@ -158,7 +165,7 @@ void CGameCtrl::CreatCtlr_Wait(CtrlList & ctrl_ls)
 	ls_game_ctrl.emplace_back(button);
 }
 
-void CGameCtrl::ShowText(Graphics * const g)
+void CGameCtrl::ShowText(Graphics * const g) const
 {
 	using namespace ImgTextType;
 	switch (game_state)
@@ -191,12 +198,20 @@ void CGameCtrl::InvalidateRect(Rect & rect)
 	AfxGetMainWnd()->InvalidateRect(Rect2CRect(rect));
 }
 
-void CGameCtrl::GameStart() const
+void CGameCtrl::GameStart() 
 {
-
+	ASSERT(game_state==GameState::Wait);
 	DATA_PACKAGE pack;
 	pack.ms_type=MS_TYPE::GAME_START;
 	data.DealData(pack);
+	game_state=GameState::GetCards;
+}
+
+void CGameCtrl::ShowPlayer(Graphics * const g)
+{
+	const auto & players=main_dlg->players;
+	const auto & logic=main_dlg->logic;
+	
 }
 
 CGameCtrl::GameRes::GameRes()

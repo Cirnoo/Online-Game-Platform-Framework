@@ -430,6 +430,20 @@ void CPokerLogic::SetLandlord(const PlayerPosition pos)
 	MergeSortedVec(hand_poker[pos],poker_landlord);
 }
 
+void CPokerLogic::OnTimer(const GameState state,const int timer)
+{
+	switch (state)
+	{
+	case GameState::GetCards:
+		if (timer==1)
+		{
+			SortHand();
+		}
+	default:
+		break;
+	}
+}
+
 bool CPokerLogic::IsBomb(const MyPoker & cards)const
 {
 	return cards.front()==cards.back()&&cards.size()==4;
