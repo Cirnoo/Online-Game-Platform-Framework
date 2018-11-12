@@ -1,6 +1,7 @@
 #pragma once
 #include <list>
 #include "Packdef.h"
+#include "GameInterface.h"
 namespace Player
 {
 	enum PlayerPosition
@@ -10,7 +11,7 @@ namespace Player
 }
 
 using namespace Player;
-class CPokerLogic
+class CPokerLogic:public CGameInterface
 {
 	typedef std::vector<Poker> MyPoker;
 public:
@@ -18,11 +19,7 @@ public:
 	~CPokerLogic(void);
 	int  SelectPoker(const CPoint & point);
 	bool SelectMutiPoker(const Rect & region);
-	void FinishSelect();
-	void ShowHandPoker(Graphics * const g) const ;
-	void ShowDealingCardsEffect(Graphics * const g,const int timer) const;	//发牌效果
-	void ShowLandlordCards(Graphics * const g) const ;
-	void ShowLastRoundPoker(Graphics * const g) const;
+	void FinishMutiSelect();
 	vector<pImage> poker_img;
 	bool IsLegalOutput();
 	MyPoker GetCheckedCards() const;
@@ -33,7 +30,6 @@ public:
 	void SetPlayerPoker(const vector<char> & cards,const char self_num);	//分配扑克
 	void SortHand();
 	void SetLandlord(const PlayerPosition pos);
-	void OnTimer(const GameState state,const int timer);
 private:
 	static CPokerLogic * self_instance;
 	CPokerLogic(void);
@@ -59,5 +55,12 @@ private:
 	bool IsGreater(const CardArray & self, const CardArray & per ) const;
 	int  GetCardFormCount(const MyPoker & cards,int count) const;
 	void MergeSortedVec(MyPoker & vec1,MyPoker & vec2);
+	void ShowHandPoker(Graphics * const g) const ;
+	void ShowDealingCardsEffect(Graphics * const g,const int timer) const;	//发牌效果
+	void ShowLandlordCards(Graphics * const g,bool hide=true) const ;
+	void ShowLastRoundPoker(Graphics * const g) const;
+private:
+	void OnFrame() override;
+	void OnPaint(Gdiplus::Graphics * const g) const override;
 };
 

@@ -14,7 +14,18 @@
 IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
 GameState CGameDlg::s_game_state=GameState::Wait;
-CGameDlg::CGameDlg(const wstring master,const int self_serial_num)
+
+GameState CGameDlg::GetGameState()
+{
+	return s_game_state;
+}
+
+void CGameDlg::SetGameState(const GameState state)
+{
+	s_game_state=state;
+}
+
+CGameDlg::CGameDlg(const int self_serial_num)
 	: CDialogEx(CGameDlg::IDD),
 	game_ctrl(CGameCtrl::GetInstance(this)),
 	logic(CPokerLogic::GetInstance()),
@@ -23,21 +34,34 @@ CGameDlg::CGameDlg(const wstring master,const int self_serial_num)
 	room_info(theApp.sys.client_info.room)
 {
 	ASSERT(self_serial_num>=0 && self_serial_num<3);
-	m_master=master;
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	have_player=players.have_player;
 	InitVar();
-	
+	vec_ctrl.push_back(&players);
+	vec_ctrl.push_back(&game_ctrl);
+	vec_ctrl.push_back(&logic);
+	for (auto & i:theApp.sys.client_info.room.mate_arr)
+	{
+		i=L"test";
+	}
+	s_game_state=GameState::GetCards;
+	vector<char> temp;
+	for (int i=0;i<53;i++)
+	{
+		temp.push_back(i);
+	}
+	logic.SetPlayerPoker(temp,self_serial_num);
 }
 
 CGameDlg::~CGameDlg()
 {
 	delete back_img;
-	delete &game_ctrl;
-	delete &logic;
-	delete &players;
 	delete bit_buf;
 	delete gra_buf;
+	for (auto i:vec_ctrl)
+	{
+		delete i;
+	}
 }
 
 BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
@@ -49,7 +73,7 @@ BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_WM_LBUTTONUP()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_TIMER()
-	ON_MESSAGE(WM_GET_ROOM_MATE,CGameDlg::OnGetMateInfo)
+	ON_MESSAGE(WM_GET_ROOM_MATE,players.OnGetMateInfo)
 	ON_MESSAGE(WM_GET_CARDS,CGameDlg::OnGetCards)
 END_MESSAGE_MAP()
 
@@ -65,7 +89,6 @@ void CGameDlg::InitVar()
 	is_lbutton_dowm=false;
 	is_select_multi=false;
 	back_img=::LoadPNGFormResource(IDB_GAME_BG);
-	game_timer=0;
 	s_game_state=GameState::Wait;
 	bit_buf=new Bitmap(this->m_width,this->m_height);
 	gra_buf=Graphics::FromImage(bit_buf);
@@ -75,7 +98,7 @@ void CGameDlg::InitVar()
 
 void CGameDlg::DrawRectFrame(Gdiplus::Graphics * g)
 {
-	if (!is_lbutton_dowm||lbutton_down.x==-1)
+	if (!is_lbutton_dowm||!is_select_multi||lbutton_down.x==-1)
 	{
 		return;
 	}
@@ -88,37 +111,6 @@ void CGameDlg::DrawRectFrame(Gdiplus::Graphics * g)
 
 
 
-void CGameDlg::ShowPlayer(Gdiplus::Graphics * g)
-{
-	players.Show(g);
-	switch (s_game_state)
-	{
-	case GameState::Wait:
-
-		break;
-	case GameState::GetCards:
-		ASSERT(21-game_timer>=0);
-		logic.ShowDealingCardsEffect(g,21-game_timer/3);		//发牌效果
-		players.ShowLandlordLogo(g);
-		break;
-	case GameState::Ready:
-		logic.ShowHandPoker(g);
-		logic.ShowLandlordCards(g);
-		
-		break;
-	case GameState::Gaming:
-		logic.ShowHandPoker(g);
-		logic.ShowLastRoundPoker(g);
-		break;
-	case GameState::Over:
-		break;
-	default:
-		break;
-	}
-}
-
-
-
 BOOL CGameDlg::OnInitDialog()
 {
 	CDialogEx::OnInitDialog();
@@ -126,8 +118,10 @@ BOOL CGameDlg::OnInitDialog()
 	::SetWindowPos(this->m_hWnd, HWND_TOP , 0, 0,m_width,m_height,SWP_NOMOVE);
 	SetClassLong(this->m_hWnd, GCL_STYLE, GetClassLong(this->m_hWnd, GCL_STYLE) | CS_DROPSHADOW);
 	CenterWindow();
-	game_ctrl.InitCtrl();
-	players.OnInit();
+	for (auto i:vec_ctrl)
+	{
+		i->OnInit();
+	}
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
@@ -143,8 +137,10 @@ void CGameDlg::OnPaint()
 	Graphics graphics(hdc);
 	//PaintIrregularDlg(hdc,back_img);
 	gra_buf->DrawImage(back_img,0,0,m_width,m_height);
-	ShowPlayer(gra_buf);
-	game_ctrl.Show(gra_buf);
+	for (auto i:vec_ctrl)
+	{
+		i->OnPaint(gra_buf);
+	}
 	DrawRectFrame(gra_buf);
 	graphics.DrawImage(bit_buf,0,0);
 	::ReleaseDC(m_hWnd,hdc);
@@ -208,7 +204,7 @@ void CGameDlg::OnMouseMove(UINT nFlags, CPoint point)
 		new_region.CombineRgn(&new_region,&old_regin,RGN_DIFF);
 		InvalidateRgn(&new_region);
 		is_select_multi=true;
-		if(logic.SelectMutiPoker(select_region))
+		if(s_game_state==GameState::Gaming && logic.SelectMutiPoker(select_region))
 		{
 			InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
 		}
@@ -223,17 +219,22 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	if (is_lbutton_dowm)
 	{
 		lbutton_down.SetPoint(-1,-1);
+		is_lbutton_dowm=false;
+		is_select_multi=false;
+
+		InvalidateRect(Rect2CRect(select_region));
+		if (s_game_state!=GameState::Gaming)
+		{
+			return;
+		}
 		if (is_select_multi)
 		{
-			logic.FinishSelect();
+			logic.FinishMutiSelect();
 		}
 		else
 		{
 			logic.SelectPoker(point);
 		}
-		is_lbutton_dowm=false;
-		is_select_multi=false;
-		InvalidateRect(Rect2CRect(select_region));
 		InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
 	}
 	
@@ -263,33 +264,12 @@ void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
 void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	game_ctrl.OnGameTimer();
-	switch(s_game_state)
+	for (auto i:vec_ctrl)
 	{
-	case GameState::GetCards:
-		if (game_timer==1)
-		{
-			logic.SortHand();
-		}
-		else if (game_timer==0)
-		{
-			s_game_state=GameState::Ready;
-			game_timer=20;
-			OnSetLandlord(NULL,NULL);
-		}
-		Invalidate();
-		break;
-	case GameState::Ready:
-		if (--game_timer==0)
-		{
-
-		}
-		break;
-	case GameState::Gaming:
-		--game_timer;
-	default:
-		break;
+		i->OnTimer();
 	}
+	AfxGetMainWnd()->Invalidate();
+	AfxGetMainWnd()->UpdateWindow();
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -332,17 +312,17 @@ LRESULT CGameDlg::OnDelPlayer(WPARAM wParam, LPARAM lParam)
 
 LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(s_game_state==GameState::GetCards);
+	ASSERT(s_game_state==GameState::Wait);
 	typedef char PokerGroup[53];
 	const auto & poker_group=::GetPackBufData<PokerGroup>(wParam);
 	logic.SetPlayerPoker(vector<char>(poker_group,poker_group+53),players.self_serial_num);
-	game_timer=17*3;	//发牌效果持续时间	17张牌 每张300ms
+	s_game_state=GameState::GetCards;
 	return 0;
 }
 
 LRESULT CGameDlg::OnSetLandlord(WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(s_game_state==GameState::Ready);
+	ASSERT(s_game_state==GameState::SelectLandLord);
 	logic.SetLandlord(Self);
 	players.SetLandlord(Self);
 	return 0;

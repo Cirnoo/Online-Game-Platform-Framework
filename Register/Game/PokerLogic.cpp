@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "PokerLogic.h"
 #include <algorithm>
-
+#include "GameDlg.h"
 typedef std::vector<Poker> MyPoker;
 CPokerLogic * CPokerLogic::self_instance=nullptr;
 CPokerLogic & CPokerLogic::GetInstance()
@@ -15,7 +15,7 @@ CPokerLogic & CPokerLogic::GetInstance()
 CPokerLogic::CPokerLogic(void)
 	:card_interval(25),card_up(20),
 	card_size(Size(57*1.4,80*1.4)),  //牌的长宽
-	self_poker_center(GAME_DLG_WIDTH/2-card_size.Width/2,GAME_DLG_HEIGHT-300) //中间手牌位置
+	self_poker_center(GAME_DLG_WIDTH/2-card_size.Width/2,GAME_DLG_HEIGHT-250) //中间手牌位置
 {
 	auto temp=GetImageGroup(IDB_POKER_CARDS,4,14);  //行列切割
 	poker_img.resize(55);
@@ -73,16 +73,16 @@ unsigned char CPokerLogic::CalArrPoint(const MyPoker & cards,ArrayType type)
 	return 0;
 }
 
-Rect CPokerLogic::GetMateCardRect(PlayerPosition pos,const int size) const
+Rect CPokerLogic::GetMateCardRect(const PlayerPosition pos,const int size) const
 {
 	int width=GAME_DLG_WIDTH;
 	int height=GAME_DLG_HEIGHT;
 	switch(pos)
 	{
 	case Left:
-		return Rect(Point(150,height*0.35-size*card_up/2),card_size);
+		return Rect(Point(200,height*0.35-size*card_up/2),card_size);
 	case Right:
-		return Rect(Point(width-150-card_size.Width,height*0.35-size*card_up/2),card_size);
+		return Rect(Point(width-200-card_size.Width,height*0.35-size*card_up/2),card_size);
 	default:
 		ASSERT(0);
 	}
@@ -191,6 +191,7 @@ void CPokerLogic::SetPlayerPoker(const vector<char> & cards,const char self_num)
 	{
 		poker_landlord.push_back(*i);
 		poker_landlord.back().check=true;
+		poker_landlord.back().hide=true;
 	}
 }
 
@@ -248,7 +249,7 @@ bool CPokerLogic::SelectMutiPoker(const Rect & region)
 	return true;
 }
 
-void CPokerLogic::FinishSelect()
+void CPokerLogic::FinishMutiSelect()
 {
 	for (auto & i:hand_poker[Self])
 	{
@@ -323,12 +324,13 @@ void CPokerLogic::ShowDealingCardsEffect(Graphics * const g,const int timer) con
 	
 }
 
-void CPokerLogic::ShowLandlordCards(Graphics * const  g) const
+void CPokerLogic::ShowLandlordCards(Graphics * const  g,bool hide) const
 {
-	Rect rect(Point(self_poker_center.X-card_size.Width-6,70),card_size);
+	Rect rect(Point(GAME_DLG_WIDTH/2-card_size.Width*1.5-13,60),card_size);
+	const auto back_img=poker_img.back();
 	for (const auto & i:poker_landlord)
 	{
-		g->DrawImage(poker_img[i.toNum()],rect);
+		g->DrawImage(hide?back_img:poker_img[i.toNum()],rect);
 		rect.X+=card_size.Width+5;
 	}
 }
@@ -430,19 +432,7 @@ void CPokerLogic::SetLandlord(const PlayerPosition pos)
 	MergeSortedVec(hand_poker[pos],poker_landlord);
 }
 
-void CPokerLogic::OnTimer(const GameState state,const int timer)
-{
-	switch (state)
-	{
-	case GameState::GetCards:
-		if (timer==1)
-		{
-			SortHand();
-		}
-	default:
-		break;
-	}
-}
+
 
 bool CPokerLogic::IsBomb(const MyPoker & cards)const
 {
@@ -612,5 +602,55 @@ void CPokerLogic::MergeSortedVec(MyPoker & vec1,MyPoker & vec2)
 	while(i2>=0)
 	{
 		vec1[icur--]=vec2[i2--];
+	}
+}
+
+void CPokerLogic::OnFrame()
+{
+	const auto game_state=CGameDlg::GetGameState();
+	switch (game_state)
+	{
+	case GameState::Wait:		
+		timer=-1;
+		return;
+	case GameState::GetCards:		//发牌阶段
+		if (timer>=3*21)
+		{
+			timer=0;
+			SortHand();
+			CGameDlg::SetGameState(GameState::SelectLandLord);		//发牌完毕
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void CPokerLogic::OnPaint(Gdiplus::Graphics * const g) const
+{
+	const auto game_state=CGameDlg::GetGameState();
+	const int deal_card_cnt=timer/3;
+	switch (game_state)
+	{
+	case GameState::Wait:
+
+		break;
+	case GameState::GetCards:
+		ASSERT(deal_card_cnt<=21);
+		ShowDealingCardsEffect(g,deal_card_cnt);		//发牌效果
+		break;
+	case GameState::SelectLandLord:
+		ShowHandPoker(g);
+		ShowLandlordCards(g);
+		break;
+	case GameState::Gaming:
+		ShowHandPoker(g);
+		ShowLandlordCards(g,false);
+		ShowLastRoundPoker(g);
+		break;
+	case GameState::Over:
+		break;
+	default:
+		break;
 	}
 }

@@ -7,8 +7,10 @@ const UINT TIMER_CONTROL =1;
 
 
 
-CPNGButton::CPNGButton(void) { 
-	
+CPNGButton::CPNGButton(void) 
+{ 
+	is_hide=false;
+	is_click_move=false;
 } 
 CPNGButton::~CPNGButton(void) { }
 
@@ -61,6 +63,10 @@ void CPNGButton::SetClickDown(bool flag)
 
 void CPNGButton::Show(Graphics* const g)
 {
+	if (is_hide)
+	{
+		return;
+	}
 	if (is_button_down)
 	{
 		auto t_rec=mRect;
@@ -80,20 +86,10 @@ void CPNGButton::Show(Graphics* const g)
 	}
 }
 
-
-
-
-void CPNGButton::Check(bool check)
-{
-	if(this->is_checked!=check)
-	{
-		this->is_checked=check;
-		Invalidate();
-		UpdateWindow();
-		//TRACE(L"DrawSelected\r\n");
-	} /*else{  TRACE(L"Check(%d,%d)\r\n",GetDlgCtrlID(),check); }*/
-}
-
  
+void CPNGButton::SetHide(bool hide)
+{
+	is_hide=hide;
+}
 
 

@@ -24,7 +24,6 @@ protected:
 	bool is_tracked;
 	bool is_checked;
 	bool is_button_down;
-	bool is_click_move;
 	std::function<void()> mCmd;
 	virtual void OnClick();
 	DECLARE_MESSAGE_MAP()

@@ -2,6 +2,7 @@
 #include "GameCtrl.h"
 #include "Tool.h"
 #include "GameDlg.h"
+#include <thread>
 CGameCtrl * CGameCtrl::self=nullptr;
 CGameCtrl & CGameCtrl::GetInstance(CGameDlg * parent)  //饿汉式
 {
@@ -30,10 +31,11 @@ CGameCtrl::CGameCtrl(CGameDlg * parent):
 	data(CTool::GetInstance()),
 	game_state(parent->s_game_state),
 	main_dlg(parent),
-	button_center(GAME_DLG_WIDTH/2,GAME_DLG_HEIGHT/2+50),
+	button_center(GAME_DLG_WIDTH/2,GAME_DLG_HEIGHT/2+100),
 	button_size(100,39)
 {
-	
+	ls_clear_flag=false;
+	round_count=0;
 }
 
 
@@ -46,55 +48,9 @@ CGameCtrl::~CGameCtrl(void)
 	data.DealData(pack);*/
 }
 
-void CGameCtrl::Show(Gdiplus::Graphics * const g)
-{
-	for (const auto & i:ls_base_ctrl)
-	{
-		i->Show(g);
-	}
-	switch (game_state)
-	{
-	case GameState::Wait:
-		ShowText(g);
-	default:
-		break;
-	}
-	
-}
 
-void CGameCtrl::InitCtrl()
-{
-	const int IDG_MIN   = 10000;
-	const int IDG_CLOSE = 10001;
-	const int bt_width  = res.vec_min[0]->GetWidth();
-	const int bt_height = res.vec_min[0]->GetHeight();
 
-	const CRect rectDlg(0,0,GAME_DLG_WIDTH,GAME_DLG_HEIGHT);
 
-	Rect rect=Rect(rectDlg.Width()-bt_width*1.6,5,bt_width,bt_height);
-
-	bt_close.Create(rect,main_dlg,IDG_CLOSE,res.vec_close);
-	bt_close.SetCmd([this]()
-	{
-		main_dlg->PostMessageW(WM_CLOSE);
-	});
-	ls_base_ctrl.push_back(&bt_close);
-	rect.X-=bt_width*1.5;
-	bt_min.Create(rect,main_dlg,IDG_MIN,res.vec_min);
-	bt_min.SetCmd([this]()
-	{
-		main_dlg->PostMessageW(WM_SYSCOMMAND ,SC_MINIMIZE, 0);
-	});
-	ls_base_ctrl.push_back(&bt_min);
-
-	CreatCtrl_Ready(ls_game_ctrl);
-}
-
-void CGameCtrl::OnGameTimer()
-{
-	game_timer++;
-
-}
 
 void CGameCtrl::OnGameWin(const int serial_num)
 {
@@ -104,7 +60,7 @@ void CGameCtrl::OnGameWin(const int serial_num)
 	data.DealData(pack);
 }
 
-void CGameCtrl::CreatCtrl_Ready(IN CtrlList & ctrl_ls)
+void CGameCtrl::CreatCtrl_LandLord(IN CtrlList & ctrl_ls,bool is_first)
 {
 	/************************************************************************/
 	/*			叫地主	不叫 	抢地主		不抢                            */
@@ -114,25 +70,30 @@ void CGameCtrl::CreatCtrl_Ready(IN CtrlList & ctrl_ls)
 	using namespace ImgGroupType;
 	//叫地主
 	button=new CPNGButton();
-	rect = Rect(Point(button_center.X-button_size.Width*1.5-10,button_center.Y),button_size);
-	button->Create(rect,main_dlg,ctrl_ls.size(),res.vec_button_img[叫地主]);
-	button->SetCmd([=]()
+	rect = Rect(Point(button_center.X-button_size.Width-10,button_center.Y),button_size);
+	const auto img1=res.vec_button_img[is_first?叫地主:抢地主];
+	button->Create(rect,main_dlg,ctrl_ls.size(),img1);
+	button->SetCmd([&]()
 	{
 		DATA_PACKAGE pack;
 		pack.ms_type=MS_TYPE::WANT_LANDLORD;
 		data.DealData(pack);
+		ls_clear_flag=true;
 	});
 	ls_game_ctrl.emplace_back(button);
 
 	//不叫
 	button=new CPNGButton();
-	rect.X+=button_size.Width*1.5+20;
-	button->Create(rect,main_dlg,ctrl_ls.size(),res.vec_button_img[不叫]);
-	button->SetCmd([=]()
+	rect.X+=button_size.Width+20;
+	const auto img2=res.vec_button_img[is_first?不叫:不抢];
+	button->Create(rect,main_dlg,ctrl_ls.size(),img2);
+	int a=0;
+	button->SetCmd([&]()
 	{
 		DATA_PACKAGE pack;
 		pack.ms_type=MS_TYPE::NOT_WANT_LANDLORD;
 		data.DealData(pack);
+		ls_clear_flag=true;
 	});
 	ls_game_ctrl.emplace_back(button);
 }
@@ -165,6 +126,72 @@ void CGameCtrl::CreatCtlr_Wait(CtrlList & ctrl_ls)
 	ls_game_ctrl.emplace_back(button);
 }
 
+void CGameCtrl::OnInit()
+{
+	const int IDG_MIN   = 10000;
+	const int IDG_CLOSE = 10001;
+	const int bt_width  = res.vec_min[0]->GetWidth();
+	const int bt_height = res.vec_min[0]->GetHeight();
+
+	const CRect rectDlg(0,0,GAME_DLG_WIDTH,GAME_DLG_HEIGHT);
+
+	Rect rect=Rect(rectDlg.Width()-bt_width*1.6,5,bt_width,bt_height);
+
+	bt_close.Create(rect,main_dlg,IDG_CLOSE,res.vec_close);
+	bt_close.SetCmd([this]()
+	{
+		main_dlg->PostMessageW(WM_CLOSE);
+	});
+	ls_base_ctrl.push_back(&bt_close);
+	rect.X-=bt_width*1.5;
+	bt_min.Create(rect,main_dlg,IDG_MIN,res.vec_min);
+	bt_min.SetCmd([this]()
+	{
+		main_dlg->PostMessageW(WM_SYSCOMMAND ,SC_MINIMIZE, 0);
+	});
+	ls_base_ctrl.push_back(&bt_min);
+}
+
+void CGameCtrl::OnFrame()
+{
+	switch (game_state)
+	{
+	case GameState::SelectLandLord:
+		if (timer==0)
+		{
+			CreatCtrl_LandLord(ls_game_ctrl,round_count==0);
+		}
+		break;
+	default:
+		timer=-1;
+		break;
+	}
+	if (ls_clear_flag)
+	{
+		ls_game_ctrl.clear();
+		ls_clear_flag=false;
+	}
+}
+
+void CGameCtrl::OnPaint(Gdiplus::Graphics * const g) const 
+{
+	for (const auto & i:ls_base_ctrl)
+	{
+		i->Show(g);
+	}
+	for (auto & i:ls_game_ctrl)
+	{
+		i->Show(g);
+	}
+	switch (game_state)
+	{
+	case GameState::Wait:
+		ShowText(g);
+	default:
+		break;
+	}
+}
+
 void CGameCtrl::ShowText(Graphics * const g) const
 {
 	using namespace ImgTextType;
@@ -182,7 +209,6 @@ void CGameCtrl::ShowText(Graphics * const g) const
 				if (main_dlg->have_player[i])
 				{
 					g->DrawImage(img,point[i]);
-					::InvalidateRect(point[i].X,point[i].Y,img->GetWidth(),img->GetHeight());
 				}
 			}
 			
@@ -193,10 +219,6 @@ void CGameCtrl::ShowText(Graphics * const g) const
 	}
 }
 
-void CGameCtrl::InvalidateRect(Rect & rect)
-{
-	AfxGetMainWnd()->InvalidateRect(Rect2CRect(rect));
-}
 
 void CGameCtrl::GameStart() 
 {
@@ -204,14 +226,13 @@ void CGameCtrl::GameStart()
 	DATA_PACKAGE pack;
 	pack.ms_type=MS_TYPE::GAME_START;
 	data.DealData(pack);
-	game_state=GameState::GetCards;
 }
 
-void CGameCtrl::ShowPlayer(Graphics * const g)
+
+
+void CGameCtrl::ClearRoundCnt()
 {
-	const auto & players=main_dlg->players;
-	const auto & logic=main_dlg->logic;
-	
+	round_count=0;
 }
 
 CGameCtrl::GameRes::GameRes()

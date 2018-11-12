@@ -31,7 +31,6 @@ void CBaseControl::VarInit()
 	is_checked=false;
 	is_tracked	=	false; 
 	is_button_down=false;
-	is_click_move=false;
 }
 
 void CBaseControl::ControlRepaint() const

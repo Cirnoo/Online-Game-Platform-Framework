@@ -9,18 +9,17 @@
 // CGameDlg 对话框
 
 
-
 class CGameCtrl;
 class CGameDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CGameDlg)
 	friend class CGameCtrl;
 public:
-	CGameDlg(const wstring master,const int self_serial_num=0 /*当前玩家是第几人*/ );   
+	CGameDlg(const int self_serial_num=0 /*当前玩家是第几人*/ );   
 	virtual ~CGameDlg();
-	static GameState s_game_state;
 	
-	wstring m_master;
+	static GameState GetGameState();
+	static void SetGameState(const GameState state);
 // 对话框数据
 	enum { IDD = IDD_GAMEDLG };
 	
@@ -31,7 +30,6 @@ protected:
 private:
 	void InitVar();
 	void DrawRectFrame(Gdiplus::Graphics * g);
-	void ShowPlayer(Gdiplus::Graphics * g);
 	int game_timer;
 	CPoint lbutton_down;
 	Rect select_region;
@@ -44,6 +42,8 @@ private:
 	CGamePlayer & players;
 	Bitmap * bit_buf;
 	Graphics * gra_buf;
+	std::vector<CGameInterface *> vec_ctrl;
+	static GameState s_game_state;
 public:
 	std::array<bool,3> & have_player;
 	virtual BOOL OnInitDialog();

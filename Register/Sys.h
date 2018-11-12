@@ -68,7 +68,7 @@ private:
 
 enum class GameState
 {
-	Wait,GetCards,Ready,Gaming,Over
+	Wait,GetCards,SelectLandLord,Gaming,Over
 };
 
 pImage LoadPNGFormResource(int nId);

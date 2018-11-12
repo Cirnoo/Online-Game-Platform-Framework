@@ -2,10 +2,11 @@
 #include "PNGButton.h"
 #include <list>
 #include <memory>
+#include "GameInterface.h"
 class CTool;
 class CGameDlg;
 enum class GameState;
-class CGameCtrl		//负责转发游戏数据和管理控件
+class CGameCtrl	:public CGameInterface	//负责转发游戏数据和管理控件
 {
 
 	typedef std::list<std::unique_ptr<CBaseControl>> CtrlList ;
@@ -20,15 +21,11 @@ class CGameCtrl		//负责转发游戏数据和管理控件
 public:
 	static CGameCtrl & GetInstance(CGameDlg * parent);
 	~CGameCtrl(void);
-	void Show(Graphics * const g);
-	void InitCtrl();
-	void OnGameTimer();
 	void OnGameWin(const int serial_num);
 	void ShowCtrl(Graphics * const g) const;
 	void ShowText(Graphics * const g) const;
-	void ShowPlayer(Graphics * const g);
 	void GameStart() ;
-	CTool & data;
+	void ClearRoundCnt();
 private:
 	CGameCtrl(CGameDlg * parent);
 	static CGameCtrl * self;
@@ -36,14 +33,18 @@ private:
 	const Point button_center;
 	const Size  button_size;
 	const GameRes res;
+	bool ls_clear_flag;
+	CTool & data;
 	GameState & game_state;
-	void InvalidateRect(Rect & rect);
-private:
 	CPNGButton bt_min,bt_close;
 	CtrlList ls_game_ctrl;
 	std::list<CBaseControl *> ls_base_ctrl;
-	void CreatCtrl_Ready(IN CtrlList &  ctrl_ls);
+	int round_count;		//hui'he
+	void CreatCtrl_LandLord(IN CtrlList &  ctrl_ls,bool is_first);
 	void CreatCtlr_Wait( CtrlList &  ctrl_ls);
-	int game_timer;
+private:
+	void OnInit() override;
+	void OnFrame() override;
+	void OnPaint(Gdiplus::Graphics * const g) const override;
 };
 

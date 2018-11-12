@@ -24,9 +24,9 @@ CGamePlayer::CGamePlayer(const int serial_num):self_serial_num(serial_num)
 	landlord_logo=::CutImage(theApp.sys.game_tool,97,110,56,93);
 	landlord_logo=::ResizeImg(landlord_logo,0.9);
 
-	head_rect[Self]=Rect(300,GAME_DLG_HEIGHT-150,80,80);
-	head_rect[Right]=Rect(GAME_DLG_WIDTH-190,300,80,80);
-	head_rect[Left]=Rect(150,300,80,80);
+	head_rect[Self]=Rect(340,GAME_DLG_HEIGHT-120,80,80);
+	head_rect[Right]=Rect(GAME_DLG_WIDTH-150,250,80,80);
+	head_rect[Left]=Rect(70,250,80,80);
 	landlord_logo_pos[Self]=Point(GAME_DLG_WIDTH-250,GAME_DLG_HEIGHT-300);
 	landlord_logo_pos[Right]=Point(GAME_DLG_WIDTH-150,100);
 	landlord_logo_pos[Left]=Point(150,100);
@@ -37,13 +37,13 @@ CGamePlayer::~CGamePlayer(void)
 	self_instance=nullptr;
 }
 
-void CGamePlayer::OnPaint(Gdiplus::Graphics & g)
+void CGamePlayer::OnPaint(Gdiplus::Graphics * const g) const
 {
 	for (int i=Self;i<=Left;i++)
 	{
 		if (!player_name[i].empty())
 		{
-			g.DrawImage(head_img,head_rect[i]);
+			g->DrawImage(head_img,head_rect[i]);
 		}
 	}
 }
@@ -64,19 +64,15 @@ void CGamePlayer::OnInit()
 	}
 }
 
-void CGamePlayer::OnTimer()
+void CGamePlayer::OnFrame()
 {
 
 }
 
-void CGamePlayer::Show(Gdiplus::Graphics *const g)
-{
 
-}
-
-void CGamePlayer::ShowLandlordLogo(Gdiplus::Graphics * g)
+void CGamePlayer::ShowLandlordLogo(Gdiplus::Graphics & g)
 {
-	g->DrawImage(landlord_logo,landlord_logo_pos[Right]);
+	g.DrawImage(landlord_logo,landlord_logo_pos[Right]);
 }
 
 void CGamePlayer::SetPlayerName(const wstring & name,const PlayerPosition pos)
@@ -114,5 +110,10 @@ Player::PlayerPosition CGamePlayer::SerialNum2Pos(const int num) const
 	int flag_op=flag_self;
 	while(temp[++flag_op]!=num);
 	return PlayerPosition(flag_op-flag_self);
+}
+
+LRESULT CGamePlayer::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
+{
+	return 0;
 }
 

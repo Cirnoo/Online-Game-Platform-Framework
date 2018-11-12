@@ -4,13 +4,15 @@ class CGameInterface
 public:
 	CGameInterface(void)
 	{timer=0;}
-	~CGameInterface(void){}
-	virtual void OnTimer()
+	virtual ~CGameInterface(void){}
+	void OnTimer()
 	{
+		OnFrame();
 		++timer;
 	}
-	virtual void OnPaint(Gdiplus::Graphics & g)=0;
-	virtual void OnInit()=0;
+	virtual void OnFrame()=0;
+	virtual void OnPaint(Gdiplus::Graphics * const g) const =0;
+	virtual void OnInit(){}
 protected:
 	int timer;
 };

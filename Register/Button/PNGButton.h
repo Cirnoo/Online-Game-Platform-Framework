@@ -17,9 +17,10 @@ public:
 		const std::vector<Image*> &);
 	void SetClickDown(bool flag);
 	virtual void Show(Graphics* const g);
-	void Check(bool check);
+	void SetHide(bool hide);
 protected:
 	DECLARE_MESSAGE_MAP()  
-	
+	bool is_hide;
+	bool is_click_move;
 };
 
