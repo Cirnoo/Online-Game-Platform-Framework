@@ -5,7 +5,6 @@
 #include "GameInterface.h"
 class CTool;
 class CGameDlg;
-enum class GameState;
 class CGameCtrl	:public CGameInterface	//负责转发游戏数据和管理控件
 {
 
@@ -18,6 +17,7 @@ class CGameCtrl	:public CGameInterface	//负责转发游戏数据和管理控件
 		GameRes();
 		~GameRes();
 	};
+	
 public:
 	static CGameCtrl & GetInstance(CGameDlg * parent);
 	~CGameCtrl(void);
@@ -25,7 +25,6 @@ public:
 	void ShowCtrl(Graphics * const g) const;
 	void ShowText(Graphics * const g) const;
 	void GameStart() ;
-	void ClearRoundCnt();
 private:
 	CGameCtrl(CGameDlg * parent);
 	static CGameCtrl * self;
@@ -39,9 +38,10 @@ private:
 	CPNGButton bt_min,bt_close;
 	CtrlList ls_game_ctrl;
 	std::list<CBaseControl *> ls_base_ctrl;
-	int round_count;		//hui'he
-	void CreatCtrl_LandLord(IN CtrlList &  ctrl_ls,bool is_first);
-	void CreatCtlr_Wait( CtrlList &  ctrl_ls);
+	void CreatCtrl_LandLord(bool is_first);
+	void CreatCtlr_Wait();
+	void CreatCtlr_DealCard();
+	void CreatCtlr(const Rect rect,const MS_TYPE ms_tp,const vector<pImage> & vec_img);
 private:
 	void OnInit() override;
 	void OnFrame() override;

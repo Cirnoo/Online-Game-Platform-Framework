@@ -18,6 +18,32 @@ class Global;
 class CTool;
 class CRegisterApp : public CWinApp
 {
+	struct GameActionCtrl
+	{
+		GameState game_state;
+		int action_count;		//行动次数记录
+		GameActionCtrl()
+		{
+			game_state=GameState::Wait;
+			action_count=0;
+		}
+		void SetGameState(const GameState state)
+		{
+			if (game_state==state)
+				action_count++;
+			else
+				action_count=0;
+			game_state=state;
+		}
+		void Increase()
+		{
+			++action_count;
+		}
+		GameState GetGameState()
+		{
+			return game_state;
+		}
+	};
 public:
 	CRegisterApp();
 	~CRegisterApp();
@@ -25,6 +51,7 @@ public:
 public:
 	virtual BOOL InitInstance();
 	void CloseMainWnd();
+	GameActionCtrl game_action;
 // 实现
 protected:
 	int CreatGameRoom();

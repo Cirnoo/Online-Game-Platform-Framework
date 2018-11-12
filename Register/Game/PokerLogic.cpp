@@ -607,7 +607,7 @@ void CPokerLogic::MergeSortedVec(MyPoker & vec1,MyPoker & vec2)
 
 void CPokerLogic::OnFrame()
 {
-	const auto game_state=CGameDlg::GetGameState();
+	const auto game_state=theApp.game_action.GetGameState();
 	switch (game_state)
 	{
 	case GameState::Wait:		
@@ -618,7 +618,7 @@ void CPokerLogic::OnFrame()
 		{
 			timer=0;
 			SortHand();
-			CGameDlg::SetGameState(GameState::SelectLandLord);		//发牌完毕
+			theApp.game_action.SetGameState(GameState::SelectLandLord);		//发牌完毕
 		}
 		break;
 	default:
@@ -628,7 +628,7 @@ void CPokerLogic::OnFrame()
 
 void CPokerLogic::OnPaint(Gdiplus::Graphics * const g) const
 {
-	const auto game_state=CGameDlg::GetGameState();
+	const auto game_state=theApp.game_action.GetGameState();
 	const int deal_card_cnt=timer/3;
 	switch (game_state)
 	{

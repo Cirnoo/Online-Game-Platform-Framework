@@ -13,17 +13,6 @@
 
 IMPLEMENT_DYNAMIC(CGameDlg, CDialogEx)
 
-GameState CGameDlg::s_game_state=GameState::Wait;
-
-GameState CGameDlg::GetGameState()
-{
-	return s_game_state;
-}
-
-void CGameDlg::SetGameState(const GameState state)
-{
-	s_game_state=state;
-}
 
 CGameDlg::CGameDlg(const int self_serial_num)
 	: CDialogEx(CGameDlg::IDD),
@@ -31,6 +20,7 @@ CGameDlg::CGameDlg(const int self_serial_num)
 	logic(CPokerLogic::GetInstance()),
 	players(CGamePlayer::GetInstance(self_serial_num)),
 	have_player(players.have_player),
+	r_game_state(theApp.game_action.game_state),
 	room_info(theApp.sys.client_info.room)
 {
 	ASSERT(self_serial_num>=0 && self_serial_num<3);
@@ -44,7 +34,7 @@ CGameDlg::CGameDlg(const int self_serial_num)
 	{
 		i=L"test";
 	}
-	s_game_state=GameState::GetCards;
+	r_game_state=GameState::GetCards;
 	vector<char> temp;
 	for (int i=0;i<53;i++)
 	{
@@ -73,7 +63,7 @@ BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_WM_LBUTTONUP()
 	ON_WM_RBUTTONDOWN()
 	ON_WM_TIMER()
-	ON_MESSAGE(WM_GET_ROOM_MATE,players.OnGetMateInfo)
+	ON_MESSAGE(WM_GET_ROOM_MATE,CGameDlg::OnGetMateInfo)
 	ON_MESSAGE(WM_GET_CARDS,CGameDlg::OnGetCards)
 END_MESSAGE_MAP()
 
@@ -89,7 +79,6 @@ void CGameDlg::InitVar()
 	is_lbutton_dowm=false;
 	is_select_multi=false;
 	back_img=::LoadPNGFormResource(IDB_GAME_BG);
-	s_game_state=GameState::Wait;
 	bit_buf=new Bitmap(this->m_width,this->m_height);
 	gra_buf=Graphics::FromImage(bit_buf);
 }
@@ -204,7 +193,7 @@ void CGameDlg::OnMouseMove(UINT nFlags, CPoint point)
 		new_region.CombineRgn(&new_region,&old_regin,RGN_DIFF);
 		InvalidateRgn(&new_region);
 		is_select_multi=true;
-		if(s_game_state==GameState::Gaming && logic.SelectMutiPoker(select_region))
+		if(r_game_state==GameState::Gaming && logic.SelectMutiPoker(select_region))
 		{
 			InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
 		}
@@ -223,7 +212,7 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		is_select_multi=false;
 
 		InvalidateRect(Rect2CRect(select_region));
-		if (s_game_state!=GameState::Gaming)
+		if (r_game_state!=GameState::Gaming)
 		{
 			return;
 		}
@@ -275,26 +264,8 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 
 LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 {
-	typedef USER_BUF MATE_INFO[3];
-	const auto & info=::GetPackBufData<MATE_INFO>(wParam);
-	for (int i=0;i<3;i++)
-	{
-		PlayerPosition pos=players.SerialNum2Pos(i);
-		if (pos==Self)
-		{
-			continue;
-		}
-		wstring name=info[i].GetStr();
-		if (name.empty())
-		{
-			players.DelPlayer(pos);
-		}
-		else
-		{
-			players.SetPlayerName(name,pos);
-		}
-	}
-	if(players.self_serial_num==0 && s_game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)
+	players.OnGetMateInfo(wParam);
+	if(players.self_serial_num==0 && r_game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)
 	{
 		//可以开始游戏了
 		game_ctrl.GameStart();
@@ -302,27 +273,20 @@ LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CGameDlg::OnDelPlayer(WPARAM wParam, LPARAM lParam)
-{
-	const auto & info=::GetPackBufData<PLAYER_INFO>(wParam);
-	auto pos=players.SerialNum2Pos(info.pos);
-	have_player[pos]=false;
-	return 0;
-}
 
 LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(s_game_state==GameState::Wait);
+	ASSERT(r_game_state==GameState::Wait);
 	typedef char PokerGroup[53];
 	const auto & poker_group=::GetPackBufData<PokerGroup>(wParam);
 	logic.SetPlayerPoker(vector<char>(poker_group,poker_group+53),players.self_serial_num);
-	s_game_state=GameState::GetCards;
+	r_game_state=GameState::GetCards;
 	return 0;
 }
 
 LRESULT CGameDlg::OnSetLandlord(WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(s_game_state==GameState::SelectLandLord);
+	ASSERT(r_game_state==GameState::SelectLandLord);
 	logic.SetLandlord(Self);
 	players.SetLandlord(Self);
 	return 0;

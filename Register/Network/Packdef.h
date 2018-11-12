@@ -41,6 +41,8 @@ enum class MS_TYPE :unsigned char
 	GAME_WIN,
 	WANT_LANDLORD,
 	NOT_WANT_LANDLORD,
+	PLAY_CARD,
+	PASS,
 	GAME_OFFLINE,
 	HEARTBEAT,//ÐÄÌø°ü
 };

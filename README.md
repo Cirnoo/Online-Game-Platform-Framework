@@ -2,20 +2,26 @@
 
 开发环境：vs2012，Qt5.3，MySQL 
 
-这是我用MFC写的一个游戏登录器框架，利用MFC的一些控件和GDI+完成的。<br>
-后期会加入网络和MySQL的连接，不过MFC真的要过时了，打算用Qt写了。<br>
-初学C++，没有什么项目经验，欢迎前辈们进行指教。<br>
-运行截图:
-登录界面:  
-<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/login_dlg.png" width="450">
-游戏界面：  
-<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_ready.jpg" width="450">
+## 简介
+这是一个多人游戏对战平台框架,包含一个用MFC设计的客户端和一个用Qt设计的服务器以及一个斗地主游戏示例程序  
+使用GDI+重写了MFC的相关控件，并设计了自己的图形界面类库与图像处理函数  
+使用TCP协议和心跳包保活机制处理客户端和服务器的连接，使用select模型管理多客户端与服务器的通信，游戏大厅系统支持多人在线联机  
+使用MySQL管理玩家的信息  
+## 截图  
 
+### 登录界面   
+<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/login_dlg.png" width="450"> <br>
+### 游戏界面  
+<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_ready.jpg" width="550"> <br>
 
 这里面用到了一些自己写的GDI+图像处理函数，以后有时间可以整理出来。即便用GDI+，MFC处理图像依然比较麻烦，一般能用PS处理的我就用PS了。
 资源文件来源于网络：
 [资源链接](https://blog.csdn.net/geniusice18/article/details/8393674)
 
+---  
+Original  
+这是我用MFC写的一个游戏登录器框架，利用MFC的一些控件和GDI+完成的。<br>
+初学C++，没有什么项目经验，欢迎前辈们进行指教。<br>
 ---  
 
 2018.10.13 更新  

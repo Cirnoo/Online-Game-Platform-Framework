@@ -94,6 +94,7 @@ void CGamePlayer::DelPlayer(const PlayerPosition pos)
 void CGamePlayer::SetLandlord(const PlayerPosition pos)
 {
 	landlord=pos;
+
 }
 
 
@@ -112,8 +113,27 @@ Player::PlayerPosition CGamePlayer::SerialNum2Pos(const int num) const
 	return PlayerPosition(flag_op-flag_self);
 }
 
-LRESULT CGamePlayer::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
+
+void CGamePlayer::OnGetMateInfo(WPARAM wParam)
 {
-	return 0;
+	typedef USER_BUF MATE_INFO[3];
+	const auto & info=::GetPackBufData<MATE_INFO>(wParam);
+	for (int i=0;i<3;i++)
+	{
+		PlayerPosition pos=SerialNum2Pos(i);
+		if (pos==Self)
+		{
+			continue;
+		}
+		wstring name=info[i].GetStr();
+		if (name.empty())
+		{
+			DelPlayer(pos);
+		}
+		else
+		{
+			SetPlayerName(name,pos);
+		}
+	}
 }
 

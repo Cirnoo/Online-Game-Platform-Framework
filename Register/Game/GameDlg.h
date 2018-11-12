@@ -18,8 +18,6 @@ public:
 	CGameDlg(const int self_serial_num=0 /*当前玩家是第几人*/ );   
 	virtual ~CGameDlg();
 	
-	static GameState GetGameState();
-	static void SetGameState(const GameState state);
 // 对话框数据
 	enum { IDD = IDD_GAMEDLG };
 	
@@ -43,7 +41,7 @@ private:
 	Bitmap * bit_buf;
 	Graphics * gra_buf;
 	std::vector<CGameInterface *> vec_ctrl;
-	static GameState s_game_state;
+	GameState & r_game_state;
 public:
 	std::array<bool,3> & have_player;
 	virtual BOOL OnInitDialog();
@@ -56,7 +54,6 @@ public:
 	afx_msg void OnRButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg LRESULT OnGetMateInfo(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnDelPlayer(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGetCards(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnSetLandlord(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGameWin(WPARAM wParam, LPARAM lParam);
