@@ -56,7 +56,6 @@ CGameDlg::~CGameDlg()
 
 BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_WM_PAINT()
-	ON_WM_SIZE()
 	ON_WM_LBUTTONDOWN()
 	ON_WM_ERASEBKGND()
 	ON_WM_MOUSEMOVE()
@@ -65,6 +64,7 @@ BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_MESSAGE(WM_GET_ROOM_MATE,CGameDlg::OnGetMateInfo)
 	ON_MESSAGE(WM_GET_CARDS,CGameDlg::OnGetCards)
+	ON_MESSAGE(WM_GAME_ROUND,CGameDlg::OnGameRound)
 END_MESSAGE_MAP()
 
 
@@ -136,16 +136,6 @@ void CGameDlg::OnPaint()
 	CDialogEx::OnPaint();
 }
 
-void CGameDlg::OnSize(UINT nType, int cx, int cy)
-{
-	CDialogEx::OnSize(nType, cx, cy);
-	//CRgn rgn;
-	//CRect rc;
-	//GetWindowRect(&rc); //获得窗口矩形
-	//rc -= rc.TopLeft();
-	//rgn.CreateRoundRectRgn(rc.left, rc.top, rc.right, rc.bottom, 10, 10); //根据窗口矩形创建一个圆角矩形最后两个是形成圆角的大小
-	//SetWindowRgn(rgn, TRUE);
-}
 
 
 void CGameDlg::OnLButtonDown(UINT nFlags, CPoint point)
@@ -297,4 +287,17 @@ LRESULT CGameDlg::OnGameWin(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+LRESULT CGameDlg::OnGameRound(WPARAM wParam, LPARAM lParam)
+{
+	//接收对方玩家出牌信息，不会接收自己的
+	auto pack =  (DATA_PACKAGE *)(wParam);
+	auto & card_info=::GetPackBufData<CardArray>(wParam);
+	theApp.game_action.action_count=card_info.player_pos+1;
+	if (pack->ms_type==MS_TYPE::SELECT_LANDLORD)		//还在选地主阶段 不需要出牌
+	{
+		return 0;
+	}
+	logic.DelMateCards(card_info.toVecChar(),players.SerialNum2Pos(card_info.player_pos));
+	return 0;
+}
 

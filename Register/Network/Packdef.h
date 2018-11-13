@@ -37,12 +37,13 @@ enum class MS_TYPE :unsigned char
 	LEAVE_ROOM,
 	UPDATE_ROOM,
 	GAME_START,
-	ALLOC_POKER,
-	GAME_WIN,
+	ALLOC_POKER,			//发牌
+	SELECT_LANDLORD,		//选地主中
 	WANT_LANDLORD,
 	NOT_WANT_LANDLORD,
 	PLAY_CARD,
 	PASS,
+	GAME_WIN,
 	GAME_OFFLINE,
 	HEARTBEAT,//心跳包
 };
@@ -128,9 +129,14 @@ struct CardArray		//需要打出的牌
 	ArrayType type;	//牌组类型
 	unsigned char point; //计算出的大小点数
 	unsigned char num;  //牌个数
+	unsigned char player_pos;	//第几位玩家出的牌
+	CardArray()
+	{
+		memset(this,0,sizeof(CardArray));
+	}
 	CardArray(const std::vector<Poker> & vec, ArrayType _type,unsigned char _point )
 	{
-		memset(cards,0,sizeof(cards));
+		memset(cards,-1,sizeof(cards));
 		num=vec.size();
 		type=_type;point=_point;
 		for (int i=0;i<num;i++)
@@ -138,7 +144,14 @@ struct CardArray		//需要打出的牌
 			cards[i]=vec[i].toNum();
 		}
 	}
+	std::vector<char> toVecChar() const
+	{
+		int cnt=-1;
+		while (cards[++cnt]>=0);
+		return std::vector<char>(cards,cards+cnt);
+	}
 };
+
 struct USER_BUF
 {
 	wchar_t buf[USER_LENGTH];

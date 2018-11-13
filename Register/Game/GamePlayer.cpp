@@ -99,9 +99,9 @@ void CGamePlayer::SetLandlord(const PlayerPosition pos)
 
 
 
-Player::PlayerPosition CGamePlayer::SerialNum2Pos(const int num) const
+Player::PlayerPosition CGamePlayer::SerialNum2Pos(int num) const
 {
-	ASSERT(num>=0&&num<3);
+	num%=3;
 	if (num==self_serial_num)
 	{
 		return Self;

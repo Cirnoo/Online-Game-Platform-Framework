@@ -46,7 +46,6 @@ public:
 	std::array<bool,3> & have_player;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
-	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
 	afx_msg void OnMouseMove(UINT nFlags, CPoint point);
@@ -57,4 +56,5 @@ public:
 	afx_msg LRESULT OnGetCards(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnSetLandlord(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGameWin(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnGameRound(WPARAM wParam, LPARAM lParam);
 };

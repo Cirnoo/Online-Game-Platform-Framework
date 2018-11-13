@@ -70,13 +70,13 @@ void CGameCtrl::CreatCtrl_LandLord(bool is_first)
 	//叫地主
 	rect = Rect(Point(button_center.X-button_size.Width-10,button_center.Y),button_size);
 	const auto & img1=res.vec_button_img[is_first?叫地主:抢地主];
-	CreatCtlr(rect,MS_TYPE::WANT_LANDLORD,img1);
+	CreatCtlr(rect,img1,MS_TYPE::WANT_LANDLORD);
 
 	//不叫
 	button=new CPNGButton();
 	rect.X+=button_size.Width+20;
 	const auto & img2=res.vec_button_img[is_first?不叫:不抢];
-	CreatCtlr(rect,MS_TYPE::NOT_WANT_LANDLORD,img2);
+	CreatCtlr(rect,img2,MS_TYPE::NOT_WANT_LANDLORD);
 }
 
 void CGameCtrl::ShowCtrl(Gdiplus::Graphics * const g) const
@@ -96,7 +96,7 @@ void CGameCtrl::CreatCtlr_Wait()
 	CPNGButton * button;
 	button=new CPNGButton();
 	Rect rect(Point(button_center.X-button_size.Width*1.5-10,button_center.Y),button_size);
-	CreatCtlr(rect,MS_TYPE::GAME_START,res.vec_button_img[准备]);
+	CreatCtlr(rect,res.vec_button_img[准备],MS_TYPE::GAME_START);
 }
 
 void CGameCtrl::CreatCtlr_DealCard()
@@ -110,27 +110,33 @@ void CGameCtrl::CreatCtlr_DealCard()
 	//叫地主
 	rect = Rect(Point(button_center.X-button_size.Width-10,button_center.Y),button_size);
 	const auto & img1=res.vec_button_img[出牌];
-	CreatCtlr(rect,MS_TYPE::WANT_LANDLORD,img1);
+	CreatCtlr(rect,img1,MS_TYPE::WANT_LANDLORD);
 
 	//不叫
 	button=new CPNGButton();
 	rect.X+=button_size.Width+20;
 	const auto & img2=res.vec_button_img[不出];
-	CreatCtlr(rect,MS_TYPE::NOT_WANT_LANDLORD,img2);
+	CreatCtlr(rect,img2,MS_TYPE::NOT_WANT_LANDLORD);
 }
 
-void CGameCtrl::CreatCtlr(const Rect rect,const MS_TYPE ms_tp,const vector<pImage> & vec_img)
+void CGameCtrl::CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const MS_TYPE ms_tp)
 {
-	CPNGButton * button;
-	button=new CPNGButton();
-	button->Create(rect,main_dlg,ls_game_ctrl.size(),vec_img);
-	button->SetCmd([=]()
+	CreatCtlr(rect,vec_img,
+	[=]()
 	{
 		DATA_PACKAGE pack;
 		pack.ms_type=ms_tp;
 		data.DealData(pack);
-		ls_clear_flag=true;
+		theApp.game_action.Increase();
 	});
+}
+
+void CGameCtrl::CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const std::function<void()> cmd)
+{
+	CPNGButton * button;
+	button=new CPNGButton();
+	button->Create(rect,main_dlg,ls_game_ctrl.size(),vec_img);
+	button->SetCmd(cmd);
 	ls_game_ctrl.emplace_back(button);
 }
 
@@ -167,15 +173,20 @@ void CGameCtrl::OnFrame()
 		ls_game_ctrl.clear();
 		ls_clear_flag=false;
 	}
-
 	const auto action_cnt=theApp.game_action.action_count;
+	if (main_dlg->players.SerialNum2Pos(action_cnt)!=Self)
+	{
+		timer=-1;
+		return ;
+	}
+	if (!ls_game_ctrl.empty())
+	{
+		return;
+	}
 	switch (game_state)
 	{
 	case GameState::SelectLandLord:
-		if (timer==0)
-		{
-			CreatCtrl_LandLord(ls_game_ctrl,action_cnt==0);
-		}
+		CreatCtrl_LandLord(action_cnt==0);
 		break;
 	default:
 		timer=-1;

@@ -41,7 +41,8 @@ private:
 	void CreatCtrl_LandLord(bool is_first);
 	void CreatCtlr_Wait();
 	void CreatCtlr_DealCard();
-	void CreatCtlr(const Rect rect,const MS_TYPE ms_tp,const vector<pImage> & vec_img);
+	void CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const MS_TYPE ms_tp);
+	void CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const std::function<void()> cmd );
 private:
 	void OnInit() override;
 	void OnFrame() override;

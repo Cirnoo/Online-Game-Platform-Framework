@@ -36,6 +36,7 @@ const int WM_GAME_START			 =    WM_USER+16;
 const int WM_GET_CARDS			 =	  WM_USER+17;
 const int WM_GAME_WIN			 =	  WM_USER+18;
 const int WM_GAME_OVER			 =	  WM_USER+19;
+const int WM_GAME_ROUND			 =	  WM_USER+20;
 #define Warning(x) ::MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL|MB_ICONEXCLAMATION  );
 typedef  Image* pImage;
 using std::vector;
