@@ -6,7 +6,9 @@
 #include "GameDlg.h"
 #include "afxdialogex.h"
 #include "GameCtrl.h"
-
+#include "GameActionCtrl.h"
+#include "Packdef.h"
+#include <mutex>
 //#include ""
 
 // CGameDlg 对话框
@@ -20,7 +22,7 @@ CGameDlg::CGameDlg(const int self_serial_num)
 	logic(CPokerLogic::GetInstance()),
 	players(CGamePlayer::GetInstance(self_serial_num)),
 	have_player(players.have_player),
-	r_game_state(theApp.game_action.game_state),
+	r_game_state(theApp.game_action.GetStateReference()),
 	room_info(theApp.sys.client_info.room)
 {
 	ASSERT(self_serial_num>=0 && self_serial_num<3);
@@ -34,17 +36,24 @@ CGameDlg::CGameDlg(const int self_serial_num)
 	{
 		i=L"test";
 	}
-	r_game_state=GameState::GetCards;
 	vector<char> temp;
 	for (int i=0;i<53;i++)
 	{
 		temp.push_back(i);
 	}
-	logic.SetPlayerPoker(temp,self_serial_num);
+	logic.SetPlayerPoker(temp,Self);
+	r_game_state=GameState::GetCards;
+	
 }
 
 CGameDlg::~CGameDlg()
 {
+	/*SetEvent(thread_exit_flag);
+	if(WAIT_TIMEOUT == WaitForSingleObject(h_Thread,200))
+	{
+	TerminateThread(h_Thread,-1);
+	}
+	CloseHandle(h_Thread);*/
 	delete back_img;
 	delete bit_buf;
 	delete gra_buf;
@@ -65,6 +74,7 @@ BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_MESSAGE(WM_GET_ROOM_MATE,CGameDlg::OnGetMateInfo)
 	ON_MESSAGE(WM_GET_CARDS,CGameDlg::OnGetCards)
 	ON_MESSAGE(WM_GAME_ROUND,CGameDlg::OnGameRound)
+	ON_MESSAGE(WM_GAME_STATE_CHANGE,CGameDlg::OnGameStateChange)
 END_MESSAGE_MAP()
 
 
@@ -98,7 +108,16 @@ void CGameDlg::DrawRectFrame(Gdiplus::Graphics * g)
 	g->DrawRectangle(&pen,select_region);
 }
 
-
+UINT OnTimer(LPVOID  lpParam)
+{
+	CGameDlg * self = (CGameDlg *)lpParam;
+	while (WaitForSingleObject(self->thread_exit_flag,0)==WAIT_TIMEOUT)
+	{
+		self->OnTimer(0);
+		Sleep(100);
+	}
+	return 0;
+}
 
 BOOL CGameDlg::OnInitDialog()
 {
@@ -113,18 +132,17 @@ BOOL CGameDlg::OnInitDialog()
 	}
 	SetIcon(m_hIcon, TRUE);			// 设置大图标
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
-
+	thread_exit_flag=CreateEvent(NULL,TRUE,FALSE,L"test");
 	SetTimer(IDC_GAME_TIMER,100,NULL);		//100ms调用一次Ontimer,10次为1s
+	//h_Thread = AfxBeginThread(::OnTimer,this,THREAD_PRIORITY_NORMAL,0,0);	
 	return TRUE;
 }
-
 
 
 void CGameDlg::OnPaint()
 {
 	HDC hdc = ::GetDC(this->m_hWnd);
 	Graphics graphics(hdc);
-	//PaintIrregularDlg(hdc,back_img);
 	gra_buf->DrawImage(back_img,0,0,m_width,m_height);
 	for (auto i:vec_ctrl)
 	{
@@ -143,7 +161,7 @@ void CGameDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
 	if (point.y<20)
 	{
-		PostMessage(WM_NCLBUTTONDOWN,
+		SendMessage(WM_NCLBUTTONDOWN,
 			HTCAPTION,
 			MAKELPARAM(point.x, point.y));
 	}
@@ -180,10 +198,10 @@ void CGameDlg::OnMouseMove(UINT nFlags, CPoint point)
 
 		select_region=Rect(min(x1,x2),min(y1,y2),width,height);
 		new_region.CreateRectRgnIndirect(Rect2CRect(select_region));
-		new_region.CombineRgn(&new_region,&old_regin,RGN_DIFF);
+		new_region.CombineRgn(&new_region,&old_regin,RGN_XOR);
 		InvalidateRgn(&new_region);
 		is_select_multi=true;
-		if(r_game_state==GameState::Gaming && logic.SelectMutiPoker(select_region))
+		if(r_game_state==GameState::OurPlay && logic.SelectMutiPoker(select_region))
 		{
 			InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
 		}
@@ -202,7 +220,7 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 		is_select_multi=false;
 
 		InvalidateRect(Rect2CRect(select_region));
-		if (r_game_state!=GameState::Gaming)
+		if (r_game_state!=GameState::OurPlay)
 		{
 			return;
 		}
@@ -247,8 +265,12 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		i->OnTimer();
 	}
-	AfxGetMainWnd()->Invalidate();
-	AfxGetMainWnd()->UpdateWindow();
+	if(++m_timer%10==0)
+	{
+		Invalidate();
+	}
+	//UpdateWindow();
+	//InvalidateRgn(&rgn);
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -267,16 +289,16 @@ LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
 {
 	ASSERT(r_game_state==GameState::Wait);
-	typedef char PokerGroup[53];
-	const auto & poker_group=::GetPackBufData<PokerGroup>(wParam);
-	logic.SetPlayerPoker(vector<char>(poker_group,poker_group+53),players.self_serial_num);
+	const auto & poker_group=::GetPackBufData<AllocCardMs>(wParam);
+	logic.SetPlayerPoker(poker_group.poker,players.self_serial_num);
+	theApp.game_action.action_count=poker_group.first_pos;		//确定先手
 	r_game_state=GameState::GetCards;
 	return 0;
 }
 
 LRESULT CGameDlg::OnSetLandlord(WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(r_game_state==GameState::SelectLandLord);
+	ASSERT(r_game_state==GameState::CallLandLord);
 	logic.SetLandlord(Self);
 	players.SetLandlord(Self);
 	return 0;
@@ -293,11 +315,50 @@ LRESULT CGameDlg::OnGameRound(WPARAM wParam, LPARAM lParam)
 	auto pack =  (DATA_PACKAGE *)(wParam);
 	auto & card_info=::GetPackBufData<CardArray>(wParam);
 	theApp.game_action.action_count=card_info.player_pos+1;
-	if (pack->ms_type==MS_TYPE::SELECT_LANDLORD)		//还在选地主阶段 不需要出牌
-	{
-		return 0;
-	}
+	//if (pack->ms_type==MS_TYPE::SELECT_LANDLORD)		//还在选地主阶段 不需要出牌
+	//{
+	//	return 0;
+	//}
 	logic.DelMateCards(card_info.toVecChar(),players.SerialNum2Pos(card_info.player_pos));
+	return 0;
+}
+
+LRESULT CGameDlg::OnGameStateChange(WPARAM wParam, LPARAM lParam)
+{
+	for (auto & i:vec_ctrl)
+	{
+		i->OnGameStateChange(r_game_state);
+	}
+	return 0;
+}
+
+LRESULT CGameDlg::OnGameProcess(WPARAM wParam, LPARAM lParam)
+{
+	DATA_PACKAGE * pack=(DATA_PACKAGE *)wParam;
+	const auto & process=::GetPackBufData<GAME_PROCESS>(wParam);
+	auto & action=theApp.game_action;
+	action.action_count=process.player_pos+1;
+	PlayerPosition last_player=players.SerialNum2Pos(process.player_pos);
+	bool is_self_turn=players.SerialNum2Pos(process.player_pos+1)==Self;
+	switch (pack->ms_type)
+	{
+	case MS_TYPE::IS_CALL_LANDLORD:
+		r_game_state=is_self_turn
+			?GameState::CallLandLord
+			:GameState::OtherCall;
+		break;
+	case MS_TYPE::IS_ROB_LANDLORD:
+		r_game_state=is_self_turn
+			?GameState::RobLandlord
+			:GameState::OtherCall;
+		break;
+	case MS_TYPE::IS_PALY_CARD:
+		r_game_state=is_self_turn
+			?GameState::OurPlay
+			:GameState::OtherPlay;
+		break;
+	}
+	game_ctrl.SetLastRoundText(process.last_palyer_ms,last_player);
 	return 0;
 }
 

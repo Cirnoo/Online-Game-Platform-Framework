@@ -64,3 +64,5 @@
 using namespace Gdiplus;
 
 #include "Register.h"
+
+#include "Packdef.h"

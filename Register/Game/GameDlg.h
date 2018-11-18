@@ -2,25 +2,26 @@
 
 #include <vector>
 #include <array>
-#include <algorithm>
-#include "Packdef.h"
+#include <thread>
+//#include "Packdef.h"
 #include "PokerLogic.h"
 #include "GamePlayer.h"
 // CGameDlg 对话框
 
 
 class CGameCtrl;
+class GameState_EX;
 class CGameDlg : public CDialogEx
 {
 	DECLARE_DYNAMIC(CGameDlg)
 	friend class CGameCtrl;
 public:
-	CGameDlg(const int self_serial_num=0 /*当前玩家是第几人*/ );   
+	CGameDlg(const int self_serial_num=theApp.sys.client_info.player_pos /*当前玩家是第几人*/ );   
 	virtual ~CGameDlg();
-	
-// 对话框数据
+
+	// 对话框数据
 	enum { IDD = IDD_GAMEDLG };
-	
+
 protected:
 	HICON m_hIcon;
 	int m_width,m_height;
@@ -41,8 +42,11 @@ private:
 	Bitmap * bit_buf;
 	Graphics * gra_buf;
 	std::vector<CGameInterface *> vec_ctrl;
-	GameState & r_game_state;
+	GameState_EX & r_game_state;
+	HANDLE 	h_Thread;
+	int m_timer;
 public:
+	HANDLE thread_exit_flag;
 	std::array<bool,3> & have_player;
 	virtual BOOL OnInitDialog();
 	afx_msg void OnPaint();
@@ -57,4 +61,6 @@ public:
 	afx_msg LRESULT OnSetLandlord(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGameWin(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGameRound(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnGameStateChange(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT OnGameProcess(WPARAM wParam, LPARAM lParam);
 };

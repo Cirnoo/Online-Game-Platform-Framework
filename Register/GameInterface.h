@@ -1,4 +1,5 @@
 #pragma once
+//#include "Packdef.h"
 class CGameInterface
 {
 public:
@@ -13,6 +14,8 @@ public:
 	virtual void OnFrame()=0;
 	virtual void OnPaint(Gdiplus::Graphics * const g) const =0;
 	virtual void OnInit(){}
+	virtual void GetRepaintRgn(CRgn & rgn) const{};
+	virtual void OnGameStateChange(const GameState game_state){}
 protected:
 	int timer;
 };

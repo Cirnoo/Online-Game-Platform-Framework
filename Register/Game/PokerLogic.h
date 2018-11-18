@@ -2,13 +2,7 @@
 #include <list>
 #include "Packdef.h"
 #include "GameInterface.h"
-namespace Player
-{
-	enum PlayerPosition
-	{
-		Self,Right,Left
-	};
-}
+
 
 using namespace Player;
 class CPokerLogic:public CGameInterface
@@ -24,10 +18,11 @@ public:
 	bool IsLegalOutput();
 	MyPoker GetCheckedCards() const;
 	CardArray GetCardsNeedSend() const ;
-	Rect GetHandCardRect() const ;
+	Rect GetHandCardRect(const PlayerPosition pos=Self) const ;
 	void DelCheckedCards();	//我方出牌
 	void DelMateCards(const vector<char> & cards,const PlayerPosition pos);	//对方出牌
 	void SetPlayerPoker(const vector<char> & cards,const char self_num);	//分配扑克
+	void SetPlayerPoker(const std::array<char,53> & cards,const char self_num);	//分配扑克
 	void SortHand();
 	void SetLandlord(const PlayerPosition pos);
 private:
@@ -59,8 +54,10 @@ private:
 	void ShowDealingCardsEffect(Graphics * const g,const int timer) const;	//发牌效果
 	void ShowLandlordCards(Graphics * const g,bool hide=true) const ;
 	void ShowLastRoundPoker(Graphics * const g) const;
+	void RepaintCardRegion() const;
 private:
 	void OnFrame() override;
 	void OnPaint(Gdiplus::Graphics * const g) const override;
+	void GetRepaintRgn(CRgn & rgn) const override;
 };
 

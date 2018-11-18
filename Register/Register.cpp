@@ -8,6 +8,7 @@
 #include "SettingDlg.h"
 #include "GameDlg.h"
 #include "GameRoom.h"
+#include "GameActionCtrl.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -22,7 +23,10 @@ END_MESSAGE_MAP()
 
 // CRegisterApp 构造
 
-CRegisterApp::CRegisterApp():sys(Global::GetInstance()),tools(CTool::GetInstance())
+CRegisterApp::CRegisterApp():
+	sys(Global::GetInstance()),
+	tools(CTool::GetInstance()),
+	game_action(CGameActionCtrl::GetInstance())
 {
 	// 支持重新启动管理器
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
@@ -35,6 +39,7 @@ CRegisterApp::~CRegisterApp()
 {
 	delete &this->tools;
 	delete &this->sys;
+	delete &game_action;
 }
 
 /************************************************************************/
@@ -76,12 +81,8 @@ BOOL CRegisterApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	//CLoginDlg dlg;
-	//CGameRoom dlg;
-	CGameDlg dlg(0);
-	m_pMainWnd = &dlg;
+	INT_PTR nResponse = CreatGameDlg();
 	
-	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == -1)
 	{
 		TRACE(traceAppMsg, 0, "警告: 对话框创建失败，应用程序将意外终止。\n");
@@ -98,9 +99,6 @@ BOOL CRegisterApp::InitInstance()
 		return FALSE;
 	}
 	nResponse=CreatGameDlg();
-	// 由于对话框已关闭，所以将返回 FALSE 以便退出应用程序，
-	//  而不是启动应用程序的消息泵。
-	
 	return FALSE;
 }
 
@@ -119,8 +117,8 @@ int CRegisterApp::CreatGameRoom()
 
 int CRegisterApp::CreatGameDlg()
 {
-	auto sys_room=sys.client_info.room;
-	CGameDlg dlg(sys.client_info.player_pos);
+	auto & sys_room=sys.client_info.room;
+	CGameDlg dlg(0);
 	m_pMainWnd = &dlg;
 	return dlg.DoModal();
 }

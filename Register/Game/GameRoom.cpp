@@ -9,8 +9,6 @@
 
 
 
-
-
 class RoomName : public CDialogEx
 {
 	DECLARE_DYNAMIC(RoomName)
@@ -29,9 +27,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL OnInitDialog();
-	CString m_str;
 	virtual void OnOK();
+	CString m_str;
 };
+
+
 
 IMPLEMENT_DYNAMIC(RoomName, CDialogEx)
 
@@ -54,7 +54,6 @@ void RoomName::DoDataExchange(CDataExchange* pDX)
 
 
 BEGIN_MESSAGE_MAP(RoomName, CDialogEx)
-	//ON_BN_CLICKED(IDOK, &RoomName::OnBnClickedOk)
 END_MESSAGE_MAP()
 
 
@@ -67,8 +66,6 @@ BOOL RoomName::OnInitDialog()
 
 	return TRUE;
 }
-
-
 
 void RoomName::OnOK()
 {

@@ -19,22 +19,18 @@ namespace ImgGroupType
 		出牌,不出,提示,不叫,不抢,叫地主,抢地主,准备
 	};
 }
-namespace ImgTextType
-{
-	enum 
-	{
-		不出,抢地主,叫地主,准备,没大牌
-	};
-}
+
 
 CGameCtrl::CGameCtrl(CGameDlg * parent):
 	data(CTool::GetInstance()),
-	game_state(theApp.game_action.game_state),
+	cur_game_state(theApp.game_action.game_state),
 	main_dlg(parent),
 	button_center(GAME_DLG_WIDTH/2,GAME_DLG_HEIGHT/2+100),
 	button_size(100,39)
 {
 	ls_clear_flag=false;
+	old_game_state=GameState::Wait;
+	last_round_text.fill(-1);
 }
 
 
@@ -54,12 +50,12 @@ CGameCtrl::~CGameCtrl(void)
 void CGameCtrl::OnGameWin(const int serial_num)
 {
 	DATA_PACKAGE pack;
-	pack.ms_type=MS_TYPE::GAME_WIN;
+	pack.ms_type=MS_TYPE::GAME_WIN_RQ;
 	pack.buf=serial_num;
 	data.DealData(pack);
 }
 
-void CGameCtrl::CreatCtrl_LandLord(bool is_first)
+void CGameCtrl::CreatCtrl_Pair(MS_TYPE ms_type)
 {
 	/************************************************************************/
 	/*			叫地主	不叫 	抢地主		不抢                            */
@@ -67,16 +63,40 @@ void CGameCtrl::CreatCtrl_LandLord(bool is_first)
 	Rect rect;
 	CPNGButton * button;
 	using namespace ImgGroupType;
-	//叫地主
+	int img_type1,img_type2;
+	MS_TYPE ms_tp_re1,ms_tp_re2;
+	switch (ms_type)
+	{
+	case MS_TYPE::IS_CALL_LANDLORD://叫地主
+		img_type1=叫地主;img_type2=不叫;
+		ms_tp_re1=MS_TYPE::CALL_LANDLORD_RQ;
+		ms_tp_re2=MS_TYPE::NOT_CALL;
+		break;
+	case MS_TYPE::IS_ROB_LANDLORD:
+		img_type1=抢地主;img_type2=不抢;
+		ms_tp_re1=MS_TYPE::ROB_LANDLORD_RQ;
+		ms_tp_re2=MS_TYPE::NOT_ROB;
+	default:
+		break;
+	}
 	rect = Rect(Point(button_center.X-button_size.Width-10,button_center.Y),button_size);
-	const auto & img1=res.vec_button_img[is_first?叫地主:抢地主];
-	CreatCtlr(rect,img1,MS_TYPE::WANT_LANDLORD);
+	const auto & img1=res.vec_button_img[img_type1];
+	CreatCtlr(rect,img1,ms_tp_re1);
 
 	//不叫
-	button=new CPNGButton();
 	rect.X+=button_size.Width+20;
-	const auto & img2=res.vec_button_img[is_first?不叫:不抢];
-	CreatCtlr(rect,img2,MS_TYPE::NOT_WANT_LANDLORD);
+	const auto & img2=res.vec_button_img[img_type2];
+	CreatCtlr(rect,img2,ms_tp_re2);
+}
+
+void CGameCtrl::CreatCtrl_CallLandLord()
+{
+	CreatCtrl_Pair(MS_TYPE::IS_CALL_LANDLORD);
+}
+
+void CGameCtrl::CreatCtrl_RobLandLord()
+{
+	CreatCtrl_Pair(MS_TYPE::IS_ROB_LANDLORD);
 }
 
 void CGameCtrl::ShowCtrl(Gdiplus::Graphics * const g) const
@@ -93,41 +113,28 @@ void CGameCtrl::CreatCtlr_Wait()
 	/*						      开始                                      */
 	/************************************************************************/
 	using namespace ImgGroupType;
-	CPNGButton * button;
-	button=new CPNGButton();
 	Rect rect(Point(button_center.X-button_size.Width*1.5-10,button_center.Y),button_size);
 	CreatCtlr(rect,res.vec_button_img[准备],MS_TYPE::GAME_START);
 }
 
-void CGameCtrl::CreatCtlr_DealCard()
-{
-	/************************************************************************/
-	/*			           出牌      不出						            */
-	/************************************************************************/
-	Rect rect;
-	CPNGButton * button;
-	using namespace ImgGroupType;
-	//叫地主
-	rect = Rect(Point(button_center.X-button_size.Width-10,button_center.Y),button_size);
-	const auto & img1=res.vec_button_img[出牌];
-	CreatCtlr(rect,img1,MS_TYPE::WANT_LANDLORD);
-
-	//不叫
-	button=new CPNGButton();
-	rect.X+=button_size.Width+20;
-	const auto & img2=res.vec_button_img[不出];
-	CreatCtlr(rect,img2,MS_TYPE::NOT_WANT_LANDLORD);
-}
 
 void CGameCtrl::CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const MS_TYPE ms_tp)
 {
-	CreatCtlr(rect,vec_img,
-	[=]()
+	CreatCtlr(rect,vec_img,[this,ms_tp]()
 	{
 		DATA_PACKAGE pack;
 		pack.ms_type=ms_tp;
 		data.DealData(pack);
-		theApp.game_action.Increase();
+		ls_clear_flag=true;
+		last_round_text[Self]=GetImgTextType(ms_tp);
+		if (ms_tp==MS_TYPE::PLAY_CARD||ms_tp==MS_TYPE::PASS)
+		{
+			cur_game_state=GameState::OtherPlay;
+		}
+		else
+		{
+			cur_game_state=GameState::OtherCall;
+		}
 	});
 }
 
@@ -138,6 +145,40 @@ void CGameCtrl::CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const 
 	button->Create(rect,main_dlg,ls_game_ctrl.size(),vec_img);
 	button->SetCmd(cmd);
 	ls_game_ctrl.emplace_back(button);
+}
+
+void CGameCtrl::ShowLastRoundText(Gdiplus::Graphics * const g) const
+{
+	Point point[3];
+	point[Self]=Point(GAME_DLG_WIDTH/2-50,GAME_DLG_HEIGHT/2+100);
+	point[Right]=Point(GAME_DLG_WIDTH/2+200,GAME_DLG_HEIGHT/2-100);
+	point[Left]=Point(GAME_DLG_WIDTH/2-300,GAME_DLG_HEIGHT/2-100);
+	int cnt=0;
+	for (int i:last_round_text)
+	{
+		if (i>=0)
+		{
+			g->DrawImage(res.vec_text_img[i],point[cnt++]);
+		}
+	}
+}
+
+int CGameCtrl::GetImgTextType(const MS_TYPE ms_tp) const
+{
+	using namespace ImgText;
+	switch (ms_tp)
+	{
+	case MS_TYPE::CALL_LANDLORD_RQ:
+		return 叫地主;
+	case MS_TYPE::NOT_CALL:
+		return 不叫;
+	case MS_TYPE::ROB_LANDLORD_RQ:
+		return 抢地主;
+	case MS_TYPE::NOT_ROB:
+		return 不抢;
+	default:
+		return -1;
+	}
 }
 
 void CGameCtrl::OnInit()
@@ -179,20 +220,8 @@ void CGameCtrl::OnFrame()
 		timer=-1;
 		return ;
 	}
-	if (!ls_game_ctrl.empty())
-	{
-		return;
-	}
-	switch (game_state)
-	{
-	case GameState::SelectLandLord:
-		CreatCtrl_LandLord(action_cnt==0);
-		break;
-	default:
-		timer=-1;
-		break;
-	}
 	
+	old_game_state=cur_game_state;
 }
 
 void CGameCtrl::OnPaint(Gdiplus::Graphics * const g) const 
@@ -201,11 +230,9 @@ void CGameCtrl::OnPaint(Gdiplus::Graphics * const g) const
 	{
 		i->Show(g);
 	}
-	for (auto & i:ls_game_ctrl)
-	{
-		i->Show(g);
-	}
-	switch (game_state)
+	ShowCtrl(g);
+	ShowLastRoundText(g);
+	switch (cur_game_state)
 	{
 	case GameState::Wait:
 		ShowText(g);
@@ -214,10 +241,32 @@ void CGameCtrl::OnPaint(Gdiplus::Graphics * const g) const
 	}
 }
 
+void CGameCtrl::OnGameStateChange(const GameState new_state)
+{
+	const auto action_cnt=theApp.game_action.action_count;
+	if (main_dlg->players.SerialNum2Pos(action_cnt)!=Self)
+	{
+		timer=-1;
+		return ;
+	}
+	switch (cur_game_state)
+	{
+	case GameState::CallLandLord:
+		CreatCtrl_CallLandLord();
+		break;
+	case GameState::RobLandlord:
+		CreatCtrl_RobLandLord();
+		break;
+	default:
+		timer=-1;
+		break;
+	}
+}
+
 void CGameCtrl::ShowText(Graphics * const g) const
 {
-	using namespace ImgTextType;
-	switch (game_state)
+	using namespace ImgText;
+	switch (cur_game_state)
 	{
 	case GameState::Wait:
 		{
@@ -244,13 +293,18 @@ void CGameCtrl::ShowText(Graphics * const g) const
 
 void CGameCtrl::GameStart() 
 {
-	ASSERT(game_state==GameState::Wait);
+	ASSERT(cur_game_state==GameState::Wait);
 	DATA_PACKAGE pack;
 	pack.ms_type=MS_TYPE::GAME_START;
 	data.DealData(pack);
 }
 
 
+
+void CGameCtrl::SetLastRoundText(MS_TYPE ms_type,PlayerPosition pos)
+{
+	last_round_text[pos]=GetImgTextType(ms_type);
+}
 
 CGameCtrl::GameRes::GameRes()
 {
@@ -277,9 +331,13 @@ CGameCtrl::GameRes::GameRes()
 			vec_button_img[i][j]=vec_temp[3*i+j];
 		}
 	}
-	using namespace ImgTextType;
-	vec_text_img.resize(5);
+	using namespace ImgText;
+	vec_text_img.resize(8);
 	vec_text_img[准备]=::CutImage(theApp.sys.game_tool,0,80,89,42);
+	vec_text_img[抢地主]=::CutImage(theApp.sys.game_tool,0,0,89,38);
+	vec_text_img[叫地主]=::CutImage(theApp.sys.game_tool,0,37,89,42);
+	vec_text_img[不叫]=::CutImage(theApp.sys.game_tool,0,121,89,45);
+	vec_text_img[不抢]=::CutImage(theApp.sys.game_tool,0,165,89,38);
 }
 
 CGameCtrl::GameRes::~GameRes()

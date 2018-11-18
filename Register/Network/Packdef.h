@@ -2,6 +2,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <array>
 #define PRINT(a) std::cout<<a<<"\n";
 
 #define _DEF_PORT 1234
@@ -38,15 +39,29 @@ enum class MS_TYPE :unsigned char
 	UPDATE_ROOM,
 	GAME_START,
 	ALLOC_POKER,			//发牌
-	SELECT_LANDLORD,		//选地主中
-	WANT_LANDLORD,
-	NOT_WANT_LANDLORD,
+	IS_CALL_LANDLORD,	//询问是否叫地主
+	IS_ROB_LANDLORD,		//询问是否抢地主
+	CALL_LANDLORD_RQ,	//叫地主
+	NOT_CALL,
+	ROB_LANDLORD_RQ,		//抢地主
+	NOT_ROB,
+	SET_LANDLORD,		//叫地主阶段完成
+	IS_PALY_CARD,		//是否要出牌?
 	PLAY_CARD,
 	PASS,
-	GAME_WIN,
+	GAME_WIN_RQ,
 	GAME_OFFLINE,
+	GAME_RESTRT,
 	HEARTBEAT,//心跳包
 };
+
+namespace Player
+{
+	enum PlayerPosition
+	{
+		Self,Right,Left
+	};
+}
 
 enum class CardType : unsigned char
 {
@@ -123,6 +138,21 @@ enum ArrayType : unsigned char
 	//英文无力,绝望了
 };
 
+enum class GameState
+{
+	Wait,GetCards,CallLandLord,RobLandlord,OtherCall,
+	OurPlay,//我方出牌
+	OtherPlay,	//别人出牌
+	Over
+};
+
+typedef  std::array<char,53> PokerGroup;
+struct AllocCardMs
+{
+	PokerGroup poker;
+	char first_pos;
+};
+
 struct CardArray		//需要打出的牌
 {
 	char cards[20]; //一次最多打20张牌
@@ -150,6 +180,13 @@ struct CardArray		//需要打出的牌
 		while (cards[++cnt]>=0);
 		return std::vector<char>(cards,cards+cnt);
 	}
+};
+
+struct GAME_PROCESS
+{
+	char player_pos;
+	MS_TYPE last_palyer_ms;
+	CardArray card_arr;
 };
 
 struct USER_BUF

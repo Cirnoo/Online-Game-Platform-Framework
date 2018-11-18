@@ -2,7 +2,6 @@
 #include <vector>
 #include "Tool.h"
 #include "Packdef.h"
-#include <array>
 //全局常量
 const double RESOLUTION = 1.1;
 
@@ -37,6 +36,8 @@ const int WM_GET_CARDS			 =	  WM_USER+17;
 const int WM_GAME_WIN			 =	  WM_USER+18;
 const int WM_GAME_OVER			 =	  WM_USER+19;
 const int WM_GAME_ROUND			 =	  WM_USER+20;
+const int WM_GAME_STATE_CHANGE   =	  WM_USER+21;
+const int WM_GAME_PROCESS		 =	  WM_USER+22;
 #define Warning(x) ::MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL|MB_ICONEXCLAMATION  );
 typedef  Image* pImage;
 using std::vector;
@@ -67,10 +68,7 @@ private:
 	void InitSockAddr();
 };
 
-enum class GameState
-{
-	Wait,GetCards,SelectLandLord,Gaming,Over
-};
+
 
 pImage LoadPNGFormResource(int nId);
 pImage ResizeImg(pImage img, double scale = RESOLUTION);

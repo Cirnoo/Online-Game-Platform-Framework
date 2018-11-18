@@ -12,16 +12,12 @@ bool CTool::ConnectServer()
 {
 	const auto & addrServer=theApp.sys.client_info.addrServer;
 	mysocket.SocketInit();
-	if (!mysocket.TestConnect())
+	mysocket.Connect((SOCKADDR*)&addrServer,sizeof(addrServer));
+	if (GetLastError()==ERROR_SOCKET_ALREADE_CONNECT) //socket已经连接
 	{
-		mysocket.Connect((SOCKADDR*)&addrServer,sizeof(addrServer));
-		if (GetLastError()==ERROR_SOCKET_ALREADE_CONNECT) //socket已经连接
-		{
-			mysocket.Close();
-			mysocket.Create();
-			return ConnectServer();
-		}
+		return true;
 	}
+	
 	if(ShowError())
 	{
 		Disconnect();
@@ -103,6 +99,8 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 		AfxGetMainWnd()->SendMessage(WM_ENTER_ROOM,(WPARAM)&pack);
 		break;
 	case MS_TYPE::CREATE_ROOM_RE_F:
+		Warning("已存在的房间名")
+		break;
 	case MS_TYPE::ENTER_ROOM_RE_F:
 		Warning("未知错误,请重试")
 		break;
@@ -110,7 +108,10 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 		AfxGetMainWnd()->SendMessage(WM_GET_ROOM_MATE,(WPARAM)&pack);
 		break;
 	case MS_TYPE::ALLOC_POKER:
-		AfxGetMainWnd()->SendMessage(WM_GAME_START,(WPARAM)&pack);
+		AfxGetMainWnd()->SendMessage(WM_GET_CARDS,(WPARAM)&pack);
+	case MS_TYPE::IS_CALL_LANDLORD:
+	case MS_TYPE::IS_ROB_LANDLORD:
+		AfxGetMainWnd()->SendMessage(WM_GAME_PROCESS,(WPARAM)&pack);
 	default:
 		SetEvent(mysocket.mHeartBeat);
 		break;

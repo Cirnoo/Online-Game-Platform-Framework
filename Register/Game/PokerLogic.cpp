@@ -32,7 +32,6 @@ CPokerLogic::CPokerLogic(void)
 	}
 	poker_img.back()=temp[13+14*2];  //背面牌
 
-
 }
 
 
@@ -107,12 +106,21 @@ Rect CPokerLogic::GetLastCardRect() const
 
 
 
-Rect CPokerLogic::GetHandCardRect() const
+Rect CPokerLogic::GetHandCardRect(const PlayerPosition pos) const
 {
-	auto left_rect=GetFirstCardRect(hand_poker[Self].size());
-	auto width=GetLastCardRect().GetRight()-left_rect.GetLeft();
-	return Rect(left_rect.GetLeft(),left_rect.GetTop()-card_up,width,left_rect.Height+card_up);
-
+	if(pos==Self)
+	{
+		auto && left_rect=GetFirstCardRect(hand_poker[Self].size());
+		auto && width=GetLastCardRect().GetRight()-left_rect.GetLeft();
+		return Rect(left_rect.GetLeft(),left_rect.GetTop()-card_up,width,left_rect.Height+card_up);
+	}
+	else
+	{
+		auto && top_rect=GetMateCardRect(pos,hand_poker[pos].size());
+		auto  height = hand_poker[pos].size()*card_up;
+		return Rect(top_rect.GetLeft(),top_rect.GetTop(),card_size.Width,height);
+	}
+	
 }
 
 void CPokerLogic::DelCheckedCards()
@@ -196,6 +204,12 @@ void CPokerLogic::SetPlayerPoker(const vector<char> & cards,const char self_num)
 }
 
 
+
+void CPokerLogic::SetPlayerPoker(const std::array<char,53> & cards,const char self_num)
+{
+	const char * temp=&cards[0];
+	SetPlayerPoker(vector<char>(temp,temp+cards.size()),self_num);
+}
 
 int CPokerLogic::SelectPoker(const CPoint & point)
 {
@@ -352,6 +366,14 @@ void CPokerLogic::ShowLastRoundPoker(Graphics * const g) const
 		{
 			g->DrawImage(poker_img[j.toNum()],rect[i]);
 		}
+	}
+}
+
+void CPokerLogic::RepaintCardRegion() const
+{
+	for (int i=Self;i<=Left;i++)
+	{
+		AfxGetMainWnd()->InvalidateRect(Rect2CRect(GetHandCardRect(PlayerPosition(i))),FALSE);
 	}
 }
 
@@ -618,8 +640,9 @@ void CPokerLogic::OnFrame()
 		{
 			timer=0;
 			SortHand();
-			theApp.game_action.SetGameState(GameState::SelectLandLord);		//发牌完毕
+			theApp.game_action.SetGameState(GameState::CallLandLord);		//发牌完毕
 		}
+		RepaintCardRegion();
 		break;
 	default:
 		break;
@@ -639,11 +662,14 @@ void CPokerLogic::OnPaint(Gdiplus::Graphics * const g) const
 		ASSERT(deal_card_cnt<=21);
 		ShowDealingCardsEffect(g,deal_card_cnt);		//发牌效果
 		break;
-	case GameState::SelectLandLord:
+	case GameState::CallLandLord:
+	case GameState::RobLandlord:
+	case GameState::OtherCall:
 		ShowHandPoker(g);
 		ShowLandlordCards(g);
 		break;
-	case GameState::Gaming:
+	case GameState::OurPlay:
+	case GameState::OtherPlay:
 		ShowHandPoker(g);
 		ShowLandlordCards(g,false);
 		ShowLastRoundPoker(g);
@@ -652,5 +678,15 @@ void CPokerLogic::OnPaint(Gdiplus::Graphics * const g) const
 		break;
 	default:
 		break;
+	}
+}
+
+void CPokerLogic::GetRepaintRgn(CRgn & rgn) const 
+{
+	CRgn temp[3];
+	for (int i=Self;i<=Left;i++)
+	{
+		temp[i].CreateRectRgnIndirect(Rect2CRect(GetHandCardRect(PlayerPosition(i))));
+		rgn.CombineRgn(&rgn,&temp[i],RGN_OR);
 	}
 }

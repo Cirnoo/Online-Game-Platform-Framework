@@ -56,7 +56,7 @@ BOOL CLoginDlg::OnInitDialog()
 	ModifyStyle(0,WS_CLIPCHILDREN);
 	mWidth=380*RESOLUTION;
 	mHeight=280*RESOLUTION;
-	::SetWindowPos(AfxGetMainWnd()->m_hWnd, HWND_TOPMOST, 0, 0,mWidth,mHeight , SWP_NOMOVE);
+	::SetWindowPos(this->m_hWnd, HWND_TOPMOST, 0, 0,mWidth,mHeight , SWP_NOMOVE);
 	CenterWindow();
 	
 	// IDM_ABOUTBOX 必须在系统命令范围内。

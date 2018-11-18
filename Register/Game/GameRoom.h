@@ -2,7 +2,9 @@
 #include "afxcmn.h"
 
 #include "Text.h"
+#include "afxwin.h"
 // CGameRoom ¶Ô»°¿ò
+
 
 class CGameRoom : public CDialogEx
 {

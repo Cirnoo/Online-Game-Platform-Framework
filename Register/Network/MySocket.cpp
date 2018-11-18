@@ -5,7 +5,6 @@
 #include "Register.h"
 #include "MySocket.h"
 #include "MySocket.h"
-
 // CMySocket
 
 CMySocket::CMySocket()
