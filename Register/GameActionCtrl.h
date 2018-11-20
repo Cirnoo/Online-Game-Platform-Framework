@@ -16,6 +16,7 @@ public:
 				AfxGetMainWnd()->PostMessage(WM_GAME_STATE_CHANGE);
 			}
 			m_state=game_state;
+			
 		}
 	}
 private:
@@ -31,7 +32,10 @@ public:
 	int action_count;		//行动次数记录
 	void Increase()
 	{
-		++action_count;
+		if(++action_count==3)
+		{
+			action_count=0;
+		}
 	}
 	GameState_EX GetGameState()
 	{

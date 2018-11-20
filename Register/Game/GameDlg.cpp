@@ -32,18 +32,17 @@ CGameDlg::CGameDlg(const int self_serial_num)
 	vec_ctrl.push_back(&players);
 	vec_ctrl.push_back(&game_ctrl);
 	vec_ctrl.push_back(&logic);
-	for (auto & i:theApp.sys.client_info.room.mate_arr)
+	/*for (auto & i:theApp.sys.client_info.room.mate_arr)
 	{
-		i=L"test";
+	i=L"test";
 	}
 	vector<char> temp;
 	for (int i=0;i<53;i++)
 	{
-		temp.push_back(i);
+	temp.push_back(i);
 	}
-	logic.SetPlayerPoker(temp,Self);
-	r_game_state=GameState::GetCards;
-	
+	logic.SetPlayerPoker(temp,Self);*/
+	r_game_state=GameState::Wait;
 }
 
 CGameDlg::~CGameDlg()
@@ -75,6 +74,8 @@ BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_MESSAGE(WM_GET_CARDS,CGameDlg::OnGetCards)
 	ON_MESSAGE(WM_GAME_ROUND,CGameDlg::OnGameRound)
 	ON_MESSAGE(WM_GAME_STATE_CHANGE,CGameDlg::OnGameStateChange)
+	ON_MESSAGE(WM_GAME_PROCESS,CGameDlg::OnGameProcess)
+	ON_MESSAGE(WM_SET_LANDLORD,CGameDlg::OnSetLandlord)
 END_MESSAGE_MAP()
 
 
@@ -265,12 +266,10 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 	{
 		i->OnTimer();
 	}
-	if(++m_timer%10==0)
+	if(++m_timer%15==0)
 	{
-		Invalidate();
+		Invalidate(FALSE);
 	}
-	//UpdateWindow();
-	//InvalidateRgn(&rgn);
 	CDialogEx::OnTimer(nIDEvent);
 }
 
@@ -298,9 +297,31 @@ LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
 
 LRESULT CGameDlg::OnSetLandlord(WPARAM wParam, LPARAM lParam)
 {
-	ASSERT(r_game_state==GameState::CallLandLord);
-	logic.SetLandlord(Self);
-	players.SetLandlord(Self);
+	//设置地主位置 游戏正式开始
+	ASSERT(r_game_state==GameState::OtherCall);
+	const auto & process=::GetPackBufData<GAME_PROCESS>(wParam);
+	const char land_num=process.landlord_pos;		//地主序列号
+	const auto land_pos=players.SerialNum2Pos(land_num);		//转换为相对位置
+	PlayerPosition last_player=players.SerialNum2Pos(process.player_pos);
+	game_ctrl.SetLastRoundText(process.last_palyer_ms,last_player);
+	std::thread do_later([land_pos,this]
+	{
+		Sleep(100);
+		if (land_pos==Self)
+		{
+			r_game_state=GameState::OurPlay;
+		}
+		else
+		{
+			r_game_state=GameState::OtherPlay;
+		}
+		logic.SetLandlord(land_pos);
+		players.SetLandlord(land_pos);
+		game_ctrl.TextClear();
+		Invalidate(FALSE);
+		return ;
+	});
+	do_later.detach();
 	return 0;
 }
 
@@ -329,6 +350,7 @@ LRESULT CGameDlg::OnGameStateChange(WPARAM wParam, LPARAM lParam)
 	{
 		i->OnGameStateChange(r_game_state);
 	}
+	Invalidate(FALSE);
 	return 0;
 }
 

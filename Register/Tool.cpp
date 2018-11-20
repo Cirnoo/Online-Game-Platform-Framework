@@ -39,15 +39,7 @@ CTool::CTool(void)
 }
 
 
-void CTool::GetRoomInfo(const DATA_PACKAGE & pack)
-{
-	/////////////////////////获取另外两个玩家名字//////////////////////////////////////////////
-	typedef USER_BUF Name[2];
-	auto & mate=theApp.sys.client_info.room.mate_arr;
-	Name * name=(Name *)&pack.buf;
-	mate[1]=name[0]->GetStr();
-	mate[2]=name[1]->GetStr();
-}
+
 
 CTool::~CTool(void)
 {
@@ -70,6 +62,10 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 	case MS_TYPE::ENTER_ROOM:
 	case MS_TYPE::LEAVE_ROOM:
 	case MS_TYPE::GAME_START:
+	case MS_TYPE::CALL_LANDLORD_RQ:
+	case MS_TYPE::ROB_LANDLORD_RQ:
+	case MS_TYPE::NOT_CALL:
+	case MS_TYPE::NOT_ROB:
 		if(mysocket.SendMS(pack)<0)
 		{
 			return false;
@@ -109,9 +105,14 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 		break;
 	case MS_TYPE::ALLOC_POKER:
 		AfxGetMainWnd()->SendMessage(WM_GET_CARDS,(WPARAM)&pack);
+		break;
 	case MS_TYPE::IS_CALL_LANDLORD:
 	case MS_TYPE::IS_ROB_LANDLORD:
 		AfxGetMainWnd()->SendMessage(WM_GAME_PROCESS,(WPARAM)&pack);
+		break;
+	case MS_TYPE::SET_LANDLORD:
+		AfxGetMainWnd()->SendMessage(WM_SET_LANDLORD,(WPARAM)&pack);
+		break;
 	default:
 		SetEvent(mysocket.mHeartBeat);
 		break;

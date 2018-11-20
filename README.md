@@ -10,11 +10,15 @@
 ## 截图  
 
 ### 登录界面   
-<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/login_dlg.png" width="450"> <br>
+<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/login_dlg.jpg" width="450"> <br>
 ### 游戏界面  
-<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_ready.jpg" width="550"> <br>
+<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_ready.jpg" width="600"> <br>
 ##### 抢地主
-<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_2.png" width="550"> <br>
+<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_2.jpg" width="600"> <br>
+
+##### 正式游戏
+<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_start.jpg" width="600"> <br>
+
 这里面用到了一些自己写的GDI+图像处理函数，以后有时间可以整理出来。即便用GDI+，MFC处理图像依然比较麻烦，一般能用PS处理的我就用PS了。
 资源文件来源于网络：
 [资源链接](https://blog.csdn.net/geniusice18/article/details/8393674)
@@ -39,5 +43,8 @@ GDI+的imgae类无法直接加载资源文件，网上参考了一下别人的�
 gbk编码下qDebug()不支持中文输出，使用std::cout正常。  
 [服务器链接](https://github.com/Cirnoo/game-server)
 
+---
 
+2018.11.20  
+MFC自带的内存泄漏检测有BUG，只要使用了std::thread就报内存泄漏，忽视即可。
 

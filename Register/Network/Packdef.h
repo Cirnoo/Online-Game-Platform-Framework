@@ -185,6 +185,7 @@ struct CardArray		//需要打出的牌
 struct GAME_PROCESS
 {
 	char player_pos;
+	char landlord_pos;
 	MS_TYPE last_palyer_ms;
 	CardArray card_arr;
 };

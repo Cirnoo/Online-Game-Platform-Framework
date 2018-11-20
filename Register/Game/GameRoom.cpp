@@ -190,6 +190,10 @@ void CGameRoom::OnNMDblclkRoomList(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMITEMACTIVATE pNMItemActivate = reinterpret_cast<LPNMITEMACTIVATE>(pNMHDR);
 	auto room_name=m_room_list.GetItemText(pNMItemActivate->iItem,0);	
+	if (room_name.IsEmpty())
+	{
+		return;
+	}
 	auto num_str=m_room_list.GetItemText(pNMItemActivate->iItem,1);
 	auto & sys_room=theApp.sys.client_info.room;
 	int num=_ttoi(num_str);

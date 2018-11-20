@@ -9,7 +9,7 @@ namespace ImgText
 {
 	enum TextType
 	{
-		叫地主,不叫,抢地主,不抢,不出,准备,没大牌
+		NONE_IMG=-1,叫地主,不叫,抢地主,不抢,不出,准备,没大牌
 	};
 }
 
@@ -34,6 +34,7 @@ public:
 	void ShowText(Graphics * const g) const;
 	void GameStart() ;
 	void SetLastRoundText(MS_TYPE ms_type,Player::PlayerPosition pos);
+	void TextClear();
 private:
 	CGameCtrl(CGameDlg * parent);
 	static CGameCtrl * self;
@@ -47,7 +48,7 @@ private:
 	CPNGButton bt_min,bt_close;
 	CtrlList ls_game_ctrl;
 	std::list<CBaseControl *> ls_base_ctrl;
-	std::array<int,3> last_round_text;
+	std::array<ImgText::TextType,3> last_round_text;
 	void CreatCtrl_Pair(MS_TYPE ms_type);
 	void CreatCtrl_CallLandLord();
 	void CreatCtrl_RobLandLord();
@@ -55,7 +56,7 @@ private:
 	void CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const MS_TYPE ms_tp);
 	void CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const std::function<void()> cmd );
 	void ShowLastRoundText(Gdiplus::Graphics * const g) const;
-	int GetImgTextType(const MS_TYPE ms_tp) const;
+	ImgText::TextType GetImgTextType(const MS_TYPE ms_tp) const;
 private:
 	GameState old_game_state;
 	void OnInit() override;

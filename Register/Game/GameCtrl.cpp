@@ -30,7 +30,7 @@ CGameCtrl::CGameCtrl(CGameDlg * parent):
 {
 	ls_clear_flag=false;
 	old_game_state=GameState::Wait;
-	last_round_text.fill(-1);
+	last_round_text.fill(ImgText::NONE_IMG);
 }
 
 
@@ -83,7 +83,6 @@ void CGameCtrl::CreatCtrl_Pair(MS_TYPE ms_type)
 	const auto & img1=res.vec_button_img[img_type1];
 	CreatCtlr(rect,img1,ms_tp_re1);
 
-	//²»½Ð
 	rect.X+=button_size.Width+20;
 	const auto & img2=res.vec_button_img[img_type2];
 	CreatCtlr(rect,img2,ms_tp_re2);
@@ -135,6 +134,7 @@ void CGameCtrl::CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const 
 		{
 			cur_game_state=GameState::OtherCall;
 		}
+		theApp.game_action.Increase();
 	});
 }
 
@@ -151,19 +151,20 @@ void CGameCtrl::ShowLastRoundText(Gdiplus::Graphics * const g) const
 {
 	Point point[3];
 	point[Self]=Point(GAME_DLG_WIDTH/2-50,GAME_DLG_HEIGHT/2+100);
-	point[Right]=Point(GAME_DLG_WIDTH/2+200,GAME_DLG_HEIGHT/2-100);
-	point[Left]=Point(GAME_DLG_WIDTH/2-300,GAME_DLG_HEIGHT/2-100);
+	point[Right]=Point(GAME_DLG_WIDTH/2+200,GAME_DLG_HEIGHT/2-150);
+	point[Left]=Point(GAME_DLG_WIDTH/2-280,GAME_DLG_HEIGHT/2-150);
 	int cnt=0;
 	for (int i:last_round_text)
 	{
-		if (i>=0)
+		if (i!=ImgText::NONE_IMG)
 		{
-			g->DrawImage(res.vec_text_img[i],point[cnt++]);
+			g->DrawImage(res.vec_text_img[i],point[cnt]);
 		}
+		++cnt;
 	}
 }
 
-int CGameCtrl::GetImgTextType(const MS_TYPE ms_tp) const
+ImgText::TextType CGameCtrl::GetImgTextType(const MS_TYPE ms_tp) const
 {
 	using namespace ImgText;
 	switch (ms_tp)
@@ -177,7 +178,7 @@ int CGameCtrl::GetImgTextType(const MS_TYPE ms_tp) const
 	case MS_TYPE::NOT_ROB:
 		return ²»ÇÀ;
 	default:
-		return -1;
+		return ImgText::NONE_IMG;
 	}
 }
 
@@ -215,6 +216,10 @@ void CGameCtrl::OnFrame()
 		ls_clear_flag=false;
 	}
 	const auto action_cnt=theApp.game_action.action_count;
+	if (action_cnt>0)
+	{
+		int x=0;
+	}
 	if (main_dlg->players.SerialNum2Pos(action_cnt)!=Self)
 	{
 		timer=-1;
@@ -249,6 +254,7 @@ void CGameCtrl::OnGameStateChange(const GameState new_state)
 		timer=-1;
 		return ;
 	}
+	last_round_text[Self]=ImgText::NONE_IMG;
 	switch (cur_game_state)
 	{
 	case GameState::CallLandLord:
@@ -304,6 +310,11 @@ void CGameCtrl::GameStart()
 void CGameCtrl::SetLastRoundText(MS_TYPE ms_type,PlayerPosition pos)
 {
 	last_round_text[pos]=GetImgTextType(ms_type);
+}
+
+void CGameCtrl::TextClear()
+{
+	last_round_text.fill(ImgText::NONE_IMG);
 }
 
 CGameCtrl::GameRes::GameRes()

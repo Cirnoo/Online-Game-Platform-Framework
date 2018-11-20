@@ -9,12 +9,7 @@ class CGamePlayer:public CGameInterface
 public:	
 	static CGamePlayer & GetInstance(const int num);
 	~CGamePlayer(void);
-private:
-	virtual void OnInit() override;
-	virtual void OnPaint(Gdiplus::Graphics * const g) const override;
-	virtual void OnFrame() override;
 public:
-	void ShowLandlordLogo(Gdiplus::Graphics & g);
 	void SetHead();	
 	void SetPlayerName(const wstring & name,const PlayerPosition pos);
 	void DelPlayer(const PlayerPosition pos);
@@ -24,12 +19,17 @@ public:
 	PlayerPosition SerialNum2Pos(int num) const;	 //ÐòÁÐºÅ×ªÎ»ÖÃ
 	void OnGetMateInfo(WPARAM wParam);
 private:
+	void ShowLandlordLogo(Gdiplus::Graphics * const g) const;
 	std::array<wstring,3> player_name;
 	CGamePlayer(const int serial_num);
 	Rect head_rect[3];
 	Point landlord_logo_pos[3];
-	PlayerPosition landlord;
+	PlayerPosition landlord_pos;
 	pImage head_img,landlord_logo;
 	static CGamePlayer * self_instance;
+private:
+	virtual void OnInit() override;
+	virtual void OnPaint(Gdiplus::Graphics * const g) const override;
+	virtual void OnFrame() override;
 };
 

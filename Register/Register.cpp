@@ -81,7 +81,7 @@ BOOL CRegisterApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
-	INT_PTR nResponse = CreatGameDlg();
+	INT_PTR nResponse = CreatGameRoom();
 	
 	if (nResponse == -1)
 	{
@@ -118,7 +118,7 @@ int CRegisterApp::CreatGameRoom()
 int CRegisterApp::CreatGameDlg()
 {
 	auto & sys_room=sys.client_info.room;
-	CGameDlg dlg(0);
+	CGameDlg dlg;
 	m_pMainWnd = &dlg;
 	return dlg.DoModal();
 }

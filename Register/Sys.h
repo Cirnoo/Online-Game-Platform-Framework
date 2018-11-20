@@ -38,6 +38,7 @@ const int WM_GAME_OVER			 =	  WM_USER+19;
 const int WM_GAME_ROUND			 =	  WM_USER+20;
 const int WM_GAME_STATE_CHANGE   =	  WM_USER+21;
 const int WM_GAME_PROCESS		 =	  WM_USER+22;
+const int WM_SET_LANDLORD		 =	  WM_USER+23;
 #define Warning(x) ::MessageBox(NULL,_T(x),_T(""), MB_OK|MB_SYSTEMMODAL|MB_ICONEXCLAMATION  );
 typedef  Image* pImage;
 using std::vector;
