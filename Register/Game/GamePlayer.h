@@ -15,7 +15,6 @@ public:
 	void DelPlayer(const PlayerPosition pos);
 	void SetLandlord(const PlayerPosition pos);
 	std::array<bool,3> have_player;
-	const int self_serial_num; //序列号
 	PlayerPosition SerialNum2Pos(int num) const;	 //序列号转位置
 	void OnGetMateInfo(WPARAM wParam);
 private:

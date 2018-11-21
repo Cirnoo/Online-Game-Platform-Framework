@@ -13,7 +13,7 @@ CGamePlayer & CGamePlayer::GetInstance(const int num)
 	return *self_instance;
 }
 
-CGamePlayer::CGamePlayer(const int serial_num):self_serial_num(serial_num)
+CGamePlayer::CGamePlayer(const int serial_num)
 {
 	const pImage head_temp=theApp.sys.cirno;
 	CRgn rgn;
@@ -105,16 +105,7 @@ void CGamePlayer::SetLandlord(const PlayerPosition pos)
 
 Player::PlayerPosition CGamePlayer::SerialNum2Pos(int num) const
 {
-	num%=3;
-	if (num==self_serial_num)
-	{
-		return Self;
-	}
-	const char temp[]={0,1,2,0,1};
-	int flag_self=self_serial_num;
-	int flag_op=flag_self;
-	while(temp[++flag_op]!=num);
-	return PlayerPosition(flag_op-flag_self);
+	return theApp.game_action.SerialNum2Pos(num);
 }
 
 

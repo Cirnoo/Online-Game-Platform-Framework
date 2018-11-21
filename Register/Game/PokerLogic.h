@@ -19,21 +19,22 @@ public:
 	MyPoker GetCheckedCards() const;
 	CardArray GetCardsNeedSend() const ;
 	Rect GetHandCardRect(const PlayerPosition pos=Self) const ;
-	void DelCheckedCards();	//我方出牌
-	void DelMateCards(const vector<char> & cards,const PlayerPosition pos);	//对方出牌
+	bool OurPlayCards();		//我方出牌
+	void MatePlayCards(const vector<char> & cards,const PlayerPosition pos);	//对方出牌
 	void SetPlayerPoker(const vector<char> & cards,const char self_num);	//分配扑克
 	void SetPlayerPoker(const std::array<char,53> & cards,const char self_num);	//分配扑克
-	void SortHand();
 	void SetLandlord(const PlayerPosition pos);
 private:
+	void DelCheckedCards();	//删除选中的卡片
+	void SortHand();
 	static CPokerLogic * self_instance;
 	CPokerLogic(void);
 	MyPoker hand_poker[3],poker_landlord;
 	MyPoker last_round_poker[3]; //上一手牌
-	unsigned char CalArrPoint(const MyPoker & cards,const ArrayType type );
+	unsigned char CalArrPoint(const MyPoker & cards,const ArrayType type ) const;
 	Rect GetMateCardRect(const PlayerPosition pos,const int size) const;
-	Rect GetFirstCardRect(const int size) const;
-	Rect GetLastCardRect() const;
+	Rect GetSelfFirstCardRect(const int size) const;
+	Rect GetSelfLastCardRect() const;
 	ArrayType arrtype;
 	const Size card_size;
 	const int card_interval;
@@ -48,16 +49,17 @@ private:
 	bool IsTripleStraight(const MyPoker & cards) const;
 	bool IsPlane(const MyPoker & cards) const;
 	bool IsGreater(const CardArray & self, const CardArray & per ) const;
-	int  GetCardFormCount(const MyPoker & cards,int count) const;
+	int  GetCardFormCount(const MyPoker & cards,int count) const;//获得的数量为count的牌最大点数
 	void MergeSortedVec(MyPoker & vec1,MyPoker & vec2);
 	void ShowHandPoker(Graphics * const g) const ;
 	void ShowDealingCardsEffect(Graphics * const g,const int timer) const;	//发牌效果
 	void ShowLandlordCards(Graphics * const g,bool hide=true) const ;
 	void ShowLastRoundPoker(Graphics * const g) const;
 	void RepaintCardRegion() const;
+	void RepaintLastRoundCards(const PlayerPosition pos) const;
 private:
 	void OnFrame() override;
 	void OnPaint(Gdiplus::Graphics * const g) const override;
-	void GetRepaintRgn(CRgn & rgn) const override;
+	void OnGameStateChange(const GameState game_state) override;
 };
 

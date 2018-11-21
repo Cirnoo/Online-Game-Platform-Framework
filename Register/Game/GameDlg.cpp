@@ -32,6 +32,7 @@ CGameDlg::CGameDlg(const int self_serial_num)
 	vec_ctrl.push_back(&players);
 	vec_ctrl.push_back(&game_ctrl);
 	vec_ctrl.push_back(&logic);
+	theApp.game_action.SetSelfSerialNum(self_serial_num);
 	/*for (auto & i:theApp.sys.client_info.room.mate_arr)
 	{
 	i=L"test";
@@ -243,17 +244,9 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (logic.IsLegalOutput())
+	if (r_game_state==GameState::OurPlay||r_game_state==GameState::OtherPlay)
 	{
-		//合法的出牌	
-		CardArray cards=logic.GetCardsNeedSend();
-		logic.DelCheckedCards();
-		InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
-		//TRACE("出牌类型:%d\n",cards.type);
-	}
-	else
-	{
-		//输出信息
+		logic.OurPlayCards();
 	}
 	CDialogEx::OnRButtonDown(nFlags, point);
 }
@@ -276,7 +269,7 @@ void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 LRESULT CGameDlg::OnGetMateInfo(WPARAM wParam, LPARAM lParam)
 {
 	players.OnGetMateInfo(wParam);
-	if(players.self_serial_num==0 && r_game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)
+	if(theApp.game_action.GetSelfSeriaNum()==0 && r_game_state==GameState::Wait && std::count(have_player.begin(),have_player.end(),true)==3)
 	{
 		//可以开始游戏了
 		game_ctrl.GameStart();
@@ -289,7 +282,7 @@ LRESULT CGameDlg::OnGetCards(WPARAM wParam, LPARAM lParam)
 {
 	ASSERT(r_game_state==GameState::Wait);
 	const auto & poker_group=::GetPackBufData<AllocCardMs>(wParam);
-	logic.SetPlayerPoker(poker_group.poker,players.self_serial_num);
+	logic.SetPlayerPoker(poker_group.poker,theApp.game_action.GetSelfSeriaNum());
 	theApp.game_action.action_count=poker_group.first_pos;		//确定先手
 	r_game_state=GameState::GetCards;
 	return 0;
@@ -300,9 +293,11 @@ LRESULT CGameDlg::OnSetLandlord(WPARAM wParam, LPARAM lParam)
 	//设置地主位置 游戏正式开始
 	ASSERT(r_game_state==GameState::OtherCall);
 	const auto & process=::GetPackBufData<GAME_PROCESS>(wParam);
+	auto & action = theApp.game_action;
 	const char land_num=process.landlord_pos;		//地主序列号
-	const auto land_pos=players.SerialNum2Pos(land_num);		//转换为相对位置
-	PlayerPosition last_player=players.SerialNum2Pos(process.player_pos);
+	action.action_count=land_num;
+	const auto land_pos=action.GetCurActPlayerPos();		//转换为相对位置
+	PlayerPosition last_player=action.SerialNum2Pos(process.player_pos);
 	game_ctrl.SetLastRoundText(process.last_palyer_ms,last_player);
 	std::thread do_later([land_pos,this]
 	{
@@ -340,7 +335,7 @@ LRESULT CGameDlg::OnGameRound(WPARAM wParam, LPARAM lParam)
 	//{
 	//	return 0;
 	//}
-	logic.DelMateCards(card_info.toVecChar(),players.SerialNum2Pos(card_info.player_pos));
+	logic.MatePlayCards(card_info.toVecChar(),players.SerialNum2Pos(card_info.player_pos));
 	return 0;
 }
 
@@ -356,6 +351,7 @@ LRESULT CGameDlg::OnGameStateChange(WPARAM wParam, LPARAM lParam)
 
 LRESULT CGameDlg::OnGameProcess(WPARAM wParam, LPARAM lParam)
 {
+	//抢地主和出牌的状态处理
 	DATA_PACKAGE * pack=(DATA_PACKAGE *)wParam;
 	const auto & process=::GetPackBufData<GAME_PROCESS>(wParam);
 	auto & action=theApp.game_action;

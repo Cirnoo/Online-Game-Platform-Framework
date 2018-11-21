@@ -30,27 +30,16 @@ public:
 	static CGameActionCtrl & GetInstance();
 	GameState_EX game_state;
 	int action_count;		//行动次数记录
-	void Increase()
-	{
-		if(++action_count==3)
-		{
-			action_count=0;
-		}
-	}
-	GameState_EX GetGameState()
-	{
-		return game_state;
-	}
-	GameState_EX & GetStateReference()
-	{
-		return game_state;
-	}
-	void SetGameState(const GameState & new_state)
-	{
-		game_state=new_state;
-	}
+	void Increase();
+	GameState GetGameState();
+	GameState_EX & GetStateReference();
+	void SetGameState(const GameState & new_state);
+	void SetSelfSerialNum(const int num);
+	Player::PlayerPosition SerialNum2Pos(int num) const;
+	Player::PlayerPosition GetCurActPlayerPos();
+	const int GetSelfSeriaNum();
 private:
-	
+	int self_serial_num;
 	CGameActionCtrl();
 	static CGameActionCtrl * self;
 };
