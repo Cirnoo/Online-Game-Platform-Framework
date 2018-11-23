@@ -209,20 +209,20 @@ LRESULT CGameRoom::OnEnterRoom(WPARAM wParam, LPARAM lParam)
 {
 	//进入房间成功
 	auto info=(DATA_PACKAGE *)wParam;
-	auto buf=(ENTER_ROOM_RE*)&info->buf;
+	const ENTER_ROOM_RE & buf = info->buf;
 	auto & client_info=theApp.sys.client_info;
 	if (info->ms_type==MS_TYPE::ENTER_ROOM_RE_T)		//如果是新加入房间 则接收当前房间玩家信息
 	{
 		for (int i=0;i<3;i++)
 		{
-			client_info.room.mate_arr[i]=buf->mate_name[i].GetStr();
+			client_info.room.mate_arr[i]=buf.mate_name[i].GetStr();
 		}
 	}
 	else	//如果是直接创建房间 第一个玩家名为自己
 	{
 		client_info.room.mate_arr[0]=client_info.player_name;
 	}
-	client_info.player_pos=buf->player_pos;
+	client_info.player_pos=buf.player_pos;
 	theApp.CloseMainWnd();	//重要 勿删
 	EndDialog(WM_ENTER_ROOM);
 	return 0;

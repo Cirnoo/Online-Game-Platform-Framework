@@ -98,9 +98,11 @@ pImage ResizeImg(pImage img,double scale) //Ëõ·Å
 
 std::vector<pImage> GetImageGroup(pImage img,int row,int col) //ÐÐÁÐÇÐ¸î
 {
+	ASSERT(row>0&&col>0);
 	vector<pImage> vec;
-	int Height=img->GetHeight()/row;
-	int Width=img->GetWidth()/col;
+	vec.reserve(row*col);
+	const int Height=img->GetHeight()/row;
+	const int Width=img->GetWidth()/col;
 	for (int i=0;i<row;i++)
 	{
 		for (int j=0;j<col;j++)

@@ -30,10 +30,9 @@ public:
 	static CGameCtrl & GetInstance(CGameDlg * parent);
 	~CGameCtrl(void);
 	void OnGameWin(const int serial_num);
-	void ShowCtrl(Graphics * const g) const;
-	void ShowText(Graphics * const g) const;
 	void GameStart() ;
 	void SetLastRoundText(MS_TYPE ms_type,Player::PlayerPosition pos);
+	bool OurPlayCards();
 	void TextClear();
 private:
 	CGameCtrl(CGameDlg * parent);
@@ -53,10 +52,14 @@ private:
 	void CreatCtrl_CallLandLord();
 	void CreatCtrl_RobLandLord();
 	void CreatCtlr_Wait();
+	void CreatCtlr_Play();
 	void CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const MS_TYPE ms_tp);
 	void CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const std::function<void()> cmd );
 	void ShowLastRoundText(Gdiplus::Graphics * const g) const;
 	ImgText::TextType GetImgTextType(const MS_TYPE ms_tp) const;
+	void ShowCtrl(Graphics * const g) const;
+	void ShowText(Graphics * const g) const;
+	DATA_PACKAGE BuildProcessDate(MS_TYPE ms_tp);
 private:
 	GameState old_game_state;
 	void OnInit() override;

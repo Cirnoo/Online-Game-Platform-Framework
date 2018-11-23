@@ -15,10 +15,9 @@ CPokerLogic & CPokerLogic::GetInstance()
 CPokerLogic::CPokerLogic(void)
 	:card_interval(25),card_up(20),
 	card_size(Size(57*1.4,80*1.4)),  //牌的长宽
-	self_poker_center(GAME_DLG_WIDTH/2-card_size.Width/2,GAME_DLG_HEIGHT-250) //中间手牌位置
+	self_poker_center(GAME_DLG_WIDTH/2-card_size.Width/2,GAME_DLG_HEIGHT-240) //中间手牌位置
 {
 	auto temp=GetImageGroup(IDB_POKER_CARDS,4,14);  //行列切割
-	poker_img.resize(55);
 	for (int i=0;i<4;i++)
 	{
 		for (int j=0;j<13;j++)
@@ -40,6 +39,8 @@ CPokerLogic::~CPokerLogic(void)
 	
 	self_instance=nullptr;
 }
+
+
 
 
 unsigned char CPokerLogic::CalArrPoint(const MyPoker & cards,const ArrayType type) const
@@ -79,9 +80,9 @@ Rect CPokerLogic::GetMateCardRect(const PlayerPosition pos,const int size) const
 	switch(pos)
 	{
 	case Left:
-		return Rect(Point(200,height*0.35-size*card_up/2),card_size);
+		return Rect(Point(190,height*0.35-size*card_up/2),card_size);
 	case Right:
-		return Rect(Point(width-200-card_size.Width,height*0.35-size*card_up/2),card_size);
+		return Rect(Point(width-190-card_size.Width,height*0.35-size*card_up/2),card_size);
 	default:
 		ASSERT(0);
 	}
@@ -106,6 +107,20 @@ Rect CPokerLogic::GetSelfLastCardRect() const
 
 
 
+std::array<Rect,3> CPokerLogic::GetLastRoundCardsFirstRect() const
+{
+	std::array<Rect,3> rect;
+	rect[Self]=GetSelfFirstCardRect(last_round_poker[Self].size());
+	rect[Self].Y-=card_size.Height+20;
+
+	rect[Right]=GetMateCardRect(Right,last_round_poker[Right].size());
+	rect[Right].X-=card_size.Width+20;
+
+	rect[Left]=GetMateCardRect(Left,last_round_poker[Left].size());
+	rect[Left].X+=card_size.Width+20;
+	return rect;
+}
+
 Rect CPokerLogic::GetHandCardRect(const PlayerPosition pos) const
 {
 	if(pos==Self)
@@ -125,7 +140,7 @@ Rect CPokerLogic::GetHandCardRect(const PlayerPosition pos) const
 
 void CPokerLogic::DelCheckedCards()
 {
-	auto self_poker=hand_poker[Self];
+	auto & self_poker=hand_poker[Self];
 	last_round_poker[Self].clear();
 	for (auto i=self_poker.begin();i!=self_poker.end();)
 	{
@@ -146,10 +161,16 @@ void CPokerLogic::DelCheckedCards()
 	}
 }
 
-void CPokerLogic::MatePlayCards(const vector<char> & cards,const PlayerPosition pos)
+void CPokerLogic::MatePlayCards(const CardArray & card_arr,const PlayerPosition pos)
 {
-	auto & vec_temp=hand_poker[pos];
 	last_round_poker[pos].clear();
+	if (card_arr.IsEmpty())
+	{
+		return;
+	}
+	const auto cards=card_arr.toVecChar();
+	last_player_cards=card_arr;
+	auto & vec_temp=hand_poker[pos];
 	bool buf[54]={false};
 	for (const auto i:cards)
 	{
@@ -174,26 +195,19 @@ void CPokerLogic::SetPlayerPoker(const vector<char> & cards,const char self_num)
 {
 	ASSERT(self_num>=0&&self_num<3);
 	MyPoker * poker_arr[3];
-	MyPoker * temp_arr[4]={&hand_poker[Self],&hand_poker[Right],&hand_poker[Left],&poker_landlord};
-	for (auto  i:temp_arr)
+	for (auto & i:hand_poker)
 	{
-		i->clear();
-		i->reserve(20);
+		i.clear();
+		i.reserve(20);
 	}
-	const char temp[]={0,1,2,0,1};
-	int flag=self_num;
-	/*for (int i=0;i<3;i++)
-	{
-		poker_arr[temp[flag++]]=temp_arr[i];
-	}*/
 	for (int i=0;i<3;i++)
 	{
-		int cur=temp[flag+i];
+		int cur=theApp.game_action.SerialNum2Pos(i);
 		bool hide_flag=cur==Self?false:true;
 		for (int j=0;j<17;j++)
 		{
-			temp_arr[cur]->push_back(cards.at(i*17+j));
-			temp_arr[cur]->back().hide=hide_flag;
+			hand_poker[cur].push_back(cards.at(i*17+j));
+			hand_poker[cur].back().hide=hide_flag;
 		}
 	}
 	for (auto i=cards.rbegin();i<cards.rbegin()+3;i++)	//地主牌
@@ -206,7 +220,7 @@ void CPokerLogic::SetPlayerPoker(const vector<char> & cards,const char self_num)
 
 
 
-void CPokerLogic::SetPlayerPoker(const std::array<char,53> & cards,const char self_num)
+void CPokerLogic::SetPlayerPoker(const PokerGroup & cards,const char self_num)
 {
 	const char * temp=&cards[0];
 	SetPlayerPoker(vector<char>(temp,temp+cards.size()),self_num);
@@ -245,7 +259,7 @@ bool CPokerLogic::SelectMutiPoker(const Rect & region)
 	const GameState game_state=theApp.game_action.GetGameState();
 	if (game_state!=GameState::OurPlay && game_state!=GameState::OtherPlay )
 	{
-		return -1;
+		return false;
 	}
 	const auto hand_rect=GetHandCardRect();
 	if (!region.IntersectsWith(hand_rect))
@@ -263,10 +277,15 @@ bool CPokerLogic::SelectMutiPoker(const Rect & region)
 			card_size.Width*0.3,card_size.Height*0.5);//牌能够被选到的范围比实际小点
 		if (temp.IntersectsWith(region))
 		{
-			i.select=true;
+			if(i.select!=true)
+			{
+				i.select=true;
+				AfxGetMainWnd()->InvalidateRect(Rect2CRect(rect));
+			}
 		}
-		else
+		else if(i.select!=false)
 		{
+			AfxGetMainWnd()->InvalidateRect(Rect2CRect(rect));
 			i.select=false;
 		}
 		rect.Offset(card_interval,0);
@@ -351,31 +370,27 @@ void CPokerLogic::ShowDealingCardsEffect(Graphics * const g,const int timer) con
 
 void CPokerLogic::ShowLandlordCards(Graphics * const  g,bool hide) const
 {
-	Rect rect(Point(GAME_DLG_WIDTH/2-card_size.Width*1.5-13,60),card_size);
+	const Size size(card_size.Width*0.9,card_size.Height*0.9);
+	Rect rect(Point(GAME_DLG_WIDTH/2-size.Width*1.5-8,60),size);
 	const auto back_img=poker_img.back();
 	for (const auto & i:poker_landlord)
 	{
 		g->DrawImage(hide?back_img:poker_img[i.toNum()],rect);
-		rect.X+=card_size.Width+5;
+		rect.X+=size.Width+8;
 	}
 }
 
 void CPokerLogic::ShowLastRoundPoker(Graphics * const g) const
 {
-	Rect rect[3];
-	rect[Self]=GetSelfFirstCardRect(last_round_poker[Self].size());
-	rect[Self].Y-=card_size.Height+20;
-
-	rect[Right]=GetMateCardRect(Right,last_round_poker[Right].size());
-	rect[Right].X+=card_size.Width+20;
-	
-	rect[Left]=GetMateCardRect(Left,last_round_poker[Left].size());
-	rect[Left].Y-=card_size.Width+20;
+	auto rect=GetLastRoundCardsFirstRect();
 	for(int i=Self;i<=Left;i++)
 	{
+		const int dx=i==Self?card_interval:0;
+		const int dy=i==Self?0:card_up;
 		for (const auto & j:last_round_poker[i])
 		{
 			g->DrawImage(poker_img[j.toNum()],rect[i]);
+			rect[i].Offset(dx,dy);
 		}
 	}
 }
@@ -390,32 +405,29 @@ void CPokerLogic::RepaintCardRegion() const
 
 void CPokerLogic::RepaintLastRoundCards(const PlayerPosition pos) const
 {
-	Rect rect[3];
-	switch (pos)
+	auto rect=GetLastRoundCardsFirstRect();
+	int size=last_round_poker[pos].size();
+	if (pos==Self)
 	{
-	case Self:
-		rect[Self]=GetSelfFirstCardRect(last_round_poker[Self].size());
-		rect[Self].Y-=card_size.Height+20;
-		break;
-	case Left:
-		rect[Right]=GetMateCardRect(Right,last_round_poker[Right].size());
-		rect[Right].X+=card_size.Width+20;
-		break;
-	case Right:
-		rect[Left]=GetMateCardRect(Left,last_round_poker[Left].size());
-		rect[Left].Y-=card_size.Width+20;
-		break;
-	default:
-		break;
+		rect[Self].Width=rect[Self].Width+(size-1)*card_interval;
+	}
+	else
+	{
+		rect[pos].Height=rect[pos].Height+(size-1)*card_up;
 	}
 	AfxGetMainWnd()->InvalidateRect(Rect2CRect(rect[pos]));
 	
 }
 
-bool CPokerLogic::IsLegalOutput()
+ArrayType CPokerLogic::IsLegalOutput() const
 {
-	
-	MyPoker cd=GetCheckedCards();
+	ArrayType arrtype;
+	IsLegalOutput(GetCheckedCards(),arrtype);
+	return arrtype;
+}
+
+bool CPokerLogic::IsLegalOutput(MyPoker & cd,ArrayType & arrtype) const
+{
 	switch (cd.size())
 	{
 	case 0:
@@ -462,7 +474,8 @@ MyPoker CPokerLogic::GetCheckedCards() const
 CardArray CPokerLogic::GetCardsNeedSend() const
 {
 	const auto && checked_poker = GetCheckedCards();
-	auto arr_point = CalArrPoint(poker_landlord,arrtype);
+	const auto arrtype=IsLegalOutput();
+	auto arr_point = CalArrPoint(checked_poker,arrtype);
 	return CardArray(checked_poker,arrtype,arr_point);
 }
 
@@ -489,28 +502,25 @@ void CPokerLogic::SetLandlord(const PlayerPosition pos)
 
 
 
-bool CPokerLogic::OurPlayCards()
+CardArray CPokerLogic::OurPlayCards()
 {
-	if (IsLegalOutput())
+	CardArray && our_cards=GetCardsNeedSend();
+	if (our_cards.type!=无 && IsGreater(our_cards,last_player_cards))
 	{
 		//合法的出牌	
-		CardArray && cards=GetCardsNeedSend();
-		last_round_poker[Self]=GetCheckedCards();
 		DelCheckedCards();
+		last_player_cards.Clear();	//清除上一手牌
 		AfxGetMainWnd()->InvalidateRect(Rect2CRect(GetHandCardRect()));
-
 		//重绘出牌
 		RepaintLastRoundCards(Self);
 
 		//发送牌数据包
-		DATA_PACKAGE pack(MS_TYPE::PLAY_CARD,cards);
-		theApp.tools.DealData(pack);
-		//TRACE("出牌类型:%d\n",cards.type);
+		//TRACE("出牌类型:%d\n",our_cards.type);
+		return our_cards;
 	}
 	else
 	{
-		//输出信息
-		return false;
+		throw "invalid play";
 	}
 }
 
@@ -642,6 +652,10 @@ bool CPokerLogic::IsPlane(const MyPoker & cards) const
 
 bool CPokerLogic::IsGreater(const CardArray & self, const CardArray & per) const
 {
+	if (per.IsEmpty())
+	{
+		return true;
+	}
 	if (per.type==王炸)
 	{
 		return false;
@@ -741,15 +755,16 @@ void CPokerLogic::OnPaint(Gdiplus::Graphics * const g) const
 
 void CPokerLogic::OnGameStateChange(const GameState game_state)
 {
-	const auto cur_player_pos=theApp.game_action.GetCurActPlayerPos();
+	const auto act_pos=theApp.game_action.GetCurActPlayerPos();
 	switch (game_state)
 	{
 	case GameState::OurPlay:
 	case GameState::OtherPlay:
-		last_round_poker[cur_player_pos].clear();
+		last_round_poker[act_pos].clear();
 		break;
 	default:
 		break;
 	}
+	return;
 }
 

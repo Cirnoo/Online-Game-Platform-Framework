@@ -73,7 +73,6 @@ BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
 	ON_WM_TIMER()
 	ON_MESSAGE(WM_GET_ROOM_MATE,CGameDlg::OnGetMateInfo)
 	ON_MESSAGE(WM_GET_CARDS,CGameDlg::OnGetCards)
-	ON_MESSAGE(WM_GAME_ROUND,CGameDlg::OnGameRound)
 	ON_MESSAGE(WM_GAME_STATE_CHANGE,CGameDlg::OnGameStateChange)
 	ON_MESSAGE(WM_GAME_PROCESS,CGameDlg::OnGameProcess)
 	ON_MESSAGE(WM_SET_LANDLORD,CGameDlg::OnSetLandlord)
@@ -169,6 +168,9 @@ void CGameDlg::OnLButtonDown(UINT nFlags, CPoint point)
 	}
 	else
 	{
+		CRect rect;
+		GetWindowRect(rect);
+		ClipCursor(rect);
 		is_lbutton_dowm=true;
 		lbutton_down=point;
 	}
@@ -203,10 +205,7 @@ void CGameDlg::OnMouseMove(UINT nFlags, CPoint point)
 		new_region.CombineRgn(&new_region,&old_regin,RGN_XOR);
 		InvalidateRgn(&new_region);
 		is_select_multi=true;
-		if(r_game_state==GameState::OurPlay && logic.SelectMutiPoker(select_region))
-		{
-			InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
-		}
+		logic.SelectMutiPoker(select_region);
 	}
 	CDialogEx::OnMouseMove(nFlags, point);
 }
@@ -219,22 +218,21 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 	{
 		lbutton_down.SetPoint(-1,-1);
 		is_lbutton_dowm=false;
-		is_select_multi=false;
-
+		ClipCursor(NULL);
 		InvalidateRect(Rect2CRect(select_region));
-		if (r_game_state!=GameState::OurPlay)
+		if (r_game_state==GameState::OurPlay||r_game_state==GameState::OtherPlay)
 		{
-			return;
+			if (is_select_multi)
+			{
+				logic.FinishMutiSelect();
+			}
+			else
+			{
+				logic.SelectPoker(point);
+			}
+			InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
 		}
-		if (is_select_multi)
-		{
-			logic.FinishMutiSelect();
-		}
-		else
-		{
-			logic.SelectPoker(point);
-		}
-		InvalidateRect(Rect2CRect(logic.GetHandCardRect()));
+		is_select_multi=false;
 	}
 	
 	CDialogEx::OnLButtonUp(nFlags, point);
@@ -244,9 +242,9 @@ void CGameDlg::OnLButtonUp(UINT nFlags, CPoint point)
 void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	if (r_game_state==GameState::OurPlay||r_game_state==GameState::OtherPlay)
+	if (r_game_state==GameState::OurPlay)
 	{
-		logic.OurPlayCards();
+		game_ctrl.OurPlayCards();
 	}
 	CDialogEx::OnRButtonDown(nFlags, point);
 }
@@ -297,11 +295,11 @@ LRESULT CGameDlg::OnSetLandlord(WPARAM wParam, LPARAM lParam)
 	const char land_num=process.landlord_pos;		//地主序列号
 	action.action_count=land_num;
 	const auto land_pos=action.GetCurActPlayerPos();		//转换为相对位置
-	PlayerPosition last_player=action.SerialNum2Pos(process.player_pos);
+	PlayerPosition last_player=action.SerialNum2Pos(process.last_player_pos);
 	game_ctrl.SetLastRoundText(process.last_palyer_ms,last_player);
 	std::thread do_later([land_pos,this]
 	{
-		Sleep(100);
+		Sleep(500);
 		if (land_pos==Self)
 		{
 			r_game_state=GameState::OurPlay;
@@ -325,19 +323,7 @@ LRESULT CGameDlg::OnGameWin(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
-LRESULT CGameDlg::OnGameRound(WPARAM wParam, LPARAM lParam)
-{
-	//接收对方玩家出牌信息，不会接收自己的
-	auto pack =  (DATA_PACKAGE *)(wParam);
-	auto & card_info=::GetPackBufData<CardArray>(wParam);
-	theApp.game_action.action_count=card_info.player_pos+1;
-	//if (pack->ms_type==MS_TYPE::SELECT_LANDLORD)		//还在选地主阶段 不需要出牌
-	//{
-	//	return 0;
-	//}
-	logic.MatePlayCards(card_info.toVecChar(),players.SerialNum2Pos(card_info.player_pos));
-	return 0;
-}
+
 
 LRESULT CGameDlg::OnGameStateChange(WPARAM wParam, LPARAM lParam)
 {
@@ -355,9 +341,9 @@ LRESULT CGameDlg::OnGameProcess(WPARAM wParam, LPARAM lParam)
 	DATA_PACKAGE * pack=(DATA_PACKAGE *)wParam;
 	const auto & process=::GetPackBufData<GAME_PROCESS>(wParam);
 	auto & action=theApp.game_action;
-	action.action_count=process.player_pos+1;
-	PlayerPosition last_player=players.SerialNum2Pos(process.player_pos);
-	bool is_self_turn=players.SerialNum2Pos(process.player_pos+1)==Self;
+	action.action_count=process.last_player_pos+1;
+	PlayerPosition last_player=players.SerialNum2Pos(process.last_player_pos);
+	bool is_self_turn=players.SerialNum2Pos(process.last_player_pos+1)==Self;
 	switch (pack->ms_type)
 	{
 	case MS_TYPE::IS_CALL_LANDLORD:
@@ -374,6 +360,7 @@ LRESULT CGameDlg::OnGameProcess(WPARAM wParam, LPARAM lParam)
 		r_game_state=is_self_turn
 			?GameState::OurPlay
 			:GameState::OtherPlay;
+		logic.MatePlayCards(process.card_arr,last_player);
 		break;
 	}
 	game_ctrl.SetLastRoundText(process.last_palyer_ms,last_player);

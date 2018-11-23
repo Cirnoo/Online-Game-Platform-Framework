@@ -146,7 +146,7 @@ enum class GameState
 	Over
 };
 
-typedef  std::array<char,53> PokerGroup;
+typedef  std::array<char,54> PokerGroup;
 struct AllocCardMs
 {
 	PokerGroup poker;
@@ -159,10 +159,9 @@ struct CardArray		//需要打出的牌
 	ArrayType type;	//牌组类型
 	unsigned char point; //计算出的大小点数
 	unsigned char num;  //牌个数
-	unsigned char player_pos;	//第几位玩家出的牌
 	CardArray()
 	{
-		memset(this,0,sizeof(CardArray));
+		Clear();
 	}
 	CardArray(const std::vector<Poker> & vec, ArrayType _type,unsigned char _point )
 	{
@@ -176,18 +175,29 @@ struct CardArray		//需要打出的牌
 	}
 	std::vector<char> toVecChar() const
 	{
-		int cnt=-1;
-		while (cards[++cnt]>=0);
-		return std::vector<char>(cards,cards+cnt);
+		return std::vector<char>(cards,cards+num);
+	}
+	void Clear()
+	{
+		memset(this,0,sizeof(CardArray));
+	}
+	bool IsEmpty() const
+	{
+		return num==0;
 	}
 };
 
 struct GAME_PROCESS
 {
-	char player_pos;
+	char last_player_pos;
 	char landlord_pos;
 	MS_TYPE last_palyer_ms;
 	CardArray card_arr;
+	GAME_PROCESS()
+	{
+		last_player_pos=0;
+		landlord_pos=-1;
+	}
 };
 
 struct USER_BUF
@@ -331,6 +341,12 @@ struct DATA_PACKAGE
 		void Clear()
 		{
 			memset(buf,0,MAX_BUF_SIZE);
+		}
+		template  <class T>
+		operator T & ()
+		{
+			ASSERT(sizeof(T)<=sizeof (buf));
+			return  reinterpret_cast<T &>(buf);
 		}
 	};
 	MS_TYPE ms_type;

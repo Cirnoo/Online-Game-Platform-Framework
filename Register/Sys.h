@@ -5,8 +5,8 @@
 //全局常量
 const double RESOLUTION = 1.1;
 
-const int GAME_DLG_WIDTH         =    960*1.2;		//游戏对话框大小
-const int GAME_DLG_HEIGHT		 =	  720*1.2;
+const int GAME_DLG_WIDTH         =    960*1.25;		//游戏对话框大小
+const int GAME_DLG_HEIGHT		 =	  720*1.25;
 const int ID_BASE				 =	  10000;
 const int IDC_MIN				 =	  ID_BASE+1;
 const int IDC_CLOSE				 =	  ID_BASE+2;
@@ -35,7 +35,6 @@ const int WM_GAME_START			 =    WM_USER+16;
 const int WM_GET_CARDS			 =	  WM_USER+17;
 const int WM_GAME_WIN			 =	  WM_USER+18;
 const int WM_GAME_OVER			 =	  WM_USER+19;
-const int WM_GAME_ROUND			 =	  WM_USER+20;
 const int WM_GAME_STATE_CHANGE   =	  WM_USER+21;
 const int WM_GAME_PROCESS		 =	  WM_USER+22;
 const int WM_SET_LANDLORD		 =	  WM_USER+23;

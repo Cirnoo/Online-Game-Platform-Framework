@@ -24,12 +24,12 @@ CGamePlayer::CGamePlayer(const int serial_num)
 	landlord_logo=::CutImage(theApp.sys.game_tool,97,110,56,93);
 	landlord_logo=::ResizeImg(landlord_logo,0.9);
 
-	head_rect[Self]=Rect(340,GAME_DLG_HEIGHT-120,80,80);
-	head_rect[Right]=Rect(GAME_DLG_WIDTH-150,250,80,80);
-	head_rect[Left]=Rect(70,250,80,80);
+	head_rect[Self]=Rect(360,GAME_DLG_HEIGHT-100,80,80);
+	head_rect[Right]=Rect(GAME_DLG_WIDTH-140,220,80,80);
+	head_rect[Left]=Rect(60,220,80,80);
 	landlord_logo_pos[Self]=Point(GAME_DLG_WIDTH-300,GAME_DLG_HEIGHT-220);
-	landlord_logo_pos[Right]=Point(GAME_DLG_WIDTH-150,100);
-	landlord_logo_pos[Left]=Point(150,100);
+	landlord_logo_pos[Right]=Point(GAME_DLG_WIDTH-150,110);
+	landlord_logo_pos[Left]=Point(150-landlord_logo->GetWidth()-5,110);
 }
 
 CGamePlayer::~CGamePlayer(void)

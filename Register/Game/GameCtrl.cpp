@@ -25,8 +25,8 @@ CGameCtrl::CGameCtrl(CGameDlg * parent):
 	data(CTool::GetInstance()),
 	cur_game_state(theApp.game_action.game_state),
 	main_dlg(parent),
-	button_center(GAME_DLG_WIDTH/2,GAME_DLG_HEIGHT/2+100),
-	button_size(100,39)
+	button_center(GAME_DLG_WIDTH/2,GAME_DLG_HEIGHT/2+130),
+	button_size(93,37)
 {
 	ls_clear_flag=false;
 	old_game_state=GameState::Wait;
@@ -117,23 +117,32 @@ void CGameCtrl::CreatCtlr_Wait()
 }
 
 
+void CGameCtrl::CreatCtlr_Play()
+{
+	/************************************************************************/
+	/*					      出牌  不出  提示                               */
+	/************************************************************************/
+	using namespace ImgGroupType;
+	Rect rect(Point(button_center.X-button_size.Width*1.5-10,button_center.Y),button_size);
+	CreatCtlr(rect,res.vec_button_img[出牌],[this]
+	{
+		OurPlayCards();
+	});
+
+	rect.X+=button_size.Width+10;
+	CreatCtlr(rect,res.vec_button_img[不出],MS_TYPE::PASS);
+
+	rect.X+=button_size.Width+10;
+	//CreatCtlr(rect,res.vec_button_img[提示])
+}
+
 void CGameCtrl::CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const MS_TYPE ms_tp)
 {
 	CreatCtlr(rect,vec_img,[this,ms_tp]()
 	{
-		DATA_PACKAGE pack;
-		pack.ms_type=ms_tp;
-		data.DealData(pack);
+		data.DealData(BuildProcessDate(ms_tp));
 		ls_clear_flag=true;
 		last_round_text[Self]=GetImgTextType(ms_tp);
-		if (ms_tp==MS_TYPE::PLAY_CARD||ms_tp==MS_TYPE::PASS)
-		{
-			cur_game_state=GameState::OtherPlay;
-		}
-		else
-		{
-			cur_game_state=GameState::OtherCall;
-		}
 		theApp.game_action.Increase();
 	});
 }
@@ -182,6 +191,27 @@ ImgText::TextType CGameCtrl::GetImgTextType(const MS_TYPE ms_tp) const
 	}
 }
 
+bool CGameCtrl::OurPlayCards()
+{
+	try
+	{
+		auto && our_cards=main_dlg->logic.OurPlayCards();
+		ls_clear_flag=true;
+		auto && pack=BuildProcessDate(MS_TYPE::PLAY_CARD);
+		GAME_PROCESS & process = pack.buf;
+		process.card_arr=our_cards;
+		data.DealData(pack);
+		theApp.game_action.Increase();
+		return true;
+	}
+	catch (...)
+	{
+		//输出信息
+		return false;
+	}
+	
+}
+
 void CGameCtrl::OnInit()
 {
 	const int IDG_MIN   = 10000;
@@ -215,18 +245,7 @@ void CGameCtrl::OnFrame()
 		ls_game_ctrl.clear();
 		ls_clear_flag=false;
 	}
-	const auto action_cnt=theApp.game_action.action_count;
-	if (action_cnt>0)
-	{
-		int x=0;
-	}
-	if (main_dlg->players.SerialNum2Pos(action_cnt)!=Self)
-	{
-		timer=-1;
-		return ;
-	}
 	
-	old_game_state=cur_game_state;
 }
 
 void CGameCtrl::OnPaint(Gdiplus::Graphics * const g) const 
@@ -249,6 +268,7 @@ void CGameCtrl::OnPaint(Gdiplus::Graphics * const g) const
 void CGameCtrl::OnGameStateChange(const GameState new_state)
 {
 	const auto action_cnt=theApp.game_action.action_count;
+	old_game_state=new_state;
 	if (main_dlg->players.SerialNum2Pos(action_cnt)!=Self)
 	{
 		timer=-1;
@@ -263,6 +283,11 @@ void CGameCtrl::OnGameStateChange(const GameState new_state)
 	case GameState::RobLandlord:
 		CreatCtrl_RobLandLord();
 		break;
+	case GameState::OurPlay:
+		CreatCtlr_Play();
+		break;
+	case GameState::OtherPlay:
+		ls_clear_flag=true;
 	default:
 		timer=-1;
 		break;
@@ -296,6 +321,24 @@ void CGameCtrl::ShowText(Graphics * const g) const
 	}
 }
 
+
+DATA_PACKAGE CGameCtrl::BuildProcessDate(MS_TYPE ms_tp)
+{
+	DATA_PACKAGE pack;
+	pack.ms_type=ms_tp;
+	GAME_PROCESS & process=pack.buf;
+	process.last_palyer_ms=ms_tp;
+	process.last_player_pos=theApp.game_action.GetSelfSeriaNum();
+	if (ms_tp==MS_TYPE::PLAY_CARD||ms_tp==MS_TYPE::PASS)
+	{
+		cur_game_state=GameState::OtherPlay;
+	}
+	else
+	{
+		cur_game_state=GameState::OtherCall;
+	}
+	return pack;
+}
 
 void CGameCtrl::GameStart() 
 {

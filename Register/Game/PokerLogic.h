@@ -14,32 +14,25 @@ public:
 	int  SelectPoker(const CPoint & point);
 	bool SelectMutiPoker(const Rect & region);
 	void FinishMutiSelect();
-	vector<pImage> poker_img;
-	bool IsLegalOutput();
-	MyPoker GetCheckedCards() const;
-	CardArray GetCardsNeedSend() const ;
+	std::array<pImage,55> poker_img;
 	Rect GetHandCardRect(const PlayerPosition pos=Self) const ;
-	bool OurPlayCards();		//我方出牌
-	void MatePlayCards(const vector<char> & cards,const PlayerPosition pos);	//对方出牌
+	CardArray OurPlayCards();		//我方出牌
+	void MatePlayCards(const CardArray & card_arr,const PlayerPosition pos);	//对方出牌
 	void SetPlayerPoker(const vector<char> & cards,const char self_num);	//分配扑克
-	void SetPlayerPoker(const std::array<char,53> & cards,const char self_num);	//分配扑克
+	void SetPlayerPoker(const PokerGroup & cards,const char self_num);	//分配扑克
 	void SetLandlord(const PlayerPosition pos);
 private:
+	MyPoker GetCheckedCards() const;
+	CardArray GetCardsNeedSend() const ;
 	void DelCheckedCards();	//删除选中的卡片
 	void SortHand();
-	static CPokerLogic * self_instance;
-	CPokerLogic(void);
-	MyPoker hand_poker[3],poker_landlord;
-	MyPoker last_round_poker[3]; //上一手牌
+	ArrayType IsLegalOutput() const;
+	bool IsLegalOutput(MyPoker & poker,ArrayType & arrtype) const;
 	unsigned char CalArrPoint(const MyPoker & cards,const ArrayType type ) const;
 	Rect GetMateCardRect(const PlayerPosition pos,const int size) const;
 	Rect GetSelfFirstCardRect(const int size) const;
 	Rect GetSelfLastCardRect() const;
-	ArrayType arrtype;
-	const Size card_size;
-	const int card_interval;
-	const int card_up;
-	const Point self_poker_center;
+	std::array<Rect,3> GetLastRoundCardsFirstRect() const;
 	bool IsBomb(const MyPoker & cards) const;
 	bool Is3with1(const MyPoker & cards) const;
 	bool Is3with2(const MyPoker & cards) const;
@@ -57,6 +50,16 @@ private:
 	void ShowLastRoundPoker(Graphics * const g) const;
 	void RepaintCardRegion() const;
 	void RepaintLastRoundCards(const PlayerPosition pos) const;
+private:
+	const Size card_size;
+	const int card_interval;
+	const int card_up;
+	const Point self_poker_center;
+	static CPokerLogic * self_instance;
+	CPokerLogic(void);
+	MyPoker hand_poker[3],poker_landlord;
+	MyPoker last_round_poker[3]; //上一手牌
+	CardArray last_player_cards;
 private:
 	void OnFrame() override;
 	void OnPaint(Gdiplus::Graphics * const g) const override;

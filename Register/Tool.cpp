@@ -66,6 +66,7 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 	case MS_TYPE::ROB_LANDLORD_RQ:
 	case MS_TYPE::NOT_CALL:
 	case MS_TYPE::NOT_ROB:
+	case MS_TYPE::PLAY_CARD:
 		if(mysocket.SendMS(pack)<0)
 		{
 			return false;
@@ -108,6 +109,7 @@ bool CTool::DealData(const DATA_PACKAGE & pack)
 		break;
 	case MS_TYPE::IS_CALL_LANDLORD:
 	case MS_TYPE::IS_ROB_LANDLORD:
+	case MS_TYPE::IS_PALY_CARD:
 		AfxGetMainWnd()->SendMessage(WM_GAME_PROCESS,(WPARAM)&pack);
 		break;
 	case MS_TYPE::SET_LANDLORD:

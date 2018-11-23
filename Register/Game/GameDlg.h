@@ -60,7 +60,6 @@ public:
 	afx_msg LRESULT OnGetCards(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnSetLandlord(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGameWin(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT OnGameRound(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGameStateChange(WPARAM wParam, LPARAM lParam);
 	afx_msg LRESULT OnGameProcess(WPARAM wParam, LPARAM lParam);
 };
