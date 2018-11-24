@@ -141,19 +141,10 @@ Rect CPokerLogic::GetHandCardRect(const PlayerPosition pos) const
 void CPokerLogic::DelCheckedCards()
 {
 	auto & self_poker=hand_poker[Self];
-	last_round_poker[Self].clear();
-	for (auto i=self_poker.begin();i!=self_poker.end();)
-	{
-		if (i->check)
-		{
-			last_round_poker[Self].push_back(*i);
-			i=self_poker.erase(i);
-		}
-		else
-		{
-			i++;
-		}
-	}
+	auto & last_self_poker=last_round_poker[Self];
+
+	RemoveAndCopy(self_poker,last_self_poker,[](Poker & m)->bool {return m.check;});
+
 	if (self_poker.empty())
 	{
 		//游戏胜利
@@ -164,30 +155,20 @@ void CPokerLogic::DelCheckedCards()
 void CPokerLogic::MatePlayCards(const CardArray & card_arr,const PlayerPosition pos)
 {
 	last_round_poker[pos].clear();
+	auto & last_poker=last_round_poker[pos];
 	if (card_arr.IsEmpty())
 	{
 		return;
 	}
 	const auto cards=card_arr.toVecChar();
-	last_player_cards=card_arr;
+	per_player_cards=card_arr;
 	auto & vec_temp=hand_poker[pos];
 	bool buf[54]={false};
 	for (const auto i:cards)
 	{
 		buf[i]=true;
 	}
-	for (auto i=vec_temp.begin();i!=vec_temp.end();)
-	{
-		if (buf[i->toNum()])
-		{
-			last_round_poker[pos].push_back(*i);
-			i=vec_temp.erase(i);
-		}
-		else
-		{
-			i++;
-		}
-	}
+	RemoveAndCopy(vec_temp,last_poker,[&buf](Poker & m){return buf[m.toNum()];});
 	RepaintLastRoundCards(pos);
 }
 
@@ -344,14 +325,10 @@ void CPokerLogic::ShowDealingCardsEffect(Graphics * const g,const int timer) con
 	const auto & back_img=poker_img[54];
 	for(int i=0;i<size;i++)
 	{
-		if (timer>18)
-		{
-			g->DrawImage(back_img,rect);
-		}
-		else
-		{
-			g->DrawImage(poker_img[hand_poker[Self][i].toNum()],rect);
-		}
+		const auto & img=timer>18
+			?back_img
+			:poker_img[hand_poker[Self][i].toNum()];
+		g->DrawImage(img,rect);
 		rect.Offset(card_interval,0);
 	}
 	const int interval = card_up;
@@ -458,6 +435,16 @@ bool CPokerLogic::IsLegalOutput(MyPoker & cd,ArrayType & arrtype) const
 	return false;
 }
 
+void CPokerLogic::RemoveAndCopy(MyPoker & input,MyPoker & output,std::function<bool(Poker & m)> fun)
+{
+	output.clear();
+	input.erase(remove_if(input.begin(),input.end(),
+		[&output,&fun](Poker & m)
+	{
+		return fun(m)?output.push_back(m),true:false;
+	}),input.end()); 
+}
+
 MyPoker CPokerLogic::GetCheckedCards() const
 {
 	MyPoker cards;
@@ -505,11 +492,11 @@ void CPokerLogic::SetLandlord(const PlayerPosition pos)
 CardArray CPokerLogic::OurPlayCards()
 {
 	CardArray && our_cards=GetCardsNeedSend();
-	if (our_cards.type!=无 && IsGreater(our_cards,last_player_cards))
+	if (our_cards.type!=无 && IsGreater(our_cards,per_player_cards))
 	{
 		//合法的出牌	
 		DelCheckedCards();
-		last_player_cards.Clear();	//清除上一手牌
+		per_player_cards.Clear();	//清除上一手牌
 		AfxGetMainWnd()->InvalidateRect(Rect2CRect(GetHandCardRect()));
 		//重绘出牌
 		RepaintLastRoundCards(Self);

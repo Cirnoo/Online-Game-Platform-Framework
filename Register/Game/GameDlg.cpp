@@ -29,9 +29,9 @@ CGameDlg::CGameDlg(const int self_serial_num)
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	have_player=players.have_player;
 	InitVar();
-	vec_ctrl.push_back(&players);
-	vec_ctrl.push_back(&game_ctrl);
-	vec_ctrl.push_back(&logic);
+	vec_ctrl.emplace_back(&players);
+	vec_ctrl.emplace_back(&game_ctrl);
+	vec_ctrl.emplace_back(&logic);
 	theApp.game_action.SetSelfSerialNum(self_serial_num);
 	/*for (auto & i:theApp.sys.client_info.room.mate_arr)
 	{
@@ -57,10 +57,7 @@ CGameDlg::~CGameDlg()
 	delete back_img;
 	delete bit_buf;
 	delete gra_buf;
-	for (auto i:vec_ctrl)
-	{
-		delete i;
-	}
+	vec_ctrl.clear();
 }
 
 BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
@@ -127,7 +124,7 @@ BOOL CGameDlg::OnInitDialog()
 	::SetWindowPos(this->m_hWnd, HWND_TOP , 0, 0,m_width,m_height,SWP_NOMOVE);
 	SetClassLong(this->m_hWnd, GCL_STYLE, GetClassLong(this->m_hWnd, GCL_STYLE) | CS_DROPSHADOW);
 	CenterWindow();
-	for (auto i:vec_ctrl)
+	for (auto & i:vec_ctrl)
 	{
 		i->OnInit();
 	}
@@ -145,7 +142,7 @@ void CGameDlg::OnPaint()
 	HDC hdc = ::GetDC(this->m_hWnd);
 	Graphics graphics(hdc);
 	gra_buf->DrawImage(back_img,0,0,m_width,m_height);
-	for (auto i:vec_ctrl)
+	for (auto & i:vec_ctrl)
 	{
 		i->OnPaint(gra_buf);
 	}
@@ -253,7 +250,7 @@ void CGameDlg::OnRButtonDown(UINT nFlags, CPoint point)
 void CGameDlg::OnTimer(UINT_PTR nIDEvent)
 {
 	// TODO: 在此添加消息处理程序代码和/或调用默认值
-	for (auto i:vec_ctrl)
+	for (auto & i:vec_ctrl)
 	{
 		i->OnTimer();
 	}

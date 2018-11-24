@@ -3,7 +3,7 @@
 #include <vector>
 #include <array>
 #include <thread>
-//#include "Packdef.h"
+#include <memory>
 #include "PokerLogic.h"
 #include "GamePlayer.h"
 // CGameDlg ¶Ô»°¿ò
@@ -41,7 +41,7 @@ private:
 	CGamePlayer & players;
 	Bitmap * bit_buf;
 	Graphics * gra_buf;
-	std::vector<CGameInterface *> vec_ctrl;
+	std::vector<std::unique_ptr<CGameInterface>> vec_ctrl;
 	GameState_EX & r_game_state;
 	HANDLE 	h_Thread;
 	int m_timer;

@@ -246,4 +246,18 @@ void InvalidateRect(int x, int y, int width, int height)
 	AfxGetMainWnd()->InvalidateRect(CRect(x,y,x+width,y+height));
 }
 
+void DrawImgWithAlpha(Graphics * const g,const pImage img,int x,int y,unsigned char alpha)
+{
+	ColorMatrix colorMartrix={
+		1,0,0,0,0,
+		0,1,0,0,0,
+		0,0,1,0,0,
+		0,0,0,alpha/255.0,0,
+		0,0,0,0,1};
+	ImageAttributes imageAttr;
+	Rect rect(x,y,img->GetWidth(),img->GetHeight());
+	imageAttr.SetColorMatrix(&colorMartrix);
+	g->DrawImage(img,rect,0,0,img->GetWidth(),img->GetHeight(),UnitPixel,&imageAttr);
+}
+
 

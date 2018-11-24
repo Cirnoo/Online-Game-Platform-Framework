@@ -153,6 +153,9 @@
     <ClInclude Include="GameActionCtrl.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Register.cpp">
@@ -222,6 +225,9 @@
       <Filter>Game\GameMain</Filter>
     </ClCompile>
     <ClCompile Include="GameActionCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

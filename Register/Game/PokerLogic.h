@@ -2,7 +2,7 @@
 #include <list>
 #include "Packdef.h"
 #include "GameInterface.h"
-
+#include <functional>
 
 using namespace Player;
 class CPokerLogic:public CGameInterface
@@ -22,6 +22,7 @@ public:
 	void SetPlayerPoker(const PokerGroup & cards,const char self_num);	//分配扑克
 	void SetLandlord(const PlayerPosition pos);
 private:
+	void RemoveAndCopy(MyPoker & input,MyPoker & output,std::function<bool(Poker & m)> fun);
 	MyPoker GetCheckedCards() const;
 	CardArray GetCardsNeedSend() const ;
 	void DelCheckedCards();	//删除选中的卡片
@@ -59,7 +60,7 @@ private:
 	CPokerLogic(void);
 	MyPoker hand_poker[3],poker_landlord;
 	MyPoker last_round_poker[3]; //上一手牌
-	CardArray last_player_cards;
+	CardArray per_player_cards;
 private:
 	void OnFrame() override;
 	void OnPaint(Gdiplus::Graphics * const g) const override;

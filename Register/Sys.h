@@ -94,3 +94,5 @@ const T & GetPackBufData(P & pParam)
 }
 
 void InvalidateRect(int x, int y, int width, int height);
+
+void DrawImgWithAlpha(Graphics * const g,const pImage img,int x,int y,unsigned char alpha);
