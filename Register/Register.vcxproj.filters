@@ -156,6 +156,12 @@
     <ClInclude Include="GameObject.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="GameButtonCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjCtrl.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Register.cpp">
@@ -228,6 +234,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="GameObject.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameButtonCtrl.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObjCtrl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

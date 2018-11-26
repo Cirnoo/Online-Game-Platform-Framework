@@ -11,18 +11,18 @@
 
 ### 登录界面   
 <img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/login_dlg.jpg" width="450"> <br>
-### 游戏界面  
-<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_ready.jpg" width="600"> <br>
+### 游戏  
 ##### 抢地主
 <img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_2.jpg" width="600"> <br>
 
-##### 正式游戏
-<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_start.jpg" width="600"> <br>
+##### 游戏界面
+<img src="https://raw.githubusercontent.com/Cirnoo/Online-Game-Platform-Framework/Netwok/screenshot/game_3.jpg" width="600"> <br>
 
 这里面用到了一些自己写的GDI+图像处理函数，以后有时间可以整理出来。即便用GDI+，MFC处理图像依然比较麻烦，一般能用PS处理的我就用PS了。
 资源文件来源于网络：
-[资源链接](https://blog.csdn.net/geniusice18/article/details/8393674)
+[资源链接](https://blog.csdn.net/geniusice18/article/details/8393674)  
 
+[My Blog:MFC与GDI+学习笔记系列](https://cirnoo.github.io/tag/#MFC)
 ---  
 Original  
 这是我用MFC写的一个游戏登录器框架，利用MFC的一些控件和GDI+完成的。<br>

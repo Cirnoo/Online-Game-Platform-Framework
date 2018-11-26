@@ -116,7 +116,9 @@
     <ClInclude Include="Button\TextButton.h" />
     <ClInclude Include="CheckBox\CheckBox.h" />
     <ClInclude Include="GameActionCtrl.h" />
+    <ClInclude Include="GameButtonCtrl.h" />
     <ClInclude Include="GameInterface.h" />
+    <ClInclude Include="GameObjCtrl.h" />
     <ClInclude Include="GameObject.h" />
     <ClInclude Include="Game\GameCtrl.h" />
     <ClInclude Include="Game\GameDlg.h" />
@@ -146,6 +148,8 @@
     <ClCompile Include="Button\TextButton.cpp" />
     <ClCompile Include="CheckBox\CheckBox.cpp" />
     <ClCompile Include="GameActionCtrl.cpp" />
+    <ClCompile Include="GameButtonCtrl.cpp" />
+    <ClCompile Include="GameObjCtrl.cpp" />
     <ClCompile Include="GameObject.cpp" />
     <ClCompile Include="Game\GameCtrl.cpp" />
     <ClCompile Include="Game\GameDlg.cpp" />

@@ -323,6 +323,7 @@ void CPokerLogic::ShowDealingCardsEffect(Graphics * const g,const int timer) con
 	const int size=min(timer,17);
 	auto rect=GetSelfFirstCardRect(size);
 	const auto & back_img=poker_img[54];
+	
 	for(int i=0;i<size;i++)
 	{
 		const auto & img=timer>18
@@ -699,7 +700,10 @@ void CPokerLogic::OnFrame()
 		{
 			timer=0;
 			SortHand();
-			theApp.game_action.SetGameState(GameState::CallLandLord);		//发牌完毕
+			GameState st=theApp.game_action.GetCurActPlayerPos()==Self
+				?GameState::CallLandLord
+				:GameState::OtherCall;
+			theApp.game_action.SetGameState(st);		//发牌完毕
 		}
 		RepaintCardRegion();
 		break;

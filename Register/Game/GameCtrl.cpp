@@ -12,13 +12,7 @@ CGameCtrl & CGameCtrl::GetInstance(CGameDlg * parent)  //饿汉式
 	}
 	return *self;
 }
-namespace ImgGroupType
-{
-	enum  
-	{
-		出牌,不出,提示,不叫,不抢,叫地主,抢地主,准备
-	};
-}
+
 
 
 CGameCtrl::CGameCtrl(CGameDlg * parent):
@@ -26,7 +20,8 @@ CGameCtrl::CGameCtrl(CGameDlg * parent):
 	cur_game_state(theApp.game_action.game_state),
 	main_dlg(parent),
 	button_center(GAME_DLG_WIDTH/2,GAME_DLG_HEIGHT/2+130),
-	button_size(93,37)
+	button_size(93,37),
+	res(GameRes::GetInstance())
 {
 	ls_clear_flag=false;
 	old_game_state=GameState::Wait;
@@ -41,6 +36,7 @@ CGameCtrl::~CGameCtrl(void)
 	pack.ms_type=MS_TYPE::LEAVE_ROOM;
 	pack.buf=USER_BUF(main_dlg->m_master);
 	data.DealData(pack);*/
+	delete &res;
 }
 
 
@@ -133,7 +129,7 @@ void CGameCtrl::CreatCtlr_Play()
 	CreatCtlr(rect,res.vec_button_img[不出],MS_TYPE::PASS);
 
 	rect.X+=button_size.Width+10;
-	//CreatCtlr(rect,res.vec_button_img[提示])
+	CreatCtlr(rect,res.vec_button_img[提示],[]{});
 }
 
 void CGameCtrl::CreatCtlr(const Rect rect,const vector<pImage> & vec_img, const MS_TYPE ms_tp)
@@ -186,6 +182,8 @@ ImgText::TextType CGameCtrl::GetImgTextType(const MS_TYPE ms_tp) const
 		return 抢地主;
 	case MS_TYPE::NOT_ROB:
 		return 不抢;
+	case MS_TYPE::PASS:
+		return 不出;
 	default:
 		return ImgText::NONE_IMG;
 	}
@@ -193,6 +191,11 @@ ImgText::TextType CGameCtrl::GetImgTextType(const MS_TYPE ms_tp) const
 
 bool CGameCtrl::OurPlayCards()
 {
+	if (theApp.game_action.GetGameState()!=GameState::OurPlay)
+	{
+		return false;
+	}
+
 	try
 	{
 		auto && our_cards=main_dlg->logic.OurPlayCards();
@@ -207,6 +210,7 @@ bool CGameCtrl::OurPlayCards()
 	catch (...)
 	{
 		//输出信息
+		obj_ctrl.InvalidPlay();
 		return false;
 	}
 	
@@ -236,6 +240,8 @@ void CGameCtrl::OnInit()
 		main_dlg->PostMessageW(WM_SYSCOMMAND ,SC_MINIMIZE, 0);
 	});
 	ls_base_ctrl.push_back(&bt_min);
+
+	obj_ctrl.InvalidPlay();
 }
 
 void CGameCtrl::OnFrame()
@@ -245,7 +251,7 @@ void CGameCtrl::OnFrame()
 		ls_game_ctrl.clear();
 		ls_clear_flag=false;
 	}
-	
+	obj_ctrl.OnTimer();
 }
 
 void CGameCtrl::OnPaint(Gdiplus::Graphics * const g) const 
@@ -263,13 +269,14 @@ void CGameCtrl::OnPaint(Gdiplus::Graphics * const g) const
 	default:
 		break;
 	}
+	obj_ctrl.OnPaint(g);
 }
 
 void CGameCtrl::OnGameStateChange(const GameState new_state)
 {
 	const auto action_cnt=theApp.game_action.action_count;
 	old_game_state=new_state;
-	if (main_dlg->players.SerialNum2Pos(action_cnt)!=Self)
+	if (theApp.game_action.SerialNum2Pos(action_cnt)!=Self)
 	{
 		timer=-1;
 		return ;
@@ -360,60 +367,4 @@ void CGameCtrl::TextClear()
 	last_round_text.fill(ImgText::NONE_IMG);
 }
 
-CGameCtrl::GameRes::GameRes()
-{
-	auto vec_temp=::GetImageGroup(IDB_GAME_CTRL,2,3);
-	for (auto & i:vec_temp)
-	{
-		i=ResizeImg(i,0.4);
-	}
-	for (int i=0;i<3;i++)
-	{
-		vec_min.push_back(vec_temp[i]);
-	}
-	for (int i=3;i<6;i++)
-	{
-		vec_close.push_back(vec_temp[i]);
-	}
 
-	vec_temp=::GetImageGroup(IDB_GAME_BUTTON,7,3);
-	for (int i=0;i<7;i++)
-	{
-		vec_button_img[i].resize(3);
-		for (int j=0;j<3;j++)
-		{
-			vec_button_img[i][j]=vec_temp[3*i+j];
-		}
-	}
-	using namespace ImgText;
-	vec_text_img.resize(8);
-	vec_text_img[准备]=::CutImage(theApp.sys.game_tool,0,80,89,42);
-	vec_text_img[抢地主]=::CutImage(theApp.sys.game_tool,0,0,89,38);
-	vec_text_img[叫地主]=::CutImage(theApp.sys.game_tool,0,37,89,42);
-	vec_text_img[不叫]=::CutImage(theApp.sys.game_tool,0,121,89,45);
-	vec_text_img[不抢]=::CutImage(theApp.sys.game_tool,0,165,89,38);
-}
-
-CGameCtrl::GameRes::~GameRes()
-{
-	for (auto i:vec_min)
-	{
-		delete i;
-	}
-	for (auto i:vec_close)
-	{
-		delete i;
-	}
-
-	for (auto i:vec_button_img)
-	{
-		for (auto j:i)
-		{
-			delete j;
-		}
-	}
-	for (auto i:vec_text_img)
-	{
-		delete i;
-	}
-}

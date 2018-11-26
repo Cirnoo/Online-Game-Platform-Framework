@@ -41,8 +41,8 @@ CGameDlg::CGameDlg(const int self_serial_num)
 	for (int i=0;i<53;i++)
 	{
 	temp.push_back(i);
-	}
-	logic.SetPlayerPoker(temp,Self);*/
+	}*/
+	//logic.SetPlayerPoker(temp,Self);
 	r_game_state=GameState::Wait;
 }
 
@@ -57,7 +57,10 @@ CGameDlg::~CGameDlg()
 	delete back_img;
 	delete bit_buf;
 	delete gra_buf;
-	vec_ctrl.clear();
+	for (auto i:vec_ctrl)
+	{
+		delete i;
+	}
 }
 
 BEGIN_MESSAGE_MAP(CGameDlg, CDialogEx)
