@@ -6,9 +6,14 @@ typedef std::vector<Poker> MyPoker;
 CPokerLogic * CPokerLogic::self_instance=nullptr;
 CPokerLogic & CPokerLogic::GetInstance()
 {
-	if (!self_instance)
+	if(!self_instance)
 	{
-		self_instance=new CPokerLogic;
+		lock.lock();
+		if (!self_instance)
+		{
+			self_instance=new CPokerLogic;
+		}
+		lock.unlock();
 	}
 	return *self_instance;
 }
